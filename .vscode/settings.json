@@ -1,0 +1,6 @@
+{
+    "python.linting.pylintEnabled": true,
+    "editor.minimap.enabled": false,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/bin/python3"
+}
