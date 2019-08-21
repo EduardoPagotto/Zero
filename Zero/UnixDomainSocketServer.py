@@ -1,10 +1,17 @@
 
+#!/usr/bin/env python3
+'''
+Created on 20170119
+Update on 20190821
+@author: Eduardo Pagotto
+'''
+
 import os
 import socket
 import logging
 import threading
 
-from SocketBase import SocketBase
+from Zero.SocketBase import SocketBase
 
 class UnixDomainClient(SocketBase):
     def __init__(self, server_address):

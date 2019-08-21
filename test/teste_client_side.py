@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190819
+Update on 20190821
 @author: Eduardo Pagotto
 '''
 
@@ -11,10 +11,13 @@ import time
 import threading
 import logging
 
-from SocketBase import SocketBase
-from UnixDomainSocketServer import UnixDomainServer, UnixDomainClient
-from Protocol import Protocol, ProtocolCode
+import common_acess
 
+sys.path.append('../Zero')
+
+from Zero.SocketBase import SocketBase
+from Zero.UnixDomainSocketServer import UnixDomainServer, UnixDomainClient
+from Zero.Protocol import Protocol, ProtocolCode
 
 if __name__ == '__main__':
 
@@ -26,7 +29,7 @@ if __name__ == '__main__':
     try:
 
         protocol = Protocol()
-        protocol.setSocket(UnixDomainClient('/home/pagotto/Projetos/Zeke/uds_socket_teste').getSocket())
+        protocol.setSocket(UnixDomainClient(common_acess.uds_target).getSocket())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
 

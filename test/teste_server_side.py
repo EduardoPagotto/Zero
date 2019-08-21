@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190819
+Update on 20190821
 @author: Eduardo Pagotto
 '''
 
@@ -11,9 +11,13 @@ import time
 import threading
 import logging
 
-from SocketBase import SocketBase
-from UnixDomainSocketServer import UnixDomainServer
-from Protocol import Protocol, ProtocolCode
+import common_acess
+
+sys.path.append('../Zero')
+
+from Zero.SocketBase import SocketBase
+from Zero.UnixDomainSocketServer import UnixDomainServer
+from Zero.Protocol import Protocol, ProtocolCode
 
 def remove_conexoes_finalizadas(servidor_ativo):
     '''Remove conxoes ativas da memoria'''
@@ -85,7 +89,7 @@ if __name__ == '__main__':
         format='(%(threadName)-10s) %(message)s',
     )
 
-    servidor = UnixDomainServer('/home/pagotto/Projetos/Zeke/uds_socket_teste')
+    servidor = UnixDomainServer(common_acess.uds_target)
     t_server = threading.Thread(target=servidor.loop, args=(createServerConnection,))
     t_server.start()
 
