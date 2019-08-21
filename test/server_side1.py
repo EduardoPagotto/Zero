@@ -10,6 +10,7 @@ import os
 import time
 import threading
 import logging
+import socket
 
 import common_side1
 
@@ -19,6 +20,7 @@ sys.path.append('../Zero')
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from Zero.subsys.GracefulKiller import GracefulKiller
 
 def remove_conexoes_finalizadas(servidor_ativo):
     '''Remove conxoes ativas da memoria'''
@@ -48,6 +50,8 @@ def createServerConnection(args, kwargs):
     protocol = None
     try:
         protocol = Protocol(kwargs['clientsocket'])
+        protocol.settimeout(10)
+        
     except Exception as exp:
         logging.exception('Falha na parametrizacao da conexao: {0}'.format(str(exp)))
         return
@@ -76,6 +80,9 @@ def createServerConnection(args, kwargs):
             logging.debug('Receive Close: {0}'.format(str(exp_close)))
             break
 
+        except socket.timeout:
+            logging.debug('Conexao to..')
+
         except Exception as exp:
             logging.error('Erro identificado: {0}'.format(str(exp)))
             break
@@ -90,9 +97,15 @@ if __name__ == '__main__':
         format='(%(threadName)-10s) %(message)s',
     )
 
+    #killer = GracefulKiller()
+
     servidor = UnixDomainServer(common_side1.uds_target)
     t_server = threading.Thread(target=servidor.loop, args=(createServerConnection,))
     t_server.start()
+
+    servidor.settimeout(10)
+
+    logging.debug('Servidor to: %s',str(servidor.gettimeout()))
 
     ciclo = 0
     while True:
@@ -100,4 +113,14 @@ if __name__ == '__main__':
         logging.info('Ciclo:%d Conexoes:%d', ciclo, len(servidor.lista_thread_online))
         remove_conexoes_finalizadas(servidor)
         ciclo += 1
-        time.sleep(5)
+        time.sleep(1)
+
+        # if killer.kill_now is True:
+        #     servidor.close()
+        #     break
+
+    logging.info('Servidor finalizando.....')
+
+    t_server.join()
+
+    logging.info('Servidor encerrado')

@@ -37,6 +37,8 @@ if __name__ == '__main__':
         id, msg = protocol.receiveString()
         logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
 
+        time.sleep(15)
+
         protocol.sendString(ProtocolCode.ERRO, 'Erro Critico')
         id, msg = protocol.receiveString()
         logging.info('Recebido id:{0} msg:{1}'.format(id, msg))

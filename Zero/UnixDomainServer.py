@@ -34,19 +34,29 @@ class UnixDomainServer(SocketBase):
         '''Executa servidor quando conectado ou TO'''
         while True:
 
-            logging.debug("Esperando nova conexao")
+            try:
+                logging.debug("Esperando nova conexao")
 
-            # accept connections from outside
-            clientsocket, address = self._sock.accept()
+                # accept connections from outside
+                clientsocket, address = self._sock.accept()
 
-            comm_param={}
-            comm_param['clientsocket'] = clientsocket
-            comm_param['addr']=  address
+                comm_param={}
+                comm_param['clientsocket'] = clientsocket
+                comm_param['addr']=  address
 
-            logging.debug("Conectado com :%s", str(address))
+                logging.debug("Conectado com :%s", str(address))
 
-            tot = len(self.lista_thread_online)
-            t = threading.Thread(target=conexao_ativa, args=(tot, comm_param))
-            t.start()
+                tot = len(self.lista_thread_online)
+                t = threading.Thread(target=conexao_ativa, args=(tot, comm_param))
+                t.start()
 
-            self.lista_thread_online.append(t)
+                self.lista_thread_online.append(t)
+
+            except socket.timeout:
+                logging.debug('Server to..')
+
+            except Exception as exp:
+                logging.exception('Falha:%s', str(exp))
+                break
+
+        logging.debug("listen encerrado")

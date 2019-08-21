@@ -22,9 +22,12 @@ class SocketBase(object):
         '''Vincula um socket ja criado'''
         self._sock = socketIn
 
-    def set_time_out(self, time_out=300):
+    def settimeout(self, time_out=300):
         '''Define o To da conexao para sistemas bloquantes'''
         self._sock.settimeout(time_out)
+
+    def gettimeout(self):
+        return self._sock.gettimeout()
 
     def close(self):
         '''Encerra conexa e invalida socket'''
