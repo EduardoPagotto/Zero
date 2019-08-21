@@ -6,7 +6,7 @@ Update on 20190819
 
 import socket
 
-from Zero.ExceptionZero import ExceptionZero
+from Zero.subsys.ExceptionZero import ExceptionZero
 
 BLOCK_SIZE = 2048
 

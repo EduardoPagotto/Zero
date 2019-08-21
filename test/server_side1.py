@@ -18,7 +18,7 @@ sys.path.append('../Zero')
 #from Zero.SocketBase import SocketBase
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
-from Zero.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 def remove_conexoes_finalizadas(servidor_ativo):
     '''Remove conxoes ativas da memoria'''

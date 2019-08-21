@@ -19,18 +19,20 @@ from Zero.SocketBase import SocketBase
 from Zero.UnixDomainClient import UnixDomainClient
 from Zero.Protocol import Protocol, ProtocolCode
 
-from Zero.ExceptionZero import ExceptionZero, ExceptionZeroClose
+from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
 
 if __name__ == '__main__':
 
     logging.basicConfig(
         level=logging.DEBUG,
-        format='(%(threadName)-10s) %(message)s',
+        format='%(levelname)-8s %(threadName)-10s %(message)s',
     )
 
     try:
         protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
        
+        logging.debug(protocol.sendHandShake())
+
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
         id, msg = protocol.receiveString()
         logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
