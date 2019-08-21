@@ -11,7 +11,7 @@ import time
 import threading
 import logging
 
-import common_acess
+import common_side1
 
 sys.path.append('../Zero')
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     try:
 
         protocol = Protocol()
-        protocol.setSocket(UnixDomainClient(common_acess.uds_target).getSocket())
+        protocol.setSocket(UnixDomainClient(common_side1.uds_target).getSocket())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
 

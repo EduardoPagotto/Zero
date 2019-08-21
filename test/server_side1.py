@@ -11,7 +11,7 @@ import time
 import threading
 import logging
 
-import common_acess
+import common_side1
 
 sys.path.append('../Zero')
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         format='(%(threadName)-10s) %(message)s',
     )
 
-    servidor = UnixDomainServer(common_acess.uds_target)
+    servidor = UnixDomainServer(common_side1.uds_target)
     t_server = threading.Thread(target=servidor.loop, args=(createServerConnection,))
     t_server.start()
 
