@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 '''
 Created on 20170119
 Update on 20190819
@@ -6,6 +5,8 @@ Update on 20190819
 '''
 
 import socket
+
+from Zero.ExceptionZero import ExceptionZero
 
 BLOCK_SIZE = 2048
 
@@ -27,13 +28,13 @@ class SocketBase(object):
 
     def close(self):
         '''Encerra conexa e invalida socket'''
-        if (self._sock is not None) and (self._sock.socket is not None):
+        if (self._sock is not None):
             self._sock.close()
             self._sock = None
 
     def isConnected(self):
         '''True se conectado'''
-        if (self._sock is not None) and (self._sock.socket is not None):
+        if (self._sock is not None):
             return True 
         
         return False
@@ -56,7 +57,7 @@ class SocketBase(object):
             sub_buffer = bytearray(_buffer[inicio:fim])
             sent = self._sock.send(sub_buffer)
             if sent == 0:
-                raise Exception("Fail Send")
+                raise ExceptionZero("Fail Send")
 
             #os.write(self.io, sub_buffer)
             total_enviado = fim
@@ -76,7 +77,7 @@ class SocketBase(object):
             #buffer_local += os.read(self.io, tam)
             chunk = self._sock.recv(tam)
             if chunk == b'':
-                raise Exception("Fail Receive")
+                raise ExceptionZero("Fail Receive")
 
             buffer_local += chunk
 

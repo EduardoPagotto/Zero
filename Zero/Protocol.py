@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 '''
 Created on 20170119
 Update on 20190821
@@ -13,6 +12,7 @@ import logging
 
 from enum import Enum
 from Zero.SocketBase import SocketBase
+from Zero.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class ProtocolCode(Enum):
     '''Comandos Enviados pelo Protocolo'''
@@ -26,30 +26,15 @@ class ProtocolCode(Enum):
     ERRO = 255
 
 class Protocol(SocketBase):
-    '''Wrapper de servidor socket'''
-
-    def __init__(self):
+    def __init__(self, socket):
         SocketBase.__init__(self)
         self.protocol_versao = "0.0.1"
-        # self.ipAddr = None
-
-    # def connect(self, conexao):
-    #     '''Establelece coneccao com o servidor'''
-    #     logging.info('------>')
-    #     logging.info('Cliente a conectar em %s:%d', conexao[0], conexao[1])
-
-    #     try:
-    #         Socket.connect(self, conexao)
-    #     except OSError as msg:
-    #         raise SubExceptionProtocol(ProtocolErro.CONNECT, 'Falha ao instanciar Socket:{0}'.format(print(msg)))
-
-    #     self.sendHandShake()
-    #     logging.info('Conectado.')
+        self.setSocket(socket)
 
     def close(self):
         ''''Encerra a conexao local'''
         try:
-            self.close()
+            super().close()
         except:
             raise Exception('Falha no Close local')
 
@@ -96,36 +81,34 @@ class Protocol(SocketBase):
         bufferHeader = buffer_header[:28]
         crcCalc2 = zlib.crc32(bufferHeader)
         if crc2 != crcCalc2:
-            raise Exception('Protocol Receive Header CRC Erro')
+            raise ExceptionZero('Protocol Receive Header CRC Erro')
 
         buffer_dados = bytearray(self.receiveBlocks(tamanho_comprimido))
 
         crcCalc = zlib.crc32(buffer_dados)
 
         if crc != crcCalc:
-            raise Exception('Protocol Receive Payload CRC Erro')
+            raise ExceptionZero('Protocol Receive Payload CRC Erro')
 
         binario = zlib.decompress(buffer_dados)
 
         if len(binario) != tamanho_buffer:
-            raise Exception('Protocol Receive size buffer error')
+            raise ExceptionZero('Protocol Receive size buffer error')
 
         if idRecebido == ProtocolCode.HANDSHAKE:
             msg = binario.decode('UTF-8')
 
-            logging.info('HandShake, cliente:%s', msg)
+            logging.debug('HandShake, cliente:%s', msg)
 
             self.sendString(ProtocolCode.OK, self.protocol_versao)
 
         elif idRecebido == ProtocolCode.CLOSE:
-
-            logging.info('Close recebido:%s', binario.decode('UTF-8'))
-
+            logging.debug('Close recebido:%s', binario.decode('UTF-8'))
             self.close()
-            #raise Exception('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
+            raise ExceptionZeroClose('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
 
-        #elif idRecebido == ProtocolCode.ERRO:
-        #    raise Exception('{0}'.format(binario.decode('UTF-8')))
+        elif idRecebido == ProtocolCode.ERRO:
+           raise ExceptionZeroErro('{0}'.format(binario.decode('UTF-8')))
 
         return (idRecebido, binario)
 
@@ -149,16 +132,17 @@ class Protocol(SocketBase):
 
     def sendClose(self, _texto):
         '''Envia o fechamento'''
-        if self.isConnected is True:
-            #logging.info('Close enviado ao cliente:%s', _texto)
+        if self.isConnected() is True:
+            logging.debug('Close enviado ao cliente: %s', _texto)
             self.sendString(ProtocolCode.CLOSE, _texto)
+            self.close()
 
     def sendHandShake(self):
         '''Envia Hand automatico'''
         self.sendString(ProtocolCode.HANDSHAKE, self.protocol_versao )
         idRecive, msg = self.receiveString()
         if idRecive is ProtocolCode.OK:
-            logging.info('Conexao Servidor: %s', msg)
+            logging.debug('Conexao Servidor: %s', msg)
 
     def sendFile(self, path_file_name):
         '''Envia arquivo ao ponto'''
@@ -170,17 +154,17 @@ class Protocol(SocketBase):
                 tamanho_arquivo = len(fileContent)
         except IOError as e:
             self.sendErro('Falha IO na leitura do arquivo:{0}'.format(str(e)))
-            raise Exception('Protocolo Send File:{0}'.format(str(e)))
+            raise ExceptionZero('Protocolo Send File:{0}'.format(str(e)))
         except:
             msg_erro = 'Falha critica no arquivo:{0}'.format(str(path_file_name))
             self.sendErro(msg_erro)
-            raise Exception('Protocolo Send File: {0} '.format(msg_erro))
+            raise ExceptionZero('Protocolo Send File: {0} '.format(msg_erro))
 
         self.sendProtocol(ProtocolCode.FILE, fileContent)
         idRecebido, msg = self.receiveProtocol()
 
         if idRecebido is not ProtocolCode.OK or msg != 'OK':
-            raise Exception('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
+            raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
 
         return tamanho_arquivo
 
@@ -198,7 +182,7 @@ class Protocol(SocketBase):
             if e.errno != errno.EEXIST:
                 msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
                 self.sendErro(msg_erro)
-                raise Exception(msg_erro)
+                raise ExceptionZero(msg_erro)
 
         if id == ProtocolCode.FILE:
             try:
@@ -218,35 +202,3 @@ class Protocol(SocketBase):
             msg_erro = 'Nao recebi o arquivo:{0} Erro ID:{1}'.format(path_file_name, str(id))
             self.sendErro(msg_erro)
             raise Exception(msg_erro)
-
-
-
-#if __name__ == '__main__':
-    # configure_logging('log/testez1.log')
-    # logging.info('Ativado Teste')
-
-    # try:
-
-    #     protocol = NeoProtocol('testez1 v0.0.0')
-    #     protocol.create()
-
-    #     addr = ('VirtualDevPosixZ1', 1313)
-
-    #     protocol.connect(addr)
-    #     protocol.sendString(10, 'Teste 1234567890......')
-    #     idRec, msg = protocol.receiveString()
-    #     logging.info('Val %s', msg)
-
-    #     time.sleep(15)
-    #     protocol.sendClose('Bye')
-
-    #     logging.info('Desconectado')
-
-    # except NeoExceptionProtocol as exp:
-    #     print('NeoExceptionProtocol {0}'.format(exp.msg))
-    # except NeoExceptionSocket as exs:
-    #     print('NeoExceptionSocket {0}'.format(exs.msg))
-    # except Exception as exx:
-    #     print('NeoExceptionSocket {0}'.format(exx.args))
-
-    # logging.info('App desconectado')

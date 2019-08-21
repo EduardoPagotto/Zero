@@ -19,6 +19,8 @@ from Zero.SocketBase import SocketBase
 from Zero.UnixDomainClient import UnixDomainClient
 from Zero.Protocol import Protocol, ProtocolCode
 
+from Zero.ExceptionZero import ExceptionZero, ExceptionZeroClose
+
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -27,26 +29,17 @@ if __name__ == '__main__':
     )
 
     try:
-
-        protocol = Protocol()
-        protocol.setSocket(UnixDomainClient(common_side1.uds_target).getSocket())
-
+        protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
+       
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
-
         id, msg = protocol.receiveString()
         logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
 
-        protocol.sendString(ProtocolCode.COMMAND, 'Teste 1234567890......')
-
+        protocol.sendString(ProtocolCode.ERRO, 'Erro Critico')
         id, msg = protocol.receiveString()
         logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
 
-
-        #idRec, msg = protocol.receiveString()
-        #logging.info('Val %s', msg)
-
-        #time.sleep(15)
-        protocol.sendClose('Bye')
+        protocol.sendClose('Bye-Bye')
 
         logging.info('Desconectado')
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 '''
 Created on 20170119
 Update on 20190821
@@ -29,24 +28,25 @@ class UnixDomainServer(SocketBase):
 
         self._sock.bind(server_address)
         self._sock.listen(5)
+        logging.debug('Bind in: {0}'.format(str(self.server_address)))
 
     def loop(self, conexao_ativa):
         '''Executa servidor quando conectado ou TO'''
         while True:
 
-            logging.info("Esperando nova conexao")
+            logging.debug("Esperando nova conexao")
 
             # accept connections from outside
             clientsocket, address = self._sock.accept()
 
-            my_dict={}
-            my_dict['clientsocket'] = clientsocket
-            my_dict['addr']=  address
+            comm_param={}
+            comm_param['clientsocket'] = clientsocket
+            comm_param['addr']=  address
 
-            logging.info("Conectado com :%s", str(address))
+            logging.debug("Conectado com :%s", str(address))
 
             tot = len(self.lista_thread_online)
-            t = threading.Thread(target=conexao_ativa, args=(tot, my_dict))#, kwargs=my_dict)
+            t = threading.Thread(target=conexao_ativa, args=(tot, comm_param))
             t.start()
 
             self.lista_thread_online.append(t)

@@ -18,6 +18,7 @@ sys.path.append('../Zero')
 #from Zero.SocketBase import SocketBase
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
+from Zero.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 def remove_conexoes_finalizadas(servidor_ativo):
     '''Remove conxoes ativas da memoria'''
@@ -44,14 +45,11 @@ def remove_conexoes_finalizadas(servidor_ativo):
 
 def createServerConnection(args, kwargs):
 
-    protocol = Protocol()
-
+    protocol = None
     try:
-        
-        protocol.setSocket(kwargs['clientsocket'])
-        protocol.ipAddr = kwargs['addr']
+        protocol = Protocol(kwargs['clientsocket'])
     except Exception as exp:
-        logging.exception('Falha na paremtrizacao da conexao: {0}'.format(str(exp)))
+        logging.exception('Falha na parametrizacao da conexao: {0}'.format(str(exp)))
         return
 
     while True:
@@ -68,12 +66,15 @@ def createServerConnection(args, kwargs):
                 if msg == 'ola 123':
                     protocol.sendString(ProtocolCode.OK, 'Echo: {0}'.format(msg))
                 else:
-                    protocol.sendString(ProtocolCode.ERRO, 'Comando inesperado')
+                    protocol.sendString(ProtocolCode.OK, 'Comando 2')
 
-            elif idRec is ProtocolCode.CLOSE:
-                logging.warning('Close Recebido:{0}'.format(msg))
-                protocol.close()
-                break
+        except ExceptionZeroErro as exp_erro:
+            logging.debug('Recevice Erro: {0}'.format(str(exp_erro)))
+            protocol.sendString(ProtocolCode.OK,'Erro recebido no servidor')
+
+        except ExceptionZeroClose as exp_close:
+            logging.debug('Receive Close: {0}'.format(str(exp_close)))
+            break
 
         except Exception as exp:
             logging.error('Erro identificado: {0}'.format(str(exp)))
