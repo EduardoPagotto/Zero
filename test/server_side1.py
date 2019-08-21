@@ -15,8 +15,8 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.SocketBase import SocketBase
-from Zero.UnixDomainSocketServer import UnixDomainServer
+#from Zero.SocketBase import SocketBase
+from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
 
 def remove_conexoes_finalizadas(servidor_ativo):

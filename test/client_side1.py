@@ -16,7 +16,7 @@ import common_side1
 sys.path.append('../Zero')
 
 from Zero.SocketBase import SocketBase
-from Zero.UnixDomainSocketServer import UnixDomainServer, UnixDomainClient
+from Zero.UnixDomainClient import UnixDomainClient
 from Zero.Protocol import Protocol, ProtocolCode
 
 if __name__ == '__main__':
