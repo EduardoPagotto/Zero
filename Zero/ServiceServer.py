@@ -10,7 +10,7 @@ import socket
 import logging
 import threading
 
-class ServerService(object):
+class ServiceServer(object):
     def __init__(self, socket_server, createServerConnection):
         self.lista = []
         self.done = False

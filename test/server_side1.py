@@ -18,7 +18,7 @@ sys.path.append('../Zero')
 
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.transport.Transport import transportServer, TransportKind
-from Zero.ServerService import ServerService
+from Zero.ServiceServer import ServiceServer
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
@@ -90,7 +90,7 @@ def main():
 
     log.debug('server timeout: %s',str(server.gettimeout()))
 
-    service = ServerService(server.getSocket(), connection)
+    service = ServiceServer(server.getSocket(), connection)
 
     service.start()
 
