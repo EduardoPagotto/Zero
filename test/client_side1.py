@@ -16,23 +16,17 @@ import common_side1
 sys.path.append('../Zero')
 
 from Zero.SocketBase import SocketBase
-from Zero.UnixDomainClient import UnixDomainClient, NetworkClient
+from Zero.Transport import transportClient, TransportKind
 from Zero.Protocol import Protocol, ProtocolCode
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
 
-if __name__ == '__main__':
-
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
-        datefmt='%H:%M:%S',
-    )
+def main():
 
     try:
-        protocol = Protocol(NetworkClient(common_side1.ip_target).getSocket())
-        #protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
-       
+        #protocol = Protocol(transportClient(TransportKind.NETWORK, common_side1.ip_target).getSocket())
+        protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, common_side1.uds_target).getSocket()) 
+
         logging.debug(protocol.handShake())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
@@ -53,3 +47,13 @@ if __name__ == '__main__':
         logging.exception('Falha {0}'.format(str(exp)))
 
     logging.info('App desconectado')
+
+if __name__ == '__main__':
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
+        datefmt='%H:%M:%S',
+    )
+
+    main()

@@ -16,8 +16,8 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.UnixDomainServer import UnixDomainServer, NetworkServer
 from Zero.Protocol import Protocol, ProtocolCode
+from Zero.Transport import transportServer, TransportKind
 from Zero.ServerService import ServerService
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
@@ -74,19 +74,12 @@ def connection(args, kwargs):
 
     logging.info('connection finished')
 
-
-if __name__ == '__main__':
-
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
-        datefmt='%H:%M:%S',
-    )
+def main():
 
     killer = GracefulKiller()
 
-    #server = UnixDomainServer(common_side1.uds_target)
-    server = NetworkServer(common_side1.ip_target)
+    #server = transportServer(TransportKind.NETWORK, common_side1.ip_target)
+    server = transportServer(TransportKind.UNIX_DOMAIN, common_side1.uds_target)
 
     server.settimeout(10)
     logging.debug('server timeout: %s',str(server.gettimeout()))
@@ -108,3 +101,13 @@ if __name__ == '__main__':
             break
 
     service.join()
+
+if __name__ == '__main__':
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
+        datefmt='%H:%M:%S',
+    )
+
+    main()
