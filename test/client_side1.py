@@ -23,37 +23,36 @@ from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
 
 def main():
 
+    log = logging.getLogger('Client')
+    logging.getLogger('Zero').setLevel(logging.INFO)
+
     try:
         #protocol = Protocol(transportClient(TransportKind.NETWORK, common_side1.ip_target).getSocket())
         protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, common_side1.uds_target).getSocket()) 
 
-        logging.debug(protocol.handShake())
+        log.info(protocol.handShake())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
         id, msg = protocol.receiveString()
-        logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
+        log.info('Recebido id:{0} msg:{1}'.format(id, msg))
 
         time.sleep(15)
 
         protocol.sendString(ProtocolCode.ERRO, 'Erro Critico')
         id, msg = protocol.receiveString()
-        logging.info('Recebido id:{0} msg:{1}'.format(id, msg))
+        log.info('Recebido id:{0} msg:{1}'.format(id, msg))
 
         protocol.sendClose('Bye-Bye')
 
-        logging.info('Desconectado')
+        log.info('Desconectado')
 
     except Exception as exp:
-        logging.exception('Falha {0}'.format(str(exp)))
+        log.exception('Falha {0}'.format(str(exp)))
 
-    logging.info('App desconectado')
+    log.info('App desconectado')
 
 if __name__ == '__main__':
 
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
-        datefmt='%H:%M:%S',
-    )
+    common_side1.enable_log()
 
     main()

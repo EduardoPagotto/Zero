@@ -25,7 +25,9 @@ from Zero.subsys.GracefulKiller import GracefulKiller
 
 def connection(args, kwargs):
 
-    logging.info('connection stated')
+    log = logging.getLogger('Zero.Con')
+
+    log.info('connection stated')
 
     done = kwargs['done']
     protocol = None
@@ -34,7 +36,7 @@ def connection(args, kwargs):
         protocol.settimeout(10)
         
     except Exception as exp:
-        logging.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
+        log.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
         return
 
     while True:
@@ -46,7 +48,7 @@ def connection(args, kwargs):
                 # comando_dic = json.loads(comando_str)
                 # comando = comando_dic['comando']
 
-                logging.info('Comando Recebido:{0}'.format(msg))
+                log.debug('Comando Recebido:{0}'.format(msg))
 
                 if msg == 'ola 123':
                     protocol.sendString(ProtocolCode.RESULT, 'echo: {0}'.format(msg))
@@ -54,27 +56,30 @@ def connection(args, kwargs):
                     protocol.sendString(ProtocolCode.RESULT, 'teste 2')
 
         except ExceptionZeroErro as exp_erro:
-            logging.debug('recevice Erro: {0}'.format(str(exp_erro)))
+            log.warning('recevice Erro: {0}'.format(str(exp_erro)))
             protocol.sendString(ProtocolCode.RESULT,'recived error from server')
 
         except ExceptionZeroClose as exp_close:
-            logging.debug('receive Close: {0}'.format(str(exp_close)))
+            log.debug('receive Close: {0}'.format(str(exp_close)))
             break
 
         except socket.timeout:
-            logging.debug('connection timeout..')
+            log.debug('connection timeout..')
 
         except Exception as exp:
-            logging.error('error: {0}'.format(str(exp)))
+            log.error('error: {0}'.format(str(exp)))
             break
 
         if done is True:
             protocol.close()
             break
 
-    logging.info('connection finished')
+    log.info('connection finished')
 
 def main():
+
+    log = logging.getLogger('Server')
+    logging.getLogger('Zero').setLevel(logging.INFO)
 
     killer = GracefulKiller()
 
@@ -82,7 +87,8 @@ def main():
     server = transportServer(TransportKind.UNIX_DOMAIN, common_side1.uds_target)
 
     server.settimeout(10)
-    logging.debug('server timeout: %s',str(server.gettimeout()))
+
+    log.debug('server timeout: %s',str(server.gettimeout()))
 
     service = ServerService(server.getSocket(), connection)
 
@@ -91,9 +97,9 @@ def main():
     cycle = 0
     while True:
         
-        logging.info('cycle:%d connections:%d', cycle, len(service.lista))
+        log.info('cycle:%d connections:%d', cycle, len(service.lista))
         cycle += 1
-        time.sleep(1)
+        time.sleep(5)
 
         if killer.kill_now is True:
             server.close()
@@ -104,10 +110,6 @@ def main():
 
 if __name__ == '__main__':
 
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
-        datefmt='%H:%M:%S',
-    )
+    common_side1.enable_log()
 
     main()

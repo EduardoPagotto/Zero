@@ -27,6 +27,7 @@ class Protocol(SocketBase):
         SocketBase.__init__(self)
         self.protocol_versao = "0.0.1"
         self.setSocket(socket)
+        self.log = logging.getLogger('Zero')
 
     def sendProtocol(self, _id, _buffer):
         '''Envia um buffer com comando do Protocolo'''
@@ -88,12 +89,12 @@ class Protocol(SocketBase):
         if idRecebido == ProtocolCode.OPEN:
             msg = binario.decode('UTF-8')
 
-            logging.debug('handshake with client:%s', msg)
+            self.log.debug('handshake with client:%s', msg)
 
             self.sendString(ProtocolCode.RESULT, self.protocol_versao)
 
         elif idRecebido == ProtocolCode.CLOSE:
-            logging.debug('Close recebido:%s', binario.decode('UTF-8'))
+            self.log.debug('Close recebido:%s', binario.decode('UTF-8'))
             self.close()
             raise ExceptionZeroClose('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
 
@@ -119,7 +120,7 @@ class Protocol(SocketBase):
     def sendClose(self, _texto):
         '''Envia o fechamento'''
         if self.isConnected() is True:
-            logging.debug('Close enviado ao cliente: %s', _texto)
+            self.log.info('Close enviado ao cliente: %s', _texto)
             self.sendString(ProtocolCode.CLOSE, _texto)
             self.close()
 
@@ -128,7 +129,7 @@ class Protocol(SocketBase):
         self.sendString(ProtocolCode.OPEN, self.protocol_versao )
         idRecive, msg = self.receiveString()
         if idRecive is ProtocolCode.RESULT:
-            logging.debug('handshake with server: %s', msg)
+            self.log.info('handshake with server: %s', msg)
             return msg
 
     # def sendErro(self, msg):

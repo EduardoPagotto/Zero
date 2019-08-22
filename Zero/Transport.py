@@ -46,7 +46,7 @@ def transportServer(transportKind, server_address):
             soc.getSocket().bind(server_address)
 
     soc.getSocket().listen(5)
-    logging.debug('Bind in: {0}'.format(str(server_address)))  
+    logging.getLogger('Zero').debug('Bind in: {0}'.format(str(server_address)))
 
     return soc
 
@@ -60,7 +60,7 @@ def transportClient(transportKind, server_address):
         soc.setSocket(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
 
     soc.getSocket().connect(server_address)
-    logging.debug('Connected: {0}'.format(str(server_address)))
+    logging.getLogger('Zero').debug('Connected: {0}'.format(str(server_address)))
 
     return soc
 
@@ -70,6 +70,6 @@ def iNetdServer():
     soc = SocketBase()
     soc.setSocket(socket.fromfd(sys.stdin.fileno(), socket.AF_INET, socket.SOCK_STREAM))
     server_address = soc.getSocket().getsockname()
-    logging.debug('Connected in: {0}'.format(str(server_address)))
+    logging.getLogger('Zero').debug('Connected in: {0}'.format(str(server_address)))
 
     return soc
