@@ -18,7 +18,7 @@ sys.path.append('../Zero')
 
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
-from Zero.service_server import ServiceServer
+from Zero.ServerService import ServerService
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     server.settimeout(10)
     logging.debug('server timeout: %s',str(server.gettimeout()))
 
-    service = ServiceServer(server.getSocket(), connection)
+    service = ServerService(server.getSocket(), connection)
 
     service.start()
 

@@ -10,7 +10,7 @@ import socket
 import logging
 import threading
 
-class ServiceServer(object):
+class ServerService(object):
     def __init__(self, socket_server, createServerConnection):
         self.lista = []
         self.done = False
@@ -66,7 +66,7 @@ class ServiceServer(object):
         logging.debug("factory start")
         seq = 0
 
-        while self.done is False:
+        while True:
             try:
                 # accept connections from outside
                 clientsocket, address = sock.accept()
@@ -91,6 +91,9 @@ class ServiceServer(object):
                 logging.debug('server to..')
 
             except Exception as exp:
-                logging.error('Fail:%s', str(exp))
+                if self.done is False:
+                    logging.error('Fail:%s', str(exp))
+                else:
+                    break
 
         logging.debug("factory stop")
