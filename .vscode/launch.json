@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Test Client",
+            "name": "Protocolo Client",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/test/client_side1.py",
@@ -14,10 +14,18 @@
 
         },
         {
-            "name": "Test Server",
+            "name": "Protocolo Server",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/test/server_side1.py",
+            "console": "integratedTerminal",
+            "args": []
+        },
+        {
+            "name": "RPC Server",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test/server_rpc.py",
             "console": "integratedTerminal",
             "args": []
         }
