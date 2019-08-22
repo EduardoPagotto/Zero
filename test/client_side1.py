@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190821
+Update on 20190822
 @author: Eduardo Pagotto
 '''
 
@@ -25,7 +25,8 @@ if __name__ == '__main__':
 
     logging.basicConfig(
         level=logging.DEBUG,
-        format='%(levelname)-8s %(threadName)-10s %(message)s',
+        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
+        datefmt='%H:%M:%S',
     )
 
     try:

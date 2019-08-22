@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190821
+Update on 20190822
 @author: Eduardo Pagotto
 '''
 
@@ -18,72 +18,16 @@ sys.path.append('../Zero')
 
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
+from Zero.service_server import ServiceServer
+
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
 
-def garbageT(lista):
-    '''Remove connections deads'''
-
-    logging.debug("garbage connection begin")
-
-    totais = 1
-    while True:
-        lista_remover = []
-        for thread in lista:
-            if thread.isAlive() is False:
-                logging.warning('thread %s removed, total: %d', thread.getName(), totais)
-                totais += 1
-                thread.join()
-                lista_remover.append(thread)
-
-        for thread in lista_remover:
-            lista.remove(thread)
-
-        if len(lista_remover) is not 0:
-            lista_remover.clear()
-
-        time.sleep(1)
-
-    logging.debug("garbage connection finished after %d removed", totais)
-
-def factoryServerConn(sock, lista_comm, func_new_conection):
-
-    logging.debug("factory server connection start")
-    seq = 0
-
-    while True:
-        try:
-            logging.debug("factory server new connection")
-
-            # accept connections from outside
-            clientsocket, address = sock.accept()
-
-            comm_param={}
-            comm_param['clientsocket'] = clientsocket
-            comm_param['addr']=  address
-
-            logging.debug("connected with :%s", str(address))
-
-            t = threading.Thread(target=func_new_conection, name='conection_{0}'.format(seq) ,args=(seq, comm_param))
-            t.start()
-
-            lista_comm.append(t)
-
-            seq += 1
-
-        except socket.timeout:
-            logging.debug('server to..')
-
-        except Exception as exp:
-            logging.exception('Fail:%s', str(exp))
-            break
-
-    logging.debug("factory server connection finished")
-
-def createServerConnection(args, kwargs):
+def connection(args, kwargs):
 
     logging.info('connection stated')
 
+    done = kwargs['done']
     protocol = None
     try:
         protocol = Protocol(kwargs['clientsocket'])
@@ -124,6 +68,10 @@ def createServerConnection(args, kwargs):
             logging.error('error: {0}'.format(str(exp)))
             break
 
+        if done is True:
+            protocol.close()
+            break
+
     logging.info('connection finished')
 
 
@@ -131,36 +79,30 @@ if __name__ == '__main__':
 
     logging.basicConfig(
         level=logging.DEBUG,
-        format='(%(threadName)-10s) %(message)s',
+        format='%(asctime)s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
+        datefmt='%H:%M:%S',
     )
 
-    #killer = GracefulKiller()
-    lista = []
+    killer = GracefulKiller()
 
     server = UnixDomainServer(common_side1.uds_target)
     server.settimeout(10)
     logging.debug('server timeout: %s',str(server.gettimeout()))
 
-    t_server = threading.Thread(target=factoryServerConn, name='factory_conn', args=(server.getSocket(), lista, createServerConnection))
-    t_server.start()
+    service = ServiceServer(server.getSocket(), connection)
 
-    t_garbage = threading.Thread(target=garbageT, name='garbage_conn', args=(lista,))
-    t_garbage.start()
+    service.start()
 
     cycle = 0
     while True:
         
-        logging.info('cycle:%d connections:%d', cycle, len(lista))
+        logging.info('cycle:%d connections:%d', cycle, len(service.lista))
         cycle += 1
         time.sleep(1)
 
-        # if killer.kill_now is True:
-        #     server.close()
-        #     break
+        if killer.kill_now is True:
+            server.close()
+            service.stop()  
+            break
 
-    logging.info('server finifing.....')
-
-    t_server.join()
-    t_garbage.join()
-
-    logging.info('server finished')
+    service.join()
