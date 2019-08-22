@@ -31,7 +31,7 @@ if __name__ == '__main__':
     try:
         protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
        
-        logging.debug(protocol.sendHandShake())
+        logging.debug(protocol.handShake())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
         id, msg = protocol.receiveString()

@@ -15,28 +15,23 @@ class SocketBase(object):
         self._sock = None
 
     def getSocket(self):
-        '''Retorna o socket atual'''
         return self._sock
 
     def setSocket(self, socketIn):
-        '''Vincula um socket ja criado'''
         self._sock = socketIn
 
     def settimeout(self, time_out=300):
-        '''Define o To da conexao para sistemas bloquantes'''
         self._sock.settimeout(time_out)
 
     def gettimeout(self):
         return self._sock.gettimeout()
 
     def close(self):
-        '''Encerra conexa e invalida socket'''
         if (self._sock is not None):
             self._sock.close()
             self._sock = None
 
     def isConnected(self):
-        '''True se conectado'''
         if (self._sock is not None):
             return True 
         

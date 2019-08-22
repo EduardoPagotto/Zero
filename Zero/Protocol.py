@@ -31,13 +31,6 @@ class Protocol(SocketBase):
         self.protocol_versao = "0.0.1"
         self.setSocket(socket)
 
-    def close(self):
-        ''''Encerra a conexao local'''
-        try:
-            super().close()
-        except:
-            raise Exception('Falha no Close local')
-
     def sendProtocol(self, _id, _buffer):
         '''Envia um buffer com comando do Protocolo'''
         buffer_final = []
@@ -98,7 +91,7 @@ class Protocol(SocketBase):
         if idRecebido == ProtocolCode.HANDSHAKE:
             msg = binario.decode('UTF-8')
 
-            logging.debug('HandShake, cliente:%s', msg)
+            logging.debug('handshake with client:%s', msg)
 
             self.sendString(ProtocolCode.OK, self.protocol_versao)
 
@@ -126,10 +119,6 @@ class Protocol(SocketBase):
 
         return buffer
 
-    def sendErro(self, msg):
-        '''Envia uma MSG de erro ao peer'''
-        self.sendString(ProtocolCode.ERRO, msg)
-
     def sendClose(self, _texto):
         '''Envia o fechamento'''
         if self.isConnected() is True:
@@ -137,68 +126,73 @@ class Protocol(SocketBase):
             self.sendString(ProtocolCode.CLOSE, _texto)
             self.close()
 
-    def sendHandShake(self):
+    def handShake(self):
         '''Envia Hand automatico'''
         self.sendString(ProtocolCode.HANDSHAKE, self.protocol_versao )
         idRecive, msg = self.receiveString()
         if idRecive is ProtocolCode.OK:
-            logging.debug('Conexao Servidor: %s', msg)
+            logging.debug('handshake with server: %s', msg)
+            return msg
 
-    def sendFile(self, path_file_name):
-        '''Envia arquivo ao ponto'''
-        fileContent = None
-        tamanho_arquivo = 0
-        try:
-            with open(path_file_name, mode='rb') as file:
-                fileContent = file.read()
-                tamanho_arquivo = len(fileContent)
-        except IOError as e:
-            self.sendErro('Falha IO na leitura do arquivo:{0}'.format(str(e)))
-            raise ExceptionZero('Protocolo Send File:{0}'.format(str(e)))
-        except:
-            msg_erro = 'Falha critica no arquivo:{0}'.format(str(path_file_name))
-            self.sendErro(msg_erro)
-            raise ExceptionZero('Protocolo Send File: {0} '.format(msg_erro))
+    # def sendErro(self, msg):
+    #     '''Envia uma MSG de erro ao peer'''
+    #     self.sendString(ProtocolCode.ERRO, msg)
 
-        self.sendProtocol(ProtocolCode.FILE, fileContent)
-        idRecebido, msg = self.receiveProtocol()
+    # def sendFile(self, path_file_name):
+    #     '''Envia arquivo ao ponto'''
+    #     fileContent = None
+    #     tamanho_arquivo = 0
+    #     try:
+    #         with open(path_file_name, mode='rb') as file:
+    #             fileContent = file.read()
+    #             tamanho_arquivo = len(fileContent)
+    #     except IOError as e:
+    #         self.sendErro('Falha IO na leitura do arquivo:{0}'.format(str(e)))
+    #         raise ExceptionZero('Protocolo Send File:{0}'.format(str(e)))
+    #     except:
+    #         msg_erro = 'Falha critica no arquivo:{0}'.format(str(path_file_name))
+    #         self.sendErro(msg_erro)
+    #         raise ExceptionZero('Protocolo Send File: {0} '.format(msg_erro))
 
-        if idRecebido is not ProtocolCode.OK or msg != 'OK':
-            raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
+    #     self.sendProtocol(ProtocolCode.FILE, fileContent)
+    #     idRecebido, msg = self.receiveProtocol()
 
-        return tamanho_arquivo
+    #     if idRecebido is not ProtocolCode.OK or msg != 'OK':
+    #         raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
 
-    def receiveFile(self, path_file_name):
-        '''
-        Recebe um arquivo no protocolo com nome passado
-        '''
-        id, buffer_arquivo = self.receiveProtocol()
+    #     return tamanho_arquivo
 
-        path, file_name = os.path.split(path_file_name)
-        try:
-            if not os.path.exists(path):
-                os.makedirs(path)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
-                self.sendErro(msg_erro)
-                raise ExceptionZero(msg_erro)
+    # def receiveFile(self, path_file_name):
+    #     '''
+    #     Recebe um arquivo no protocolo com nome passado
+    #     '''
+    #     id, buffer_arquivo = self.receiveProtocol()
 
-        if id == ProtocolCode.FILE:
-            try:
-                with open(path_file_name, mode='wb') as file:
-                    file.write(bytes(int(x, 0) for x in buffer_arquivo))
+    #     path, file_name = os.path.split(path_file_name)
+    #     try:
+    #         if not os.path.exists(path):
+    #             os.makedirs(path)
+    #     except OSError as e:
+    #         if e.errno != errno.EEXIST:
+    #             msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
+    #             self.sendErro(msg_erro)
+    #             raise ExceptionZero(msg_erro)
 
-                    self.sendString(ProtocolCode.OK, 'OK')
+    #     if id == ProtocolCode.FILE:
+    #         try:
+    #             with open(path_file_name, mode='wb') as file:
+    #                 file.write(bytes(int(x, 0) for x in buffer_arquivo))
 
-                    return len(buffer_arquivo)
+    #                 self.sendString(ProtocolCode.OK, 'OK')
 
-            except Exception as exp:
-                msg_erro = 'Erro ao gravar arquivo:{0} Erro:{1}'.format(path_file_name, str(exp))
-                self.sendErro(msg_erro)
-                raise Exception(msg_erro)
+    #                 return len(buffer_arquivo)
 
-        else:
-            msg_erro = 'Nao recebi o arquivo:{0} Erro ID:{1}'.format(path_file_name, str(id))
-            self.sendErro(msg_erro)
-            raise Exception(msg_erro)
+    #         except Exception as exp:
+    #             msg_erro = 'Erro ao gravar arquivo:{0} Erro:{1}'.format(path_file_name, str(exp))
+    #             self.sendErro(msg_erro)
+    #             raise Exception(msg_erro)
+
+    #     else:
+    #         msg_erro = 'Nao recebi o arquivo:{0} Erro ID:{1}'.format(path_file_name, str(id))
+    #         self.sendErro(msg_erro)
+    #         raise Exception(msg_erro)

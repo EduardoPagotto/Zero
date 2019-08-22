@@ -16,36 +16,73 @@ import common_side1
 
 sys.path.append('../Zero')
 
-#from Zero.SocketBase import SocketBase
 from Zero.UnixDomainServer import UnixDomainServer
 from Zero.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
 
-def remove_conexoes_finalizadas(servidor_ativo):
-    '''Remove conxoes ativas da memoria'''
-    lista = servidor_ativo.lista_thread_online
+def garbageT(lista):
+    '''Remove connections deads'''
 
-    #logging.warning('Threads ONLINE: %d', len(lista))
+    logging.debug("garbage connection begin")
 
-    lista_remover = []
+    totais = 1
+    while True:
+        lista_remover = []
+        for thread in lista:
+            if thread.isAlive() is False:
+                logging.warning('thread %s removed, total: %d', thread.getName(), totais)
+                totais += 1
+                thread.join()
+                lista_remover.append(thread)
 
-    for thread in lista:
-        if thread.isAlive() is False:
+        for thread in lista_remover:
+            lista.remove(thread)
 
-            logging.warning('Thread %s morta id ', thread.getName())
+        if len(lista_remover) is not 0:
+            lista_remover.clear()
 
-            thread.join()
-            lista_remover.append(thread)
+        time.sleep(1)
 
-    for thread in lista_remover:
-        lista.remove(thread)
+    logging.debug("garbage connection finished after %d removed", totais)
 
-    if len(lista_remover) is not 0:
-        lista_remover.clear()
+def factoryServerConn(sock, lista_comm, func_new_conection):
 
+    logging.debug("factory server connection start")
+    seq = 0
+
+    while True:
+        try:
+            logging.debug("factory server new connection")
+
+            # accept connections from outside
+            clientsocket, address = sock.accept()
+
+            comm_param={}
+            comm_param['clientsocket'] = clientsocket
+            comm_param['addr']=  address
+
+            logging.debug("connected with :%s", str(address))
+
+            t = threading.Thread(target=func_new_conection, name='conection_{0}'.format(seq) ,args=(seq, comm_param))
+            t.start()
+
+            lista_comm.append(t)
+
+            seq += 1
+
+        except socket.timeout:
+            logging.debug('server to..')
+
+        except Exception as exp:
+            logging.exception('Fail:%s', str(exp))
+            break
+
+    logging.debug("factory server connection finished")
 
 def createServerConnection(args, kwargs):
+
+    logging.info('connection stated')
 
     protocol = None
     try:
@@ -53,7 +90,7 @@ def createServerConnection(args, kwargs):
         protocol.settimeout(10)
         
     except Exception as exp:
-        logging.exception('Falha na parametrizacao da conexao: {0}'.format(str(exp)))
+        logging.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
         return
 
     while True:
@@ -68,26 +105,26 @@ def createServerConnection(args, kwargs):
                 logging.info('Comando Recebido:{0}'.format(msg))
 
                 if msg == 'ola 123':
-                    protocol.sendString(ProtocolCode.OK, 'Echo: {0}'.format(msg))
+                    protocol.sendString(ProtocolCode.OK, 'echo: {0}'.format(msg))
                 else:
-                    protocol.sendString(ProtocolCode.OK, 'Comando 2')
+                    protocol.sendString(ProtocolCode.OK, 'teste 2')
 
         except ExceptionZeroErro as exp_erro:
-            logging.debug('Recevice Erro: {0}'.format(str(exp_erro)))
-            protocol.sendString(ProtocolCode.OK,'Erro recebido no servidor')
+            logging.debug('recevice Erro: {0}'.format(str(exp_erro)))
+            protocol.sendString(ProtocolCode.OK,'recived error from server')
 
         except ExceptionZeroClose as exp_close:
-            logging.debug('Receive Close: {0}'.format(str(exp_close)))
+            logging.debug('receive Close: {0}'.format(str(exp_close)))
             break
 
         except socket.timeout:
-            logging.debug('Conexao to..')
+            logging.debug('connection timeout..')
 
         except Exception as exp:
-            logging.error('Erro identificado: {0}'.format(str(exp)))
+            logging.error('error: {0}'.format(str(exp)))
             break
 
-    logging.info('Conexao encerrada')
+    logging.info('connection finished')
 
 
 if __name__ == '__main__':
@@ -98,29 +135,32 @@ if __name__ == '__main__':
     )
 
     #killer = GracefulKiller()
+    lista = []
 
-    servidor = UnixDomainServer(common_side1.uds_target)
-    t_server = threading.Thread(target=servidor.loop, args=(createServerConnection,))
+    server = UnixDomainServer(common_side1.uds_target)
+    server.settimeout(10)
+    logging.debug('server timeout: %s',str(server.gettimeout()))
+
+    t_server = threading.Thread(target=factoryServerConn, name='factory_conn', args=(server.getSocket(), lista, createServerConnection))
     t_server.start()
 
-    servidor.settimeout(10)
+    t_garbage = threading.Thread(target=garbageT, name='garbage_conn', args=(lista,))
+    t_garbage.start()
 
-    logging.debug('Servidor to: %s',str(servidor.gettimeout()))
-
-    ciclo = 0
+    cycle = 0
     while True:
         
-        logging.info('Ciclo:%d Conexoes:%d', ciclo, len(servidor.lista_thread_online))
-        remove_conexoes_finalizadas(servidor)
-        ciclo += 1
+        logging.info('cycle:%d connections:%d', cycle, len(lista))
+        cycle += 1
         time.sleep(1)
 
         # if killer.kill_now is True:
-        #     servidor.close()
+        #     server.close()
         #     break
 
-    logging.info('Servidor finalizando.....')
+    logging.info('server finifing.....')
 
     t_server.join()
+    t_garbage.join()
 
-    logging.info('Servidor encerrado')
+    logging.info('server finished')
