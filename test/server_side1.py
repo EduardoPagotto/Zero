@@ -49,13 +49,13 @@ def connection(args, kwargs):
                 logging.info('Comando Recebido:{0}'.format(msg))
 
                 if msg == 'ola 123':
-                    protocol.sendString(ProtocolCode.OK, 'echo: {0}'.format(msg))
+                    protocol.sendString(ProtocolCode.RESULT, 'echo: {0}'.format(msg))
                 else:
-                    protocol.sendString(ProtocolCode.OK, 'teste 2')
+                    protocol.sendString(ProtocolCode.RESULT, 'teste 2')
 
         except ExceptionZeroErro as exp_erro:
             logging.debug('recevice Erro: {0}'.format(str(exp_erro)))
-            protocol.sendString(ProtocolCode.OK,'recived error from server')
+            protocol.sendString(ProtocolCode.RESULT,'recived error from server')
 
         except ExceptionZeroClose as exp_close:
             logging.debug('receive Close: {0}'.format(str(exp_close)))

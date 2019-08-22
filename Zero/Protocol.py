@@ -18,11 +18,8 @@ class ProtocolCode(Enum):
     '''Comandos Enviados pelo Protocolo'''
     OPEN = 1
     CLOSE = 2
-    HANDSHAKE = 3
-    COMMAND = 4
-    OK = 5
-    RESULT = 6
-    FILE = 7
+    COMMAND = 3
+    RESULT = 4
     ERRO = 255
 
 class Protocol(SocketBase):
@@ -88,12 +85,12 @@ class Protocol(SocketBase):
         if len(binario) != tamanho_buffer:
             raise ExceptionZero('Protocol Receive size buffer error')
 
-        if idRecebido == ProtocolCode.HANDSHAKE:
+        if idRecebido == ProtocolCode.OPEN:
             msg = binario.decode('UTF-8')
 
             logging.debug('handshake with client:%s', msg)
 
-            self.sendString(ProtocolCode.OK, self.protocol_versao)
+            self.sendString(ProtocolCode.RESULT, self.protocol_versao)
 
         elif idRecebido == ProtocolCode.CLOSE:
             logging.debug('Close recebido:%s', binario.decode('UTF-8'))
@@ -128,9 +125,9 @@ class Protocol(SocketBase):
 
     def handShake(self):
         '''Envia Hand automatico'''
-        self.sendString(ProtocolCode.HANDSHAKE, self.protocol_versao )
+        self.sendString(ProtocolCode.OPEN, self.protocol_versao )
         idRecive, msg = self.receiveString()
-        if idRecive is ProtocolCode.OK:
+        if idRecive is ProtocolCode.RESULT:
             logging.debug('handshake with server: %s', msg)
             return msg
 
