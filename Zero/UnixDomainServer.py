@@ -8,7 +8,6 @@ import sys
 import os
 import socket
 import logging
-import threading
 
 from Zero.SocketBase import SocketBase
 
@@ -55,7 +54,3 @@ class INetdServer(SocketBase):
         server_address = self.getSocket().getsockname()
 
         logging.debug('Connected in: {0}'.format(str(server_address)))
-
-        
-
-

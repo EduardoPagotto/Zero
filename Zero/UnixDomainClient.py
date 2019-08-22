@@ -4,10 +4,8 @@ Update on 20190822
 @author: Eduardo Pagotto
 '''
 
-import os
 import socket
 import logging
-import threading
 
 from Zero.SocketBase import SocketBase
 
