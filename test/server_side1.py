@@ -16,8 +16,8 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.Protocol import Protocol, ProtocolCode
-from Zero.Transport import transportServer, TransportKind
+from Zero.transport.Protocol import Protocol, ProtocolCode
+from Zero.transport.Transport import transportServer, TransportKind
 from Zero.ServerService import ServerService
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro

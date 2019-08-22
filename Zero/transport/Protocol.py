@@ -11,7 +11,7 @@ import zlib
 import logging
 
 from enum import Enum
-from Zero.SocketBase import SocketBase
+from Zero.transport.SocketBase import SocketBase
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class ProtocolCode(Enum):

@@ -10,7 +10,7 @@ import socket
 import logging
 
 from enum import Enum
-from Zero.SocketBase import SocketBase
+from Zero.transport.SocketBase import SocketBase
 
 class TransportKind(Enum):
     UNIX_DOMAIN = 0,
