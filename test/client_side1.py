@@ -16,7 +16,7 @@ import common_side1
 sys.path.append('../Zero')
 
 from Zero.SocketBase import SocketBase
-from Zero.UnixDomainClient import UnixDomainClient
+from Zero.UnixDomainClient import UnixDomainClient, NetworkClient
 from Zero.Protocol import Protocol, ProtocolCode
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
@@ -30,7 +30,8 @@ if __name__ == '__main__':
     )
 
     try:
-        protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
+        protocol = Protocol(NetworkClient(common_side1.ip_target).getSocket())
+        #protocol = Protocol(UnixDomainClient(common_side1.uds_target).getSocket())
        
         logging.debug(protocol.handShake())
 

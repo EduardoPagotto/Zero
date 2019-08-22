@@ -16,7 +16,7 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.UnixDomainServer import UnixDomainServer
+from Zero.UnixDomainServer import UnixDomainServer, NetworkServer
 from Zero.Protocol import Protocol, ProtocolCode
 from Zero.ServerService import ServerService
 
@@ -85,7 +85,9 @@ if __name__ == '__main__':
 
     killer = GracefulKiller()
 
-    server = UnixDomainServer(common_side1.uds_target)
+    #server = UnixDomainServer(common_side1.uds_target)
+    server = NetworkServer(common_side1.ip_target)
+
     server.settimeout(10)
     logging.debug('server timeout: %s',str(server.gettimeout()))
 
