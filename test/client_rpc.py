@@ -24,15 +24,12 @@ def main():
         
         ponta = bus.getObject(rpc.BUS_PATH)
 
+        valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
+        logging.debug('RPC retorno: %s', valor)
+        
+        # valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
+        # logging.debug('RPC retorno: %s', valor)
 
-
-
-        log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
-        time.sleep(10)
-        log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
-        time.sleep(10)
-        log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
-        time.sleep(10)
     
     except Exception as exp:
         log.exception('Falha {0}'.format(str(exp)))
