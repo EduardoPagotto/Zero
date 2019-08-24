@@ -36,6 +36,14 @@
             "program": "${workspaceFolder}/test/client_rpc.py",
             "console": "integratedTerminal",
             "args": []
-        }
+        },
+        {
+            "name": "Decorador",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/decoradores.py",
+            "console": "integratedTerminal",
+            "args": []
+        }   
     ]
 }

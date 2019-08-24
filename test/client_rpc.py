@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190823
 @author: Eduardo Pagotto
 '''
 
 import sys
-import os
 import time
-import threading
 import logging
 
-import common_side1
+import common_rpc as rpc
 
 sys.path.append('../Zero')
 
@@ -24,14 +22,15 @@ def main():
         log = logging.getLogger('Client')
         bus = ServiceBus()
         
-        ponta = bus.getObject(common_side1.uds_target)
+        ponta = bus.getObject(rpc.BUS_PATH)
+
+
+
 
         log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
         time.sleep(10)
-        
         log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
         time.sleep(10)
-        
         log.info('Recebido: %s', ponta.exchange('ZZZZ teste 123....'))
         time.sleep(10)
     
@@ -43,6 +42,10 @@ def main():
 
 if __name__ == '__main__':
 
-    common_side1.enable_log()
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s %(name)-12s %(levelname)-8s %(threadName)-16s %(funcName)-20s %(message)s',
+        datefmt='%H:%M:%S',
+    )
 
     main()
