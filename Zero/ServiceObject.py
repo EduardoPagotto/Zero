@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190824
 @author: Eduardo Pagotto
 '''
 
@@ -15,7 +15,8 @@ import socket
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.transport.Transport import transportServer, TransportKind
 from Zero.ServiceServer import ServiceServer
-from Zero.ConObject import connection
+from Zero.RPC_Responser import RPC_Responser
+
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
@@ -29,7 +30,7 @@ class ServiceObject(object):
         self.server = transportServer(TransportKind.UNIX_DOMAIN, object_path)
         self.server.settimeout(10)
     
-        self.service = ServiceServer(self.server.getSocket(), connection)
+        self.service = ServiceServer(self.server.getSocket(), RPC_Responser()) # servicos diferentes do RPC trocar esta classe
         self.service.start()
 
         self.t_guardian = threading.Thread(target=self.__guardian, name='guardian_conn')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190824
 @author: Eduardo Pagotto
 '''
 
@@ -11,11 +11,11 @@ import logging
 import threading
 
 class ServiceServer(object):
-    def __init__(self, socket_server, createServerConnection):
+    def __init__(self, socket_server, serverConnection):
         self.lista = []
         self.done = False
         self.t_garbage = threading.Thread(target=self.garbageCon, name='garbage_conn')
-        self.t_server = threading.Thread(target=self.factoryCon, name='factory_conn', args=(socket_server, createServerConnection))
+        self.t_server = threading.Thread(target=self.builderConnection, name='factory_conn', args=(socket_server, serverConnection))
         self.log = logging.getLogger('Zero')
 
     def start(self):
@@ -62,7 +62,7 @@ class ServiceServer(object):
 
         self.log.info("garbage connection stop after %d removed", totais)
 
-    def factoryCon(self, sock, func_new_conection):
+    def builderConnection(self, sock, serverConnection):
 
         self.log.info("factory start")
         seq = 0
@@ -81,7 +81,7 @@ class ServiceServer(object):
 
                 self.log.info("connected with :%s", str(address))
 
-                t = threading.Thread(target=func_new_conection, name='conection_{0}'.format(seq) ,args=(seq, comm_param))
+                t = threading.Thread(target=serverConnection, name='conection_{0}'.format(seq) ,args=(seq, comm_param))
                 t.start()
 
                 self.lista.append(t)
