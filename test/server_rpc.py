@@ -20,8 +20,14 @@ class ServerRPC(ServiceObject):
     def __init__(self):
         device_bus = ''
         self.vivo = True
+        self.log = logging.getLogger('Server')
 
-        super().__init__(device_bus, rpc.BUS_PATH)
+        super().__init__(device_bus, rpc.BUS_PATH, self)
+
+
+    def teste_targuet(self):
+        self.log.debug('ESTOU CHEGANDO JEANY!!!!')
+
 
     # ref: https://stackoverflow.com/questions/44819707/call-a-base-class-method-using-a-derived-class-object-outside-the-derived-class
     @ServiceObject.rpc_call(rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))

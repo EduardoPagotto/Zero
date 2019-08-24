@@ -11,8 +11,9 @@ from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class RPC_Responser(object):
-    def __init__(self):
+    def __init__(self, target):
         self.log = logging.getLogger('Zero.Con')
+        self.target = target
 
     def __call__(self, *args, **kargs):
 
@@ -34,6 +35,8 @@ class RPC_Responser(object):
             try:
                 idRec, msg = protocol.receiveString()
                 if idRec is ProtocolCode.COMMAND:
+
+                    self.target.teste_targuet()
 
                     # comando_str = msg.replace("'", "\"")
                     # comando_dic = json.loads(comando_str)

@@ -22,15 +22,16 @@ from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, Excepti
 from Zero.subsys.GracefulKiller import GracefulKiller
 
 class ServiceObject(object):
-    def __init__(self, device_bus,  object_path):
+    def __init__(self, device_bus,  object_path, target):
         
         self.done = False
+
         self.log = logging.getLogger('Zero')
 
         self.server = transportServer(TransportKind.UNIX_DOMAIN, object_path)
         self.server.settimeout(10)
     
-        self.service = ServiceServer(self.server.getSocket(), RPC_Responser()) # servicos diferentes do RPC trocar esta classe
+        self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe
         self.service.start()
 
         self.t_guardian = threading.Thread(target=self.__guardian, name='guardian_conn')
