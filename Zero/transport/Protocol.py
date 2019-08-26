@@ -1,6 +1,6 @@
 '''
 Created on 20170119
-Update on 20190821
+Update on 20190826
 @author: Eduardo Pagotto
 '''
 
@@ -131,6 +131,18 @@ class Protocol(SocketBase):
         if idRecive is ProtocolCode.RESULT:
             self.log.info('handshake with server: %s', msg)
             return msg
+
+    def exchange(self, input):
+
+        self.log.debug('send id:{0} msg:{1}'.format(ProtocolCode.COMMAND, input))
+        self.sendString(ProtocolCode.COMMAND, input)
+        id, msg = self.receiveString()
+        self.log.debug('received id:{0} msg:{1}'.format(id, msg))
+        
+        if id == ProtocolCode.RESULT:
+            return msg
+
+        raise ExceptionZero('Resposta invalida: (%d : %s)', id, msg)
 
     # def sendErro(self, msg):
     #     '''Envia uma MSG de erro ao peer'''

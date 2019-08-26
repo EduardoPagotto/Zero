@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190823
+Update on 20190826
 @author: Eduardo Pagotto
 '''
 
@@ -25,6 +25,9 @@ def main():
         ponta = bus.getObject(rpc.BUS_PATH)
 
         valor = ponta.setNome('Jose')
+        logging.debug('RPC retorno: %s', valor)
+
+        valor = ponta.getNome()
         logging.debug('RPC retorno: %s', valor)
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
