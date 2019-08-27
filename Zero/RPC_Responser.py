@@ -41,7 +41,7 @@ class RPC_Responser(object):
 
                     self.log.debug('method:{0}'.format(msg))
                     msg = self.rpc.exec(msg)
-                    logging.debug('result: %s', msg)
+                    self.log.debug('result: %s', msg)
                     protocol.sendString(ProtocolCode.RESULT, msg)
 
             except ExceptionZeroErro as exp_erro:

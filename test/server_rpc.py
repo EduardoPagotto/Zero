@@ -30,7 +30,6 @@ class ServerRPC(ServiceObject):
     def teste_targuet(self):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
 
-    # ref: https://stackoverflow.com/questions/44819707/call-a-base-class-method-using-a-derived-class-object-outside-the-derived-class
     @ServiceObject.rpc_call(rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))
     def is_alive_bitch(self):
         return self.vivo  

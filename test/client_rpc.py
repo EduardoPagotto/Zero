@@ -25,13 +25,15 @@ def main():
         ponta = bus.getObject(rpc.BUS_PATH)
 
         valor = ponta.setNome('Jose')
-        logging.debug('RPC retorno: %s', valor)
+        log.debug('RPC retorno: %s', valor)
 
         valor = ponta.getNome()
-        logging.debug('RPC retorno: %s', valor)
+        log.debug('RPC retorno: %s', valor)
+
+        log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
-        #logging.debug('RPC retorno: %s', valor)
+        #log.debug('RPC retorno: %s', valor)
         
     except Exception as exp:
         log.exception('Falha {0}'.format(str(exp)))

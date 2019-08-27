@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190824
+Update on 20190826
 @author: Eduardo Pagotto
 '''
 
@@ -47,10 +47,10 @@ class ServiceObject(object):
     def join(self):
         self.service.join()
         self.t_guardian.join()
-        self.log.info('service server down')
+        self.log.info('service object down')
 
     def stop(self):
-        self.log.info('service server shutting down.....')
+        self.log.info('service object shutting down.....')
         self.done = True
 
     def __guardian(self):

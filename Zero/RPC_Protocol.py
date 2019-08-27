@@ -62,7 +62,7 @@ class RPC_ProtocolResult(RPC_Protocol):
 
         try:
             if len(dados['params']) > 0:
-                val = getattr(self.target, metodo)(dados['params'])
+                val = getattr(self.target, metodo)(*dados['params'])
             else:
                 val = getattr(self.target, metodo)()
 
