@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20190826
+Update on 20190902
 @author: Eduardo Pagotto
 '''
 
@@ -20,7 +20,7 @@ class RPC_Responser(object):
 
     def __call__(self, *args, **kargs):
 
-        self.log.info('RPC Response stated num: %d', args[0])
+        self.log.info('RPC Response start num: %d', args[0])
 
         dados_conexao = args[1]
 
@@ -39,9 +39,9 @@ class RPC_Responser(object):
                 idRec, msg = protocol.receiveString()
                 if idRec is ProtocolCode.COMMAND:
 
-                    self.log.debug('method:{0}'.format(msg))
+                    #self.log.debug('method:{0}'.format(msg))
                     msg = self.rpc.exec(msg)
-                    self.log.debug('result: %s', msg)
+                    #self.log.debug('result: %s', msg)
                     protocol.sendString(ProtocolCode.RESULT, msg)
 
             except ExceptionZeroErro as exp_erro:

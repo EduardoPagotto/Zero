@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190826
+Update on 20190902
 @author: Eduardo Pagotto
 '''
 
@@ -40,6 +40,9 @@ class ServiceObject(object):
     def rpc_call(identicador, input=None, output=None):
         def decorator(func):
             def wrapper(self, *args, **kwargs):
+
+                self.log.debug('RPC identificador:%s In:%s Out:%s args:%s, kwargs:%s', identicador, str(input), str(output), str(args), str(kwargs))
+
                 return func(self, *args, **kwargs)
             return wrapper
         return decorator

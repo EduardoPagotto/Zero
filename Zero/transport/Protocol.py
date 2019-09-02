@@ -1,6 +1,6 @@
 '''
 Created on 20170119
-Update on 20190826
+Update on 20190902
 @author: Eduardo Pagotto
 '''
 
@@ -134,11 +134,8 @@ class Protocol(SocketBase):
 
     def exchange(self, input):
 
-        self.log.debug('send id:{0} msg:{1}'.format(ProtocolCode.COMMAND, input))
         self.sendString(ProtocolCode.COMMAND, input)
         id, msg = self.receiveString()
-        self.log.debug('received id:{0} msg:{1}'.format(id, msg))
-        
         if id == ProtocolCode.RESULT:
             return msg
 

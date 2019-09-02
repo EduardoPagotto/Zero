@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190824
+Update on 20190902
 @author: Eduardo Pagotto
 '''
 
@@ -72,7 +72,7 @@ class ServiceServer(object):
                 # accept connections from outside
                 clientsocket, address = sock.accept()
 
-                self.log.debug("factory server new connection")
+                #self.log.debug("factory server new connection")
                 
                 comm_param={}
                 comm_param['clientsocket'] = clientsocket
@@ -89,7 +89,7 @@ class ServiceServer(object):
                 seq += 1
 
             except socket.timeout:
-                self.log.debug('server to..')
+                pass
 
             except Exception as exp:
                 if self.done is False:
