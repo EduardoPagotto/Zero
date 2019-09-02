@@ -4,21 +4,67 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "command": "python",
+            "label": "Empacotar",
+            "command": "python3",
+            "args": [
+                "setup.py",
+                "sdist",
+                "bdist_wheel"
+            ],
+            "type": "shell",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "args": [
-                "setup.py",
-                "install"
-            ],
             "presentation": {
-                "echo": true,
-                "panel": "shared",
+                "reveal": "always",
+                "panel": "new",
                 "focus": true
-            }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Deploy",
+            "command": "twine",
+            "args": [
+                "upload",
+                "--verbose",
+                "-r",
+                "local",
+                "dist/*.gz"
+            ],
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean",
+            "command": "rm",
+            "args": [
+                "-rf",
+                "build",
+                "dist",
+                "*.egg-info"
+            ],
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "focus": true
+            },
+            "problemMatcher": []
         },
         {
             "label": "Run File",
