@@ -41,25 +41,6 @@ class ServerRPC(ServiceObject):
         dicionario['novo'] = 'ola'
         return dicionario
 
-def main():
-
-    log = logging.getLogger('Server')
-    #logging.getLogger('Zero').setLevel(logging.INFO)
-    try:
-
-        killer = GracefulKiller()
-        server = ServerRPC()
-        while True:
-            time.sleep(1)
-            if killer.kill_now is True:
-                server.stop()  
-                break
-
-        server.join()
-
-    except Exception as exp:
-        log.Exception('falha %s', str(exp))
-
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -68,4 +49,5 @@ if __name__ == '__main__':
         datefmt='%H:%M:%S',
     )
 
-    main()
+    server = ServerRPC()
+    server.loop_blocked()

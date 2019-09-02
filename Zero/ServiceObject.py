@@ -68,3 +68,18 @@ class ServiceObject(object):
                 self.server.close()
                 self.service.stop()  
                 break
+
+
+    def loop_blocked(self):
+        try:
+            killer = GracefulKiller()
+            while True:
+                time.sleep(1)
+                if killer.kill_now is True:
+                    self.stop()  
+                    break
+
+            self.join()
+
+        except Exception as exp:
+            self.log.Exception('Falha Critica: %s', str(exp))
