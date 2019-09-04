@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190902
+Update on 20190904
 @author: Eduardo Pagotto
 '''
 
@@ -13,8 +13,7 @@ import common_rpc as rpc
 
 sys.path.append('../Zero')
 
-from Zero.ServiceBus import ServiceBus
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
+from Zero import ServiceBus, ExceptionZero, ExceptionZeroClose
 
 def main():
 

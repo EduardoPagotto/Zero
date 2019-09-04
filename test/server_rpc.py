@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190902
+Update on 20190904
 @author: Eduardo Pagotto
 '''
 
@@ -13,8 +13,7 @@ sys.path.append('../Zero')
 
 import common_rpc as rpc
 
-from Zero.subsys.GracefulKiller import GracefulKiller
-from Zero.ServiceObject import ServiceObject
+from Zero import ServiceObject, GracefulKiller
 
 class ServerRPC(ServiceObject):
     def __init__(self):
