@@ -35,7 +35,7 @@ def main():
 
         log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
-        valor = ponta.teste_targuet(4)
+        valor = ponta.teste_targuet(3)
         log.debug('RPC retorno: %s', valor)
 
         dados = {'nome':'pagotto', 'idade':50, 'sexo':True, 'opt':{'val1':'teste1', 'lista':['um', 'dois']}}
