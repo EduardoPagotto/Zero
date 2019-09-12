@@ -15,6 +15,7 @@ import common_rpc as rpc
 
 from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceObject import ServiceObject
+from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 class ServerRPC(ServiceObject):
     def __init__(self):
@@ -27,8 +28,19 @@ class ServerRPC(ServiceObject):
         super().__init__(device_bus, rpc.BUS_PATH, self)
 
 
-    def teste_targuet(self):
+    def teste_targuet(self, entrada):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
+
+        if entrada == 0:
+            raise Exception('teste 0 ...')
+        elif entrada == 1:
+            raise ExceptionZeroRPC()
+        elif entrada == 2:
+            raise ExceptionZeroRPC('teste 2 ...')
+        elif entrada == 3:
+            raise ExceptionZeroRPC('teste 3 ...', -32099)
+
+        return False
 
     @ServiceObject.rpc_call(rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))
     def is_alive_bitch(self):

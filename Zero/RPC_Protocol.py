@@ -1,10 +1,11 @@
 '''
 Created on 20190826
-Update on 20190826
+Update on 20190912
 @author: Eduardo Pagotto
 '''
 
 import json
+from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 class RPC_Protocol(object):
     def __init__(self):
@@ -23,16 +24,18 @@ class RPC_ProtocolMethod(RPC_Protocol):
 
     def decode(self, msg):
         retorno = None
+
+        # TODO: get exceptions from json
         dados = json.loads(msg)
 
         if dados['id'] == self.serial:
             if 'error' in dados:
                 self.__error = dados['error']
-                raise Exception('Erro code:%d, msg:%s', dados['error']['code'], dados['error']['message'])
+                raise ExceptionZeroRPC(dados['error']['message'], dados['error']['code'])
 
             retorno = dados['result']
         else:
-            raise Exception('Id recebido invalido')
+            raise ExceptionZeroRPC('Parse error: id recived invalid', -32700)
 
         return retorno
 
@@ -66,11 +69,22 @@ class RPC_ProtocolResult(RPC_Protocol):
             else:
                 val = getattr(self.target, metodo)()
 
-            return json.dumps({'jsonrpc': self.vesion, 'result':val, 'id':dados['id']})
+            return json.dumps({'jsonrpc': self.vesion, 'result': val, 'id': self.serial})
 
-        except Exception as exp:
+        except AttributeError as exp:
+            return json.dumps({'jsonrpc': self.vesion, 'error': {'code': -32601, 'message': 'Method not found: '+ str(exp)}, 'id': self.serial})
 
-            code = -1
-            msg = str(exp)
+        except TypeError as exp1:
+            return json.dumps({'jsonrpc': self.vesion, 'error': {'code': -32602, 'message': 'Invalid params: '+ str(exp1)}, 'id': self.serial})
 
-            return {'jsonrpc': self.vesion, 'error': {'code': code, 'message': msg}, 'id': self.serial}
+        except ExceptionZeroRPC as exp2:
+            tot = len(exp2.args)
+            if tot == 0: 
+                return json.dumps({'jsonrpc': self.vesion, 'error': {'code': -32000, 'message': 'Server error: Generic Zero RPC Exception'}, 'id': self.serial})
+            elif tot == 1:
+                return json.dumps({'jsonrpc': self.vesion, 'error': {'code': -32001, 'message': 'Server error: ' + exp2.args[0]}, 'id': self.serial})
+            else: 
+                return json.dumps({'jsonrpc': self.vesion, 'error': {'code': exp2.args[1], 'message': 'Server error: ' + exp2.args[0]}, 'id': self.serial})
+
+        except Exception as exp3:
+            return json.dumps({'jsonrpc': self.vesion, 'error': {'code': -32603, 'message': 'Internal error: ' + str(exp3)}, 'id': self.serial})

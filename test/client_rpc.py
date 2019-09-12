@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190826
+Update on 20190912
 @author: Eduardo Pagotto
 '''
 
@@ -14,7 +14,7 @@ import common_rpc as rpc
 sys.path.append('../Zero')
 
 from Zero.ServiceBus import ServiceBus
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
+from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 def main():
 
@@ -32,11 +32,17 @@ def main():
 
         log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
+        valor = ponta.teste_targuet(4)
+        log.debug('RPC retorno: %s', valor)
+
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
         #log.debug('RPC retorno: %s', valor)
-        
+
+    except ExceptionZeroRPC as exp:
+        log.error('ERRO: {0}'.format(str(exp)))
+
     except Exception as exp:
-        log.exception('Falha {0}'.format(str(exp)))
+        log.exception('Falha: {0}'.format(str(exp)))
 
     log.info('App desconectado')
 
