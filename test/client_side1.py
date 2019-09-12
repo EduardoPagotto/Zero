@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190822
+Update on 20190904
 @author: Eduardo Pagotto
 '''
 
@@ -15,29 +15,10 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.transport.SocketBase import SocketBase
-from Zero.transport.Transport import transportClient, TransportKind
-from Zero.transport.Protocol import Protocol, ProtocolCode
-
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
-
-# class Bus(object):
-
-#     def __init__(self, object_path):
-
-#         #self.object_path = object_path
-#         try:
-#             self.protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, object_path).getSocket()) 
-#         except Exception: 
-#             raise ExceptionZero('ServiceUnknown: %s', str(object_path))
-
-#     def exchange(self, entrada):
-#         pass
-
-# def main():
-#     log = logging.getLogger('Client')
-#     bus = Bus(common_side1.uds_target)
-#     log.info(str(bus))
+from Zero import SocketBase
+from Zero import transportClient, TransportKind
+from Zero import Protocol, ProtocolCode
+from Zero import ExceptionZero, ExceptionZeroClose
 
 def main():
 

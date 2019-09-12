@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190823
+Update on 20190904
 @author: Eduardo Pagotto
 '''
 
@@ -22,11 +22,8 @@ class ServerRPC(ServiceObject):
         device_bus = ''
         self.vivo = True
         self.nome = ''
-
         self.log = logging.getLogger('Server')
-
         super().__init__(device_bus, rpc.BUS_PATH, self)
-
 
     def teste_targuet(self, entrada):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
@@ -54,28 +51,10 @@ class ServerRPC(ServiceObject):
     def getNome(self):
         return self.nome
 
-
-def main():
-
-    log = logging.getLogger('Server')
-    #logging.getLogger('Zero').setLevel(logging.INFO)
-
-    try:
-
-        killer = GracefulKiller()
-
-        server = ServerRPC()
-
-        while True:
-            time.sleep(1)
-            if killer.kill_now is True:
-                server.stop()  
-                break
-
-        server.join()
-
-    except Exception as exp:
-        log.Exception('falha %s', str(exp))
+    @ServiceObject.rpc_call(rpc.GET_DICIONARIO_INTERFACE, input=('d',), output=('d'))
+    def get_dict(self, dicionario):
+        dicionario['novo'] = 'ola'
+        return dicionario
 
 if __name__ == '__main__':
 
@@ -85,4 +64,5 @@ if __name__ == '__main__':
         datefmt='%H:%M:%S',
     )
 
-    main()
+    server = ServerRPC()
+    server.loop_blocked()

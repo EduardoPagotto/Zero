@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20190822
+Update on 20190904
 @author: Eduardo Pagotto
 '''
 
@@ -16,12 +16,12 @@ import common_side1
 
 sys.path.append('../Zero')
 
-from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.Transport import transportServer, TransportKind
-from Zero.ServiceServer import ServiceServer
+from Zero import Protocol, ProtocolCode
+from Zero import transportServer, TransportKind
+from Zero import ServiceServer
 
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
-from Zero.subsys.GracefulKiller import GracefulKiller
+from Zero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from Zero import GracefulKiller
 
 def connection(args, kwargs):
 

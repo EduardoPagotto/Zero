@@ -24,16 +24,23 @@ def main():
         
         ponta = bus.getObject(rpc.BUS_PATH)
 
-        valor = ponta.setNome('Jose')
-        log.debug('RPC retorno: %s', valor)
-
         valor = ponta.getNome()
-        log.debug('RPC retorno: %s', valor)
+        log.debug('Nome Atual: %s', valor)
+
+        if valor == 'Jose':
+            ponta.setNome('Maria')
+        else:
+            ponta.setNome('Jose')            
+
 
         log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
         valor = ponta.teste_targuet(4)
         log.debug('RPC retorno: %s', valor)
+
+        dados = {'nome':'pagotto', 'idade':50, 'sexo':True, 'opt':{'val1':'teste1', 'lista':['um', 'dois']}}
+        retorno = ponta.get_dict(dados)
+        log.debug('RPC retorno:%s',str(retorno))
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
         #log.debug('RPC retorno: %s', valor)
