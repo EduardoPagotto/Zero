@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190912
 @author: Eduardo Pagotto
 '''
 
@@ -27,8 +27,8 @@ class ServiceBus(object):
 
         return ProxyObject(self.protocol)
 
-    def __del__(self):
-        self.protocol.sendClose('bye')
+    # def __del__(self):
+    #     self.protocol.sendClose('bye')
 
 
        
