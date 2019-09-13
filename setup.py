@@ -8,8 +8,8 @@ Update on 20190821
 import Zero
 import setuptools
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+# with open("README.md", "r") as fh:
+#     long_description = fh.read()
 
 PACKAGE = "Zero"
 VERSION = __import__(PACKAGE).__version__
@@ -20,7 +20,7 @@ setuptools.setup(
     author="Eduardo Pagotto",
     author_email="edupagotto@gmail.com",
     description="RPC em UnixDomainProtocol",
-    long_description=long_description,#"RPC em UnixDomainProtocol e outras rotinas de IPC",#long_description,
+    long_description="RPC em UnixDomainProtocol e outras rotinas de IPC",#long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/EduardoPagotto/Zero.git",
     packages=setuptools.find_packages(),
