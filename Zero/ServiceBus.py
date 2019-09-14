@@ -1,34 +1,21 @@
 '''
 Created on 20190822
-Update on 20190912
+Update on 20190914
 @author: Eduardo Pagotto
 '''
 
-import logging
-
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
-from Zero.transport.Transport import transportClient, TransportKind
-from Zero.transport.Protocol import Protocol, ProtocolCode
+from Zero.ConnectionControl import ConnectionControl
 from Zero.ProxyObject import ProxyObject
 
 class ServiceBus(object):
     def __init__(self):
-        self.object_path = None
-        self.protocol = None
-        self.log = logging.getLogger('Zero.RPC')
-
-    def getObject(self, object_path):
+        self.conn_control = None
         
-        self.object_path = object_path
-        try:
-            self.protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, object_path).getSocket()) 
-        except Exception: 
-            raise ExceptionZero('ServiceUnknown: %s', str(object_path))
+    def getObject(self, object_path):
+        self.conn_control = ConnectionControl(object_path, 3)
+        return ProxyObject(self.conn_control)
 
-        return ProxyObject(self.protocol)
-
-    # def __del__(self):
-    #     self.protocol.sendClose('bye')
-
-
+    def __del__(self):
+        self.conn_control.stop()
+        self.conn_control.join()
        
