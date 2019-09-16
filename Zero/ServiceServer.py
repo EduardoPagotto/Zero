@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190902
+Update on 20190916
 @author: Eduardo Pagotto
 '''
 
@@ -16,7 +16,7 @@ class ServiceServer(object):
         self.done = False
         self.t_garbage = threading.Thread(target=self.garbageCon, name='garbage_conn')
         self.t_server = threading.Thread(target=self.builderConnection, name='factory_conn', args=(socket_server, serverConnection))
-        self.log = logging.getLogger('Zero')
+        self.log = logging.getLogger('Zero.RPC')
 
     def start(self):
         self.log.info('service server start')
@@ -35,7 +35,7 @@ class ServiceServer(object):
     def garbageCon(self):
         '''Remove connections deads'''
 
-        self.log.info("garbage start")
+        self.log.info("garbage connections start")
 
         totais = 0
         while True:
@@ -64,7 +64,7 @@ class ServiceServer(object):
 
     def builderConnection(self, sock, serverConnection):
 
-        self.log.info("factory start")
+        self.log.info("factory connections start")
         seq = 0
 
         while True:
@@ -97,4 +97,4 @@ class ServiceServer(object):
                 else:
                     break
 
-        self.log.info("factory stop")
+        self.log.info("factory connection stop")

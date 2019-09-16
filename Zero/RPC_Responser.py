@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20190902
+Update on 20190916
 @author: Eduardo Pagotto
 '''
 
@@ -15,7 +15,7 @@ from Zero.RPC_Protocol import RPC_ProtocolResult
 
 class RPC_Responser(object):
     def __init__(self, target):
-        self.log = logging.getLogger('Zero.Con')
+        self.log = logging.getLogger('Zero.RPC')
         self.rpc = RPC_ProtocolResult(target)
 
     def __call__(self, *args, **kargs):
