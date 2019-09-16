@@ -9,7 +9,7 @@ import sys
 import time
 import logging
 
-import common_rpc as rpc
+import common as rpc
 
 sys.path.append('../Zero')
 

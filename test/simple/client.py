@@ -11,7 +11,7 @@ import time
 import threading
 import logging
 
-import common_side1
+import common
 
 sys.path.append('../Zero')
 
@@ -26,8 +26,8 @@ def main():
     logging.getLogger('Zero').setLevel(logging.INFO)
 
     try:
-        #protocol = Protocol(transportClient(TransportKind.NETWORK, common_side1.ip_target).getSocket())
-        protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, common_side1.uds_target).getSocket()) 
+        #protocol = Protocol(transportClient(TransportKind.NETWORK, common.ip_target).getSocket())
+        protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, common.uds_target).getSocket()) 
 
         log.info(protocol.handShake())
 
@@ -52,6 +52,6 @@ def main():
 
 if __name__ == '__main__':
 
-    common_side1.enable_log()
+    common.enable_log()
 
     main()
