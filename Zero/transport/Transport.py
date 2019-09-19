@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190918
 @author: Eduardo Pagotto
 '''
 
@@ -45,7 +45,7 @@ def transportServer(transportKind, server_address):
         else:
             soc.getSocket().bind(server_address)
 
-    soc.getSocket().listen(5)
+    soc.getSocket().listen(15)
     logging.getLogger('Zero').debug('Bind in: {0}'.format(str(server_address)))
 
     return soc

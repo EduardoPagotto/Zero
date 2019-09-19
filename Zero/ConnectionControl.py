@@ -1,6 +1,6 @@
 '''
 Created on 20190914
-Update on 20190914
+Update on 20190918
 @author: Eduardo Pagotto
 '''
 
@@ -19,7 +19,7 @@ class ConnectionData(object):
 
     serial = 0
 
-    def __init__(self, data_conn, max):
+    def __init__(self, data_conn, retry):
         
         self.id = ConnectionData.serial
         self.connection = None
@@ -27,7 +27,7 @@ class ConnectionData(object):
         self.log = logging.getLogger('Zero.RPC')
 
         contador = 0
-        while contador < max:
+        while contador < retry:
             try:
                 self.connection =  Protocol(transportClient(TransportKind.UNIX_DOMAIN, data_conn).getSocket())
                 ConnectionData.serial += 1
@@ -35,7 +35,7 @@ class ConnectionData(object):
                 self.log.debug('New connection id: %d peer: %s OK',self.id, str(data_conn))
                 return
             except Exception:
-                self.log.debug('New connection peer %s fail (%d/%d)',str(data_conn), contador+1, max)
+                self.log.debug('New connection peer %s fail (%d/%d)',str(data_conn), contador+1, retry)
                 time.sleep(2)
                 contador += 1
 
@@ -45,25 +45,30 @@ class ConnectionData(object):
         self.time = datetime.now()
 
 class ConnectionControl(object):
-    def __init__(self, data_conn, max):
+    def __init__(self, data_conn, retry, max):
         self.data_conn = data_conn
-        self.max = max
+        self.retry = retry
         self.done = False
         self.lines_free = []
         self.log = logging.getLogger('Zero.RPC')
         self.mutex_free = threading.Lock()
 
+        self.semaphore = threading.Semaphore(max)
+
         self.t_cleanner = threading.Thread(target=self.cleanner, name='cleanner_conn')
         self.t_cleanner.start()
 
     def get_connection(self):
+        self.semaphore.acquire()
         with self.mutex_free:
-            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.data_conn, self.max)
+            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.data_conn, self.retry)
 
     def release_connection(self, line_comm):
         with self.mutex_free:
             line_comm.update()
             self.lines_free.append(line_comm)
+
+        self.semaphore.release()
 
     def stop(self):
         self.done = True
