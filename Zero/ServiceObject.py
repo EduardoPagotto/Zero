@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190902
+Update on 20190916
 @author: Eduardo Pagotto
 '''
 
@@ -26,7 +26,7 @@ class ServiceObject(object):
         
         self.done = False
 
-        self.log = logging.getLogger('Zero')
+        self.log = logging.getLogger('Zero.RPC')
 
         self.server = transportServer(TransportKind.UNIX_DOMAIN, object_path)
         self.server.settimeout(10)

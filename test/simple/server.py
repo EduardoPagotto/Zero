@@ -12,7 +12,7 @@ import threading
 import logging
 import socket
 
-import common_side1
+import common
 
 sys.path.append('../Zero')
 
@@ -83,8 +83,8 @@ def main():
 
     killer = GracefulKiller()
 
-    #server = transportServer(TransportKind.NETWORK, common_side1.ip_target)
-    server = transportServer(TransportKind.UNIX_DOMAIN, common_side1.uds_target)
+    #server = transportServer(TransportKind.NETWORK, common.ip_target)
+    server = transportServer(TransportKind.UNIX_DOMAIN, common.uds_target)
 
     server.settimeout(10)
 
@@ -110,6 +110,6 @@ def main():
 
 if __name__ == '__main__':
 
-    common_side1.enable_log()
+    common.enable_log()
 
     main()

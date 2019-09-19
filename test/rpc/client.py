@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190912
+Update on 20190914
 @author: Eduardo Pagotto
 '''
 
@@ -9,7 +9,7 @@ import sys
 import time
 import logging
 
-import common_rpc as rpc
+import common as rpc
 
 sys.path.append('../Zero')
 
@@ -26,6 +26,8 @@ def main():
 
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)
+
+        time.sleep(30)
 
         if valor == 'Jose':
             ponta.setNome('Maria')

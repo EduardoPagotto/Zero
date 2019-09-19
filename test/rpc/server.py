@@ -11,7 +11,7 @@ import time
 import sys
 sys.path.append('../Zero')
 
-import common_rpc as rpc
+import common as rpc
 
 from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceObject import ServiceObject

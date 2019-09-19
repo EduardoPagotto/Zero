@@ -1,4 +1,4 @@
-__version__ = "0.0.2"
+__version__ = "1.0.0"
 
 # RPC Client class
 from .ServiceBus import ServiceBus
@@ -13,6 +13,6 @@ from .ServiceServer import ServiceServer
 from .ServiceObject import ServiceObject
 
 # Generic class
-from .subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from .subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
 from .subsys.GracefulKiller import GracefulKiller
 

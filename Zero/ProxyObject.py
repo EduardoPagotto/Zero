@@ -1,21 +1,17 @@
 '''
 Created on 20190822
-Update on 20190822
+Update on 20190914
 @author: Eduardo Pagotto
 '''
 
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose
-from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.RPC_Call import RPC_Call
 
 class ProxyObject(object):
-    def __init__(self, protocol):
-        self.protocol = protocol
-        #self.log = logging.getLogger('Zero.RPC')
+    def __init__(self, conn_control):
+        self.conn_control = conn_control
 
-    # chama uma classe como metodo do call
     def __getattr__(self, name):
-        return RPC_Call(name, self.protocol)
+        return RPC_Call(name, self.conn_control)
 
     # cria um atributo novo
     def __setattr__(self, name, value):
