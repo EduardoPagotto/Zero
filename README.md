@@ -1,2 +1,11 @@
 # Zero
-Protocolo RPC em Unix Domain Socket
+RPC Client/Server API
+
+# Protocols Transport
+Chunk binary
+
+# Trasnport
+ - Unix Domain Socket
+ - TCP/IP
+ 
+ 
