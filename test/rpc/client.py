@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190914
+Update on 20190924
 @author: Eduardo Pagotto
 '''
 
@@ -27,7 +27,7 @@ def main():
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)
 
-        time.sleep(30)
+        time.sleep(5)
 
         if valor == 'Jose':
             ponta.setNome('Maria')
