@@ -24,6 +24,8 @@ class RPC_Responser(object):
 
         dados_conexao = args[1]
 
+        indice_conexao = args[0]
+
         done = dados_conexao['done']
         protocol = None
         try:
@@ -34,9 +36,14 @@ class RPC_Responser(object):
             self.log.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
             return
 
+        count_to = 0
+
         while True:
             try:
                 idRec, msg_in = protocol.receiveString()
+
+                count_to = 0
+
                 if idRec is ProtocolCode.COMMAND:
 
                     msg_out = RPC_Result(self.target, msg_in)
@@ -51,7 +58,8 @@ class RPC_Responser(object):
                 break
 
             except socket.timeout:
-                self.log.debug('connection timeout..')
+                count_to += 1
+                self.log.debug('connection %d timeout %d ..', indice_conexao, count_to)
 
             except Exception as exp:
                 self.log.error('error: {0}'.format(str(exp)))
