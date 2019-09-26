@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190916
+Update on 20190924
 @author: Eduardo Pagotto
 '''
 
@@ -58,9 +58,13 @@ class ServiceObject(object):
 
     def __guardian(self):
         cycle = 0
+        anterior = 0
         while True:
-            
-            self.log.debug('cycle:%d connections:%d', cycle, len(self.service.lista))
+            atual = len(self.service.lista)
+            if atual != anterior:
+                anterior = atual
+                self.log.debug('cycle:%d connections:%d', cycle, atual)
+
             cycle += 1
             time.sleep(5)
 
@@ -68,7 +72,6 @@ class ServiceObject(object):
                 self.server.close()
                 self.service.stop()  
                 break
-
 
     def loop_blocked(self):
         try:

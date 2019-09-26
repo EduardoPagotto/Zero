@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20190916
+Update on 20190924
 @author: Eduardo Pagotto
 '''
 
@@ -11,18 +11,20 @@ import json
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
-from Zero.RPC_Protocol import RPC_ProtocolResult
+from Zero.RPC_Call import RPC_Result
 
 class RPC_Responser(object):
     def __init__(self, target):
         self.log = logging.getLogger('Zero.RPC')
-        self.rpc = RPC_ProtocolResult(target)
+        self.target = target
 
     def __call__(self, *args, **kargs):
 
         self.log.info('RPC Response start num: %d', args[0])
 
         dados_conexao = args[1]
+
+        indice_conexao = args[0]
 
         done = dados_conexao['done']
         protocol = None
@@ -34,15 +36,18 @@ class RPC_Responser(object):
             self.log.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
             return
 
+        count_to = 0
+
         while True:
             try:
-                idRec, msg = protocol.receiveString()
+                idRec, msg_in = protocol.receiveString()
+
+                count_to = 0
+
                 if idRec is ProtocolCode.COMMAND:
 
-                    #self.log.debug('method:{0}'.format(msg))
-                    msg = self.rpc.exec(msg)
-                    #self.log.debug('result: %s', msg)
-                    protocol.sendString(ProtocolCode.RESULT, msg)
+                    msg_out = RPC_Result(self.target, msg_in)
+                    protocol.sendString(ProtocolCode.RESULT, msg_out)
 
             except ExceptionZeroErro as exp_erro:
                 self.log.warning('recevice Erro: {0}'.format(str(exp_erro)))
@@ -53,7 +58,8 @@ class RPC_Responser(object):
                 break
 
             except socket.timeout:
-                self.log.debug('connection timeout..')
+                count_to += 1
+                self.log.debug('connection %d timeout %d ..', indice_conexao, count_to)
 
             except Exception as exp:
                 self.log.error('error: {0}'.format(str(exp)))
