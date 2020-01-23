@@ -37,7 +37,7 @@ class ServiceObject(object):
         self.t_guardian = threading.Thread(target=self.__guardian, name='guardian_conn')
         self.t_guardian.start()
 
-    def rpc_call(identicador, input=None, output=None):
+    def rpc_call(self, identicador, input=None, output=None):
         def decorator(func):
             def wrapper(self, *args, **kwargs):
 
