@@ -19,7 +19,7 @@ class ConnectionData(object):
 
     serial = 0
 
-    def __init__(self, data_conn, retry):
+    def __init__(self, transportKind, address, retry):
         
         self.id = ConnectionData.serial
         self.connection = None
@@ -29,24 +29,25 @@ class ConnectionData(object):
         contador = 0
         while contador < retry:
             try:
-                self.connection =  Protocol(transportClient(TransportKind.UNIX_DOMAIN, data_conn).getSocket())
+                self.connection =  Protocol(transportClient(transportKind, address).getSocket())
                 ConnectionData.serial += 1
 
-                self.log.debug('New connection id: %d peer: %s OK',self.id, str(data_conn))
+                self.log.debug('New connection id: %d peer: %s OK',self.id, str(address))
                 return
             except Exception:
-                self.log.debug('New connection peer %s fail (%d/%d)',str(data_conn), contador+1, retry)
+                self.log.debug('New connection peer %s fail (%d/%d)',str(address), contador+1, retry)
                 time.sleep(2)
                 contador += 1
 
-        raise ExceptionZeroRPC('New connection peer {0} erro'.format(str(data_conn)))
+        raise ExceptionZeroRPC('New connection peer {0} erro'.format(str(address)))
                 
     def update(self):
         self.time = datetime.now()
 
 class ConnectionControl(object):
-    def __init__(self, data_conn, retry, max):
-        self.data_conn = data_conn
+    def __init__(self, transportKind, address, retry, max):
+        self.transportKind = transportKind
+        self.address = address
         self.retry = retry
         self.done = False
         self.lines_free = []
@@ -61,7 +62,7 @@ class ConnectionControl(object):
     def get_connection(self):
         self.semaphore.acquire()
         with self.mutex_free:
-            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.data_conn, self.retry)
+            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.transportKind, self.address, self.retry)
 
     def release_connection(self, line_comm):
         with self.mutex_free:

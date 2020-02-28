@@ -4,7 +4,10 @@ Update on 20190902
 @author: Eduardo Pagotto
 '''
 
-BUS_PATH = './uds_socket_teste'
+from Zero import TransportKind
+
+ADDRESS = './uds_socket_teste'
+TRANSPORT = TransportKind.UNIX_DOMAIN
 TESTE_BUS_NAME = 'com.teste'
 IS_ALIVE_INTERFACE = TESTE_BUS_NAME + '.is_alive_bitch' 
 SET_NOME_INTERFACE = TESTE_BUS_NAME + '.setNome' 

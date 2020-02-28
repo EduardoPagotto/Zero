@@ -22,7 +22,7 @@ def main():
         log = logging.getLogger('Client')
         bus = ServiceBus()
         
-        ponta = bus.getObject(rpc.BUS_PATH)
+        ponta = bus.getObject(rpc.TRANSPORT, rpc.ADDRESS)
 
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)

@@ -11,8 +11,8 @@ class ServiceBus(object):
     def __init__(self):
         self.conn_control = None
         
-    def getObject(self, object_path, retry=3, max=14):
-        self.conn_control = ConnectionControl(object_path, retry, max)
+    def getObject(self, transportKind, address, retry=3, max=14):
+        self.conn_control = ConnectionControl(transportKind, address, retry, max)
         return ProxyObject(self.conn_control)
 
     def __del__(self):

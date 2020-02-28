@@ -19,11 +19,10 @@ from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 class ServerRPC(ServiceObject):
     def __init__(self):
-        device_bus = ''
         self.vivo = True
         self.nome = ''
         self.log = logging.getLogger('Server')
-        super().__init__(device_bus, rpc.BUS_PATH, self)
+        super().__init__(rpc.TRANSPORT, rpc.ADDRESS, self)
 
     def teste_targuet(self, entrada):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
