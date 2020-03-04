@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190924
+Update on 20200304
 @author: Eduardo Pagotto
 '''
 
@@ -19,7 +19,6 @@ from Zero.RPC_Responser import RPC_Responser
 
 
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
-from Zero.subsys.GracefulKiller import GracefulKiller
 
 class ServiceObject(object):
     def __init__(self, transportKind,  address, target):
@@ -75,12 +74,8 @@ class ServiceObject(object):
 
     def loop_blocked(self):
         try:
-            killer = GracefulKiller()
-            while True:
-                time.sleep(1)
-                if killer.kill_now is True:
-                    self.stop()  
-                    break
+            while self.done is False:
+                time.sleep(5)
 
             self.join()
 

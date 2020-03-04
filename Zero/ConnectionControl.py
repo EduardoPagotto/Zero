@@ -1,6 +1,6 @@
 '''
 Created on 20190914
-Update on 20190918
+Update on 20200304
 @author: Eduardo Pagotto
 '''
 
@@ -11,7 +11,6 @@ import threading
 from datetime import datetime, timedelta
 
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
-from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.transport.Transport import transportClient, TransportKind
 from Zero.transport.Protocol import Protocol
 
