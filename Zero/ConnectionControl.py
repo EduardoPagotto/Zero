@@ -44,7 +44,7 @@ class ConnectionData(object):
         self.time = datetime.now()
 
 class ConnectionControl(object):
-    def __init__(self, transportKind, address, retry, max):
+    def __init__(self, transportKind, address, retry, max_threads):
         self.transportKind = transportKind
         self.address = address
         self.retry = retry
@@ -53,7 +53,7 @@ class ConnectionControl(object):
         self.log = logging.getLogger('Zero.RPC')
         self.mutex_free = threading.Lock()
 
-        self.semaphore = threading.Semaphore(max)
+        self.semaphore = threading.Semaphore(max_threads)
 
         self.t_cleanner = threading.Thread(target=self.cleanner, name='cleanner_conn')
         self.t_cleanner.start()
