@@ -1,21 +1,38 @@
 '''
 Created on 20190822
-Update on 20190918
+Update on 20200305
 @author: Eduardo Pagotto
 '''
 
 from Zero.ConnectionControl import ConnectionControl
 from Zero.ProxyObject import ProxyObject
+from Zero.transport.Transport import get_address_from_string
 
 class ServiceBus(object):
-    def __init__(self):
+    def __init__(self, s_address, retry=3, max=5):
+        """[Pre-Conexao dados do peer]
+        Arguments:
+            s_address {[string]} -- [exemplo validos:( uds://./conexao_peer | tcp://127.0.0.1:5151) ]
+        Keyword Arguments:
+            retry {int} -- [Tentativa de reconexa] (default: {3})
+            max {int} -- [Numero maximo de threads de conexao simultaneas] (default: {5})
+        """
+        self.address, self.transportKind = get_address_from_string(s_address)
+        self.retry = retry
+        self.max = max
         self.conn_control = None
         
-    def getObject(self, transportKind, address, retry=3, max=14):
-        self.conn_control = ConnectionControl(transportKind, address, retry, max)
+    def getObject(self):
+        """[ProxyObject conectao ao peer]
+        Returns:
+            [ProxyObject] -- [Proxy conectado com controle de conexao e reentrada]
+        """
+        self.conn_control = ConnectionControl(self.transportKind, self.address, self.retry, self.max)
         return ProxyObject(self.conn_control)
 
     def __del__(self):
+        """[desconecta e encerra conexao]
+        """
         self.conn_control.stop()
         self.conn_control.join()
        

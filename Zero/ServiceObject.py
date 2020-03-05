@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200304
+Update on 20200305
 @author: Eduardo Pagotto
 '''
 
@@ -13,7 +13,7 @@ import logging
 import socket
 
 from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.Transport import transportServer, TransportKind
+from Zero.transport.Transport import transportServer, TransportKind, get_address_from_string
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
@@ -21,11 +21,12 @@ from Zero.RPC_Responser import RPC_Responser
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class ServiceObject(object):
-    def __init__(self, transportKind,  address, target):
+    def __init__(self, s_address, target):
         
         self.done = False
-
         self.log = logging.getLogger('Zero.RPC')
+
+        address, transportKind = get_address_from_string(s_address)
 
         self.server = transportServer(transportKind, address)
         self.server.settimeout(10)

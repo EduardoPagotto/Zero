@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20190918
+Update on 20200305
 @author: Eduardo Pagotto
 '''
 
@@ -15,6 +15,36 @@ from Zero.transport.SocketBase import SocketBase
 class TransportKind(Enum):
     UNIX_DOMAIN = 0,
     NETWORK = 1,
+
+def get_address_from_string(s_address):
+    """[Return a valid data connection]
+    Arguments:
+        s_address {[string]} -- [valid example ( uds://./conexao_peer | tcp:s//127.0.0.1:5151) ]
+    Raises:
+        Exception: [malformed TCP dats]
+        Exception: [malformed string kind]
+    Returns:
+        [tuple (address peer (tuple('ip':port) | 'uds path', TransportKind)) ] -- [Valid connection data]
+    """
+    address = None
+    transportKind = None
+
+    if 'uds://' in s_address:
+        address = s_address.partition('uds://')[2]
+        transportKind = TransportKind.UNIX_DOMAIN
+    elif 'tcp://' in s_address:
+        val = s_address.partition('tcp://')[2]
+        final = val.split(':')
+
+        if len(final)!=2:
+            raise Exception('Invalid TCP Address: {0}'.format(s_address))
+
+        address = (final[0], int(final[1])) 
+        transportKind = TransportKind.NETWORK
+    else:
+        raise Exception('Invalid Address kind:{0}'.format(s_address))    
+
+    return (address, transportKind)
 
 def transportServer(transportKind, server_address):
 
