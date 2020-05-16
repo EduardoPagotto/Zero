@@ -1,13 +1,10 @@
 '''
 Created on 20190823
-Update on 20190902
+Update on 20200516
 @author: Eduardo Pagotto
 '''
 
-from Zero import TransportKind
-
-ADDRESS = './uds_socket_teste'
-TRANSPORT = TransportKind.UNIX_DOMAIN
+ADDRESS = 'uds://./uds_service_scanner' #tcp://127.0.0.1:5151
 TESTE_BUS_NAME = 'com.teste'
 IS_ALIVE_INTERFACE = TESTE_BUS_NAME + '.is_alive_bitch' 
 SET_NOME_INTERFACE = TESTE_BUS_NAME + '.setNome' 

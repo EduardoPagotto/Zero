@@ -8,7 +8,7 @@
             "name": "Protocolo Client",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test/client_side1.py",
+            "program": "${workspaceFolder}/test/simple/client.py",
             "console": "integratedTerminal",
             "args": []
 
@@ -17,7 +17,7 @@
             "name": "Protocolo Server",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test/server_side1.py",
+            "program": "${workspaceFolder}/test/simple/server.py",
             "console": "integratedTerminal",
             "args": []
         },
@@ -25,7 +25,7 @@
             "name": "RPC Server",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test/server_rpc.py",
+            "program": "${workspaceFolder}/test/rpc/server.py",
             "console": "integratedTerminal",
             "args": []
         },
@@ -33,7 +33,7 @@
             "name": "RPC Client",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/test/client_rpc.py",
+            "program": "${workspaceFolder}/test/rpc/client.py",
             "console": "integratedTerminal",
             "args": []
         },

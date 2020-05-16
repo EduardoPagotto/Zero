@@ -1,4 +1,4 @@
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 # RPC Client class
 from .ServiceBus import ServiceBus

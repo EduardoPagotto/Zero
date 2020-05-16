@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200304
+Update on 20200516
 @author: Eduardo Pagotto
 '''
 
@@ -21,7 +21,7 @@ from Zero import transportServer, TransportKind
 from Zero import ServiceServer
 
 from Zero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
-from Zero import GracefulKiller
+from Zero.subsys.GracefulKiller import GracefulKiller
 
 def connection(args, kwargs):
 
