@@ -1,8 +1,10 @@
 '''
 Created on 20190914
-Update on 20200304
+Update on 20200517
 @author: Eduardo Pagotto
 '''
+
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import logging
@@ -11,7 +13,7 @@ import threading
 from datetime import datetime, timedelta
 
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
-from Zero.transport.Transport import transportClient, TransportKind
+from Zero.transport.Transport import transportClient
 from Zero.transport.Protocol import Protocol
 
 class ConnectionData(object):
@@ -19,7 +21,7 @@ class ConnectionData(object):
     serial = 0
 
     def __init__(self, transportKind, address, retry):
-        
+
         self.id = ConnectionData.serial
         self.connection = None
         self.time = None
@@ -28,18 +30,18 @@ class ConnectionData(object):
         contador = 0
         while contador < retry:
             try:
-                self.connection =  Protocol(transportClient(transportKind, address).getSocket())
+                self.connection = Protocol(transportClient(transportKind, address).getSocket())
                 ConnectionData.serial += 1
 
-                self.log.debug('New connection id: %d peer: %s OK',self.id, str(address))
+                self.log.debug('New connection id: %d peer: %s OK', self.id, str(address))
                 return
             except Exception:
-                self.log.debug('New connection peer %s fail (%d/%d)',str(address), contador+1, retry)
+                self.log.debug('New connection peer %s fail (%d/%d)', str(address), contador+1, retry)
                 time.sleep(2)
                 contador += 1
 
         raise ExceptionZeroRPC('New connection peer {0} erro'.format(str(address)))
-                
+
     def update(self):
         self.time = datetime.now()
 
@@ -80,7 +82,7 @@ class ConnectionControl(object):
 
         self.log.debug('cleanner_conn start')
         while self.done is False:
-            
+
             try:
                 now = datetime.now()
                 with self.mutex_free:

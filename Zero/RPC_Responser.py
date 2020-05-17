@@ -1,15 +1,16 @@
 '''
 Created on 20190824
-Update on 20190924
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
+
 import logging
 import socket
-import json
 
 from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro
 
 from Zero.RPC_Call import RPC_Result
 
@@ -31,9 +32,9 @@ class RPC_Responser(object):
         try:
             protocol = Protocol(dados_conexao['clientsocket'])
             protocol.settimeout(30)
-            
+
         except Exception as exp:
-            self.log.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
+            self.log.exception('falha na parametrizacao da conexao: %s', str(exp))
             return
 
         count_to = 0
@@ -50,11 +51,11 @@ class RPC_Responser(object):
                     protocol.sendString(ProtocolCode.RESULT, msg_out)
 
             except ExceptionZeroErro as exp_erro:
-                self.log.warning('recevice Erro: {0}'.format(str(exp_erro)))
-                protocol.sendString(ProtocolCode.RESULT,'recived error from server')
+                self.log.warning('recevice Erro: %s', str(exp_erro))
+                protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
             except ExceptionZeroClose as exp_close:
-                self.log.debug('receive Close: {0}'.format(str(exp_close)))
+                self.log.debug('receive Close: %s', str(exp_close))
                 break
 
             except socket.timeout:
@@ -62,7 +63,7 @@ class RPC_Responser(object):
                 self.log.debug('connection %d timeout %d ..', indice_conexao, count_to)
 
             except Exception as exp:
-                self.log.error('error: {0}'.format(str(exp)))
+                self.log.error('error: %s', str(exp))
                 break
 
             if done is True:

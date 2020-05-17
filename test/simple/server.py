@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200516
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import sys
-import os
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
+
 import time
-import threading
 import logging
 import socket
 
 import common
 
-sys.path.append('../Zero')
-
 from Zero import Protocol, ProtocolCode
 from Zero import transportServer, TransportKind
 from Zero import ServiceServer
 
-from Zero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from Zero import ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
 
 def connection(args, kwargs):
@@ -34,7 +31,7 @@ def connection(args, kwargs):
     try:
         protocol = Protocol(kwargs['clientsocket'])
         protocol.settimeout(10)
-        
+
     except Exception as exp:
         log.exception('falha na parametrizacao da conexao: {0}'.format(str(exp)))
         return
@@ -57,7 +54,7 @@ def connection(args, kwargs):
 
         except ExceptionZeroErro as exp_erro:
             log.warning('recevice Erro: {0}'.format(str(exp_erro)))
-            protocol.sendString(ProtocolCode.RESULT,'recived error from server')
+            protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
         except ExceptionZeroClose as exp_close:
             log.debug('receive Close: {0}'.format(str(exp_close)))
@@ -88,7 +85,7 @@ def main():
 
     server.settimeout(10)
 
-    log.debug('server timeout: %s',str(server.gettimeout()))
+    log.debug('server timeout: %s', str(server.gettimeout()))
 
     service = ServiceServer(server.getSocket(), connection)
 
@@ -96,14 +93,14 @@ def main():
 
     cycle = 0
     while True:
-        
+
         log.info('cycle:%d connections:%d', cycle, len(service.lista))
         cycle += 1
         time.sleep(5)
 
         if killer.kill_now is True:
             server.close()
-            service.stop()  
+            service.stop()
             break
 
     service.join()

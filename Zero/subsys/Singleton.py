@@ -1,6 +1,6 @@
 '''
 Created on 20180208
-Update on 20180208
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
@@ -17,7 +17,7 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         '''
-        executa uma nova instancia ou retorna a existente 
+        executa uma nova instancia ou retorna a existente
         '''
         if cls._instance is None:
             cls._instance = super().__call__(*args, **kwargs)

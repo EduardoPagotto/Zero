@@ -5,15 +5,12 @@ Update on 20200516
 @author: Eduardo Pagotto
 '''
 
-import logging
-import time
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
-import sys
-sys.path.append('../Zero')
+import logging
 
 import common as rpc
 
-from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceObject import ServiceObject
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
@@ -40,7 +37,7 @@ class ServerRPC(ServiceObject):
 
     #@ServiceObject.rpc_call(identicador=rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))
     def is_alive_bitch(self):
-        return self.vivo  
+        return self.vivo
 
     #@ServiceObject.rpc_call(rpc.SET_NOME_INTERFACE, input=('s',), output=())
     def setNome(self, nome):

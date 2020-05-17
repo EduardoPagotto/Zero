@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190916
+Update on 20200517
 @author: Eduardo Pagotto
 '''
+
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import socket
@@ -51,7 +53,7 @@ class ServiceServer(object):
             for thread in lista_remover:
                 self.lista.remove(thread)
 
-            if len(lista_remover) is not 0:
+            if len(lista_remover) != 0:
                 lista_remover.clear()
 
             if self.done is True:
@@ -73,15 +75,15 @@ class ServiceServer(object):
                 clientsocket, address = sock.accept()
 
                 #self.log.debug("factory server new connection")
-                
-                comm_param={}
+
+                comm_param = {}
                 comm_param['clientsocket'] = clientsocket
-                comm_param['addr'] =  address
-                comm_param['done'] =  self.done
+                comm_param['addr'] = address
+                comm_param['done'] = self.done
 
                 self.log.info("connected with :%s", str(address))
 
-                t = threading.Thread(target=serverConnection, name='conection_{0}'.format(seq) ,args=(seq, comm_param))
+                t = threading.Thread(target=serverConnection, name='conection_{0}'.format(seq), args=(seq, comm_param))
                 t.start()
 
                 self.lista.append(t)

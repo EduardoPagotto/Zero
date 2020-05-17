@@ -1,11 +1,11 @@
 '''
 Created on 20170119
-Update on 20190902
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import os
-import errno
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
+
 import struct
 import zlib
 import logging
@@ -99,7 +99,7 @@ class Protocol(SocketBase):
             raise ExceptionZeroClose('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
 
         elif idRecebido == ProtocolCode.ERRO:
-           raise ExceptionZeroErro('{0}'.format(binario.decode('UTF-8')))
+            raise ExceptionZeroErro('{0}'.format(binario.decode('UTF-8')))
 
         return (idRecebido, binario)
 
@@ -126,7 +126,7 @@ class Protocol(SocketBase):
 
     def handShake(self):
         '''Envia Hand automatico'''
-        self.sendString(ProtocolCode.OPEN, self.protocol_versao )
+        self.sendString(ProtocolCode.OPEN, self.protocol_versao)
         idRecive, msg = self.receiveString()
         if idRecive is ProtocolCode.RESULT:
             self.log.info('handshake with server: %s', msg)
@@ -139,7 +139,7 @@ class Protocol(SocketBase):
         if id == ProtocolCode.RESULT:
             return msg
 
-        raise ExceptionZero('Resposta invalida: (%d : %s)', id, msg)
+        raise ExceptionZero('Resposta invalida: ({0} : {1})'.format(id, msg))
 
     # def sendErro(self, msg):
     #     '''Envia uma MSG de erro ao peer'''

@@ -1,8 +1,10 @@
 '''
 Created on 20190822
-Update on 20200305
+Update on 20200517
 @author: Eduardo Pagotto
 '''
+
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 from Zero.ConnectionControl import ConnectionControl
 from Zero.ProxyObject import ProxyObject
@@ -21,7 +23,7 @@ class ServiceBus(object):
         self.retry = retry
         self.max_threads = max_threads
         self.conn_control = None
-        
+
     def getObject(self):
         """[ProxyObject conectao ao peer]
         Returns:
@@ -35,4 +37,3 @@ class ServiceBus(object):
         """
         self.conn_control.stop()
         self.conn_control.join()
-       

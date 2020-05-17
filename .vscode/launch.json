@@ -10,6 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/simple/client.py",
             "console": "integratedTerminal",
+            "env": {"PYTHONPATH": "${workspaceFolder}" },
             "args": []
 
         },
@@ -19,6 +20,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/simple/server.py",
             "console": "integratedTerminal",
+            "env": {"PYTHONPATH": "${workspaceFolder}" },
             "args": []
         },
         {
@@ -27,6 +29,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/rpc/server.py",
             "console": "integratedTerminal",
+            "env": {"PYTHONPATH": "${workspaceFolder}" },
             "args": []
         },
         {
@@ -35,6 +38,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/rpc/client.py",
             "console": "integratedTerminal",
+            "env": {"PYTHONPATH": "${workspaceFolder}" },
             "args": []
         },
         {
@@ -44,6 +48,6 @@
             "program": "${workspaceFolder}/decoradores.py",
             "console": "integratedTerminal",
             "args": []
-        }   
+        }
     ]
 }
