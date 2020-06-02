@@ -1,10 +1,10 @@
 '''
 Created on 20170119
-Update on 20190819
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import socket
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 from Zero.subsys.ExceptionZero import ExceptionZero
 
@@ -27,14 +27,14 @@ class SocketBase(object):
         return self._sock.gettimeout()
 
     def close(self):
-        if (self._sock is not None):
+        if self._sock is not None:
             self._sock.close()
             self._sock = None
 
     def isConnected(self):
-        if (self._sock is not None):
-            return True 
-        
+        if self._sock is not None:
+            return True
+
         return False
 
     def connect(self, conexao):

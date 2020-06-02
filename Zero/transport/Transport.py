@@ -1,8 +1,10 @@
 '''
 Created on 20190822
-Update on 20200305
+Update on 20200517
 @author: Eduardo Pagotto
 '''
+
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import sys
 import os
@@ -36,13 +38,13 @@ def get_address_from_string(s_address):
         val = s_address.partition('tcp://')[2]
         final = val.split(':')
 
-        if len(final)!=2:
+        if len(final) != 2:
             raise Exception('Invalid TCP Address: {0}'.format(s_address))
 
-        address = (final[0], int(final[1])) 
+        address = (final[0], int(final[1]))
         transportKind = TransportKind.NETWORK
     else:
-        raise Exception('Invalid Address kind:{0}'.format(s_address))    
+        raise Exception('Invalid Address kind:{0}'.format(s_address))
 
     return (address, transportKind)
 
@@ -76,7 +78,7 @@ def transportServer(transportKind, server_address):
             soc.getSocket().bind(server_address)
 
     soc.getSocket().listen(15)
-    logging.getLogger('Zero').debug('Bind in: {0}'.format(str(server_address)))
+    logging.getLogger('Zero').debug('Bind in: %s', str(server_address))
 
     return soc
 
@@ -90,7 +92,7 @@ def transportClient(transportKind, server_address):
         soc.setSocket(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
 
     soc.getSocket().connect(server_address)
-    logging.getLogger('Zero').debug('Connected: {0}'.format(str(server_address)))
+    logging.getLogger('Zero').debug('Connected: %s', str(server_address))
 
     return soc
 
@@ -100,6 +102,6 @@ def iNetdServer():
     soc = SocketBase()
     soc.setSocket(socket.fromfd(sys.stdin.fileno(), socket.AF_INET, socket.SOCK_STREAM))
     server_address = soc.getSocket().getsockname()
-    logging.getLogger('Zero').debug('Connected in: {0}'.format(str(server_address)))
+    logging.getLogger('Zero').debug('Connected in: %s', str(server_address))
 
     return soc

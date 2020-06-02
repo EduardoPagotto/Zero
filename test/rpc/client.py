@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20190924
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import sys
+#pylint: disable=C0301, C0116, W0703
+
 import time
 import logging
 
 import common as rpc
 
-sys.path.append('../Zero')
-
-from Zero.ServiceBus import ServiceBus
-from Zero.subsys.ExceptionZero import ExceptionZeroRPC
+from Zero import ServiceBus
+from Zero import ExceptionZeroRPC
 
 def main():
-
     try:
         log = logging.getLogger('Client')
-        bus = ServiceBus()
-        
-        ponta = bus.getObject(rpc.TRANSPORT, rpc.ADDRESS)
+        bus = ServiceBus(rpc.ADDRESS)
+
+        ponta = bus.getObject()
 
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)
@@ -32,17 +30,17 @@ def main():
         if valor == 'Jose':
             ponta.setNome('Maria')
         else:
-            ponta.setNome('Jose')            
+            ponta.setNome('Jose')
 
 
         log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
-        valor = ponta.teste_targuet(3)
+        valor = ponta.teste_targuet(4)
         log.debug('RPC retorno: %s', valor)
 
         dados = {'nome':'pagotto', 'idade':50, 'sexo':True, 'opt':{'val1':'teste1', 'lista':['um', 'dois']}}
         retorno = ponta.get_dict(dados)
-        log.debug('RPC retorno:%s',str(retorno))
+        log.debug('RPC retorno:%s', str(retorno))
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
         #log.debug('RPC retorno: %s', valor)

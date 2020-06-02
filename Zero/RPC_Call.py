@@ -1,8 +1,10 @@
 '''
 Created on 20190823
-Update on 20190924
+Update on 20200517
 @author: Eduardo Pagotto
 '''
+
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import json
 import threading
@@ -28,18 +30,16 @@ class RPC_Call(object):
 
             return serial
 
-    def encode(self,  *args, **kargs):
-
+    def encode(self, *args, **kargs):
         keys = {}
         arguments = []
         if args:
             arguments = args[0]
-            keys=args[1]
+            keys = args[1]
 
         return json.dumps({'jsonrpc':RPC_Call.json_rpc_version, 'id':self.serial, 'method': self.method, 'params': arguments, 'keys': keys})
 
     def decode(self, msg):
-
         # TODO: get exceptions from json
         dados = json.loads(msg)
         if dados['id'] == self.serial:
@@ -47,7 +47,7 @@ class RPC_Call(object):
                 raise ExceptionZeroRPC(dados['error']['message'], dados['error']['code'])
 
             return dados['result']
-  
+
         raise ExceptionZeroRPC('Parse error, id {0} should be {1}'.format(dados['id'], self.serial), -32700)
 
     def __call__(self, *args, **kargs):
@@ -83,11 +83,11 @@ def RPC_Result(target, msg):
 
     except ExceptionZeroRPC as exp2:
         tot = len(exp2.args)
-        if tot == 0: 
+        if tot == 0:
             return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32000, 'message': 'Server error: Generic Zero RPC Exception'}, 'id': serial})
         elif tot == 1:
             return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32001, 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
-        else: 
+        else:
             return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': exp2.args[1], 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
 
     except Exception as exp3:

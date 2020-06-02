@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 '''
 Created on 20190821
-Update on 20190821
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import Zero
 import setuptools
 
 # with open("README.md", "r") as fh:

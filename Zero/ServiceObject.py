@@ -1,28 +1,23 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200305
+Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-import sys
-import os
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
+
 import time
 import threading
 import logging
-import socket
 
-from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.Transport import transportServer, TransportKind, get_address_from_string
+from Zero.transport.Transport import transportServer, get_address_from_string
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
-
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
-
 class ServiceObject(object):
     def __init__(self, s_address, target):
-        
+
         self.done = False
         self.log = logging.getLogger('Zero.RPC')
 
@@ -30,7 +25,7 @@ class ServiceObject(object):
 
         self.server = transportServer(transportKind, address)
         self.server.settimeout(10)
-    
+
         self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe
         self.service.start()
 
@@ -70,7 +65,7 @@ class ServiceObject(object):
 
             if self.done is True:
                 self.server.close()
-                self.service.stop()  
+                self.service.stop()
                 break
 
     def loop_blocked(self):

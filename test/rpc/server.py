@@ -1,28 +1,25 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200304
+Update on 20200516
 @author: Eduardo Pagotto
 '''
 
-import logging
-import time
+#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
-import sys
-sys.path.append('../Zero')
+import logging
 
 import common as rpc
 
-from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceObject import ServiceObject
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 class ServerRPC(ServiceObject):
     def __init__(self):
         self.vivo = True
-        self.nome = ''
+        self.nome = 'NOVO'
         self.log = logging.getLogger('Server')
-        super().__init__(rpc.TRANSPORT, rpc.ADDRESS, self)
+        super().__init__(rpc.ADDRESS, self)
 
     def teste_targuet(self, entrada):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
@@ -38,19 +35,19 @@ class ServerRPC(ServiceObject):
 
         return False
 
-    @ServiceObject.rpc_call(rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))
+    #@ServiceObject.rpc_call(identicador=rpc.IS_ALIVE_INTERFACE, input=(), output=('b',))
     def is_alive_bitch(self):
-        return self.vivo  
+        return self.vivo
 
-    @ServiceObject.rpc_call(rpc.SET_NOME_INTERFACE, input=('s',), output=())
+    #@ServiceObject.rpc_call(rpc.SET_NOME_INTERFACE, input=('s',), output=())
     def setNome(self, nome):
         self.nome = nome
 
-    @ServiceObject.rpc_call(rpc.GET_NOME_INTERFACE, input=(''), output=('s',))
+    #@ServiceObject.rpc_call(rpc.GET_NOME_INTERFACE, input=(''), output=('s',))
     def getNome(self):
         return self.nome
 
-    @ServiceObject.rpc_call(rpc.GET_DICIONARIO_INTERFACE, input=('d',), output=('d'))
+    #@ServiceObject.rpc_call(rpc.GET_DICIONARIO_INTERFACE, input=('d',), output=('d'))
     def get_dict(self, dicionario):
         dicionario['novo'] = 'ola'
         return dicionario
