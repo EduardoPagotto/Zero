@@ -1,12 +1,12 @@
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200602
 @author: Eduardo Pagotto
 '''
 
 #pylint: disable=C0301, C0116, W0703, C0103
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 
 # RPC Client class
 from Zero.ServiceBus import ServiceBus
