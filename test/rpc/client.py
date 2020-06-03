@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200602
 @author: Eduardo Pagotto
 '''
 
@@ -11,9 +11,7 @@ import time
 import logging
 
 import common as rpc
-
-from Zero import ServiceBus
-from Zero import ExceptionZeroRPC
+from Zero import ServiceBus, ExceptionZeroRPC
 
 def main():
     try:
@@ -21,6 +19,8 @@ def main():
         bus = ServiceBus(rpc.ADDRESS)
 
         ponta = bus.getObject()
+
+        ponta.testeA('primeiro', 'segundo', val1='val1', val2='teste2', val3='DDD')
 
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)

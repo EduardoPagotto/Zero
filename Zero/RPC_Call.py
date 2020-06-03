@@ -1,6 +1,6 @@
 '''
 Created on 20190823
-Update on 20200517
+Update on 20200602
 @author: Eduardo Pagotto
 '''
 
@@ -68,11 +68,7 @@ def RPC_Result(target, msg):
     metodo = dados['method']
 
     try:
-        if len(dados['params']) > 0:
-            val = getattr(target, metodo)(*dados['params'])
-        else:
-            val = getattr(target, metodo)()
-
+        val = getattr(target, metodo)(*dados['params'], **dados['keys'])
         return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'result': val, 'id': serial})
 
     except AttributeError as exp:

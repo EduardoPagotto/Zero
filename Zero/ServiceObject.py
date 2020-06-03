@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200602
 @author: Eduardo Pagotto
 '''
 
@@ -68,10 +68,13 @@ class ServiceObject(object):
                 self.service.stop()
                 break
 
-    def loop_blocked(self):
+    def loop_blocked(self, killer=None):
         try:
             while self.done is False:
                 time.sleep(5)
+                if killer is not None:
+                    if killer.kill_now is True:
+                        self.stop()
 
             self.join()
 
