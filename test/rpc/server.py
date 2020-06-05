@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200516
+Update on 20200602
 @author: Eduardo Pagotto
 '''
 
@@ -11,8 +11,7 @@ import logging
 
 import common as rpc
 
-from Zero.ServiceObject import ServiceObject
-from Zero.subsys.ExceptionZero import ExceptionZeroRPC
+from Zero import ServiceObject, ExceptionZeroRPC, GracefulKiller
 
 class ServerRPC(ServiceObject):
     def __init__(self):
@@ -52,6 +51,9 @@ class ServerRPC(ServiceObject):
         dicionario['novo'] = 'ola'
         return dicionario
 
+    def testeA(self, *args, **kargs):
+        self.log.info('args: %s; kargs: %s', str(args), str(kargs))
+
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -61,4 +63,4 @@ if __name__ == '__main__':
     )
 
     server = ServerRPC()
-    server.loop_blocked()
+    server.loop_blocked(GracefulKiller())
