@@ -1,12 +1,12 @@
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200723
 @author: Eduardo Pagotto
 '''
 
 #pylint: disable=C0301, C0116, W0703, C0103
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 # Generic class
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC

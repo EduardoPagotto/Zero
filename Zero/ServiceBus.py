@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200723
 @author: Eduardo Pagotto
 '''
 
@@ -29,11 +29,22 @@ class ServiceBus(object):
         Returns:
             [ProxyObject] -- [Proxy conectado com controle de conexao e reentrada]
         """
-        self.conn_control = ConnectionControl(self.transportKind, self.address, self.retry, self.max_threads)
+
+        if self.conn_control is None:
+            self.conn_control = ConnectionControl(self.transportKind, self.address, self.retry, self.max_threads)
+
         return ProxyObject(self.conn_control)
+
+    def close_all(self):
+        try:
+            if self.conn_control is not None:
+                self.conn_control.stop()
+                self.conn_control.join()
+                self.conn_control = None
+        except:
+            pass
 
     def __del__(self):
         """[desconecta e encerra conexao]
         """
-        self.conn_control.stop()
-        self.conn_control.join()
+        self.close_all()
