@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200625
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703
 
 import time
 import logging
@@ -50,6 +48,8 @@ def main():
 
     except Exception as exp:
         log.exception('Falha: {0}'.format(str(exp)))
+
+    bus.close_all()
 
     log.info('App desconectado')
 

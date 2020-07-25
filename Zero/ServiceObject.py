@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200625
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import threading
 import logging
 
-from Zero.transport.Transport import transportServer, get_address_from_string
+from Zero import SocketFactory
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
@@ -21,9 +19,7 @@ class ServiceObject(object):
         self.done = False
         self.log = logging.getLogger('Zero.RPC')
 
-        address, transportKind = get_address_from_string(s_address)
-
-        self.server = transportServer(transportKind, address)
+        self.server =  SocketFactory(s_address).get_server() # TODO encapsular em ServiceServer ??
         self.server.settimeout(10)
 
         self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe

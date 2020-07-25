@@ -1,58 +1,91 @@
 '''
 Created on 20170119
-Update on 20200517
+Update on 20200624
 @author: Eduardo Pagotto
 '''
 
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
-
+import os
 import struct
 import zlib
 import logging
+import socket
+
+from typing import Tuple
 
 from enum import Enum
 from Zero.transport.SocketBase import SocketBase
 from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class ProtocolCode(Enum):
-    '''Comandos Enviados pelo Protocolo'''
+    """[Protocl commands id's]
+    Args:
+        Enum ([int]): [1 - opem connection
+                       2 - Close event
+                       3 - Command message
+                       4 - Result of Command (3)
+                       5 - File Exchange (TODO)
+                       255 - Erro Message from host connected]
+    """
     OPEN = 1
     CLOSE = 2
     COMMAND = 3
     RESULT = 4
+    FILE = 5
     ERRO = 255
 
 class Protocol(SocketBase):
-    def __init__(self, socket):
+    """[Transference Protocol]
+    Args:
+        SocketBase ([type]): [description]
+    """
+
+    def __init__(self, socket : socket.socket):
+        """[Contructor with low level socke]
+        Args:
+            socket (socket.socket): [new socket]
+        """
+
         SocketBase.__init__(self)
-        self.protocol_versao = "0.0.1"
+        self.protocol_versao : str = "0.0.1"
         self.setSocket(socket)
         self.log = logging.getLogger('Zero')
 
-    def sendProtocol(self, _id, _buffer):
-        '''Envia um buffer com comando do Protocolo'''
-        buffer_final = []
+    def sendProtocol(self, _id : ProtocolCode, _buffer : bytes) -> int:
+        """[Send a data buffer to host connected]
+        Args:
+            _id (ProtocolCode): [id message]
+            _buffer (bytes): [buffer data]
+        Returns:
+            int: [size sended]
+        """
 
-        tamanho_buffer = int(len(_buffer))
-        comprimido = zlib.compress(_buffer)
-        tamanho_comprimido = int(len(comprimido))
-        crc = zlib.crc32(comprimido)
+        tamanho_buffer : int = int(len(_buffer))
+        comprimido :bytes = zlib.compress(_buffer)
+        tamanho_comprimido : int = int(len(comprimido))
+        crc : int = zlib.crc32(comprimido)
 
-        headerTupleA = (_id.value, 0, 0, 0, tamanho_buffer, tamanho_comprimido, crc, 0, 0, 0)
-        formatoHeaderA = struct.Struct('B B B B I I I I I I')
-        headerA = formatoHeaderA.pack(*headerTupleA)
-        buffer_final += headerA
+        headerTupleA : Tuple = (_id.value, 0, 0, 0, tamanho_buffer, tamanho_comprimido, crc, 0, 0, 0)
+        formatoHeaderA : struct.Struct = struct.Struct('B B B B I I I I I I')
+        headerA : bytes = formatoHeaderA.pack(*headerTupleA)
 
-        crc2 = zlib.crc32(headerA)
-        headerCRC = struct.pack("I", crc2)
-        buffer_final += headerCRC
+        crc2 :int = zlib.crc32(headerA)
+        headerCRC : bytes = struct.pack("I", crc2)
 
-        buffer_final += comprimido
+        buffer_final : bytes = headerA + headerCRC + comprimido
 
-        self.sendBlocks(buffer_final)
+        return self.sendBlocks(buffer_final)
 
-    def receiveProtocol(self):
-        '''Recebe um comando ou dados do protocolo'''
+    def receiveProtocol(self) -> Tuple[ProtocolCode, bytes]:
+        """[Receive a data buffer from host connected]
+        Raises:
+            ExceptionZero: [Fail CRC header]
+            ExceptionZero: [Fail CRC checksum]
+            ExceptionZero: [Fail to set size buffer]
+            ExceptionZeroClose: [Received Close evento from host connected]
+            ExceptionZeroErro: [Redeived a erro message from host connected]
+        Returns:
+            Tuple[ProtocolCode, bytes]: [Code receved, data buffer receved]
+        """
 
         buffer_header = bytearray(self.receiveBlocks(32))
 
@@ -61,9 +94,7 @@ class Protocol(SocketBase):
 
         valInt = int(headerTuple[0])
         idRecebido = ProtocolCode(valInt)
-        #res1 = headerTuple[1]
-        #res2 = headerTuple[2]
-        #res3 = headerTuple[3]
+
         tamanho_buffer = headerTuple[4]
         tamanho_comprimido = headerTuple[5]
         crc = headerTuple[6]
@@ -101,38 +132,62 @@ class Protocol(SocketBase):
         elif idRecebido == ProtocolCode.ERRO:
             raise ExceptionZeroErro('{0}'.format(binario.decode('UTF-8')))
 
-        return (idRecebido, binario)
+        return idRecebido, binario
 
-    def sendString(self, _id, _texto):
-        '''Envida texto com id'''
+    def sendString(self, _id : ProtocolCode, _texto : str) -> int:
+        """[Send a string and code to host connected]
+        Args:
+            _id (ProtocolCode): [Code of message]
+            _texto (str): [Text to send]
+        Returns:
+            int: [size of message sended]
+        """
+
         buffer = _texto.encode('UTF-8')
         return self.sendProtocol(_id, buffer)
 
-    def receiveString(self):
-        '''recebe texto com id'''
+    def receiveString(self) -> Tuple[ProtocolCode, str]:
+        """[Receive a string and code to host connected]
+        Returns:
+            Tuple[ProtocolCode, str]: [Code and text receved]
+        """
+
         buffer = self.receiveProtocol()
+        return(buffer[0], buffer[1].decode('UTF-8'))
 
-        if buffer[0] is not None:
-            return(buffer[0], buffer[1].decode('UTF-8'))
+    def sendClose(self, _texto : str) -> None:
+        """[Send a close command to host if is connected]
+        Args:
+            _texto (str): [text to host]
+        """
 
-        return buffer
-
-    def sendClose(self, _texto):
-        '''Envia o fechamento'''
         if self.isConnected() is True:
             self.log.info('Close enviado ao cliente: %s', _texto)
             self.sendString(ProtocolCode.CLOSE, _texto)
             self.close()
 
-    def handShake(self):
-        '''Envia Hand automatico'''
+    def handShake(self) -> str:
+        """[Execute a exchange of a handshake message to host connected]
+        Returns:
+            str: [message receved from host connected]
+        """
         self.sendString(ProtocolCode.OPEN, self.protocol_versao)
         idRecive, msg = self.receiveString()
         if idRecive is ProtocolCode.RESULT:
             self.log.info('handshake with server: %s', msg)
             return msg
 
-    def exchange(self, input):
+        raise ExceptionZero('Fail to Handshake')
+
+    def exchange(self, input : str) -> str:
+        """[Send a text to host and get message back]
+        Args:
+            input (str): [text to send]
+        Raises:
+            ExceptionZero: [Fail to get message back]
+        Returns:
+            str: [text receved]
+        """
 
         self.sendString(ProtocolCode.COMMAND, input)
         id, msg = self.receiveString()
@@ -141,12 +196,27 @@ class Protocol(SocketBase):
 
         raise ExceptionZero('Resposta invalida: ({0} : {1})'.format(id, msg))
 
-    # def sendErro(self, msg):
-    #     '''Envia uma MSG de erro ao peer'''
-    #     self.sendString(ProtocolCode.ERRO, msg)
+    # def sendErro(self, msg : str) -> int:
+    #     """[Send a erro Message to the host connected]
+    #     Args:
+    #         msg (str): [message to send]
+    #     Returns:
+    #         int: [size of message sended]
+    #     """
 
-    # def sendFile(self, path_file_name):
-    #     '''Envia arquivo ao ponto'''
+    #     return self.sendString(ProtocolCode.ERRO, msg)
+
+    # def sendFile(self, path_file_name : str) -> int:
+    #     """[Send a file to host connected]
+    #     Args:
+    #         path_file_name (str): [path of file]
+    #     Raises:
+    #         ExceptionZero: [Fail to read a file from disk]
+    #         ExceptionZero: [Fail to acess a file from disk]
+    #         ExceptionZero: [host connected return a erro mensage]
+    #     Returns:
+    #         int: [size of file sended]
+    #     """
     #     fileContent = None
     #     tamanho_arquivo = 0
     #     try:
@@ -162,17 +232,24 @@ class Protocol(SocketBase):
     #         raise ExceptionZero('Protocolo Send File: {0} '.format(msg_erro))
 
     #     self.sendProtocol(ProtocolCode.FILE, fileContent)
-    #     idRecebido, msg = self.receiveProtocol()
+    #     idRecebido, msg = self.receiveString()
 
-    #     if idRecebido is not ProtocolCode.OK or msg != 'OK':
+    #     if idRecebido is not ProtocolCode.RESULT or msg != 'OK':
     #         raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
 
     #     return tamanho_arquivo
 
-    # def receiveFile(self, path_file_name):
-    #     '''
-    #     Recebe um arquivo no protocolo com nome passado
-    #     '''
+    # def receiveFile(self, path_file_name : str) -> int:
+    #     """[Receive a file from host connected]
+    #     Args:
+    #         path_file_name (str): [path to save a file]
+    #     Raises:
+    #         ExceptionZero: [Fail to create a dir]
+    #         Exception: [Fail to save a file]
+    #         Exception: [Receive a unspected command]
+    #     Returns:
+    #         int: [description]
+    #     """
     #     id, buffer_arquivo = self.receiveProtocol()
 
     #     path, file_name = os.path.split(path_file_name)
@@ -180,18 +257,16 @@ class Protocol(SocketBase):
     #         if not os.path.exists(path):
     #             os.makedirs(path)
     #     except OSError as e:
-    #         if e.errno != errno.EEXIST:
-    #             msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
-    #             self.sendErro(msg_erro)
-    #             raise ExceptionZero(msg_erro)
+    #         # if e.errno != errno.EEXIST:
+    #         msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
+    #         self.sendErro(msg_erro)
+    #         raise ExceptionZero(msg_erro)
 
     #     if id == ProtocolCode.FILE:
     #         try:
     #             with open(path_file_name, mode='wb') as file:
     #                 file.write(bytes(int(x, 0) for x in buffer_arquivo))
-
-    #                 self.sendString(ProtocolCode.OK, 'OK')
-
+    #                 self.sendString(ProtocolCode.RESULT, 'OK')
     #                 return len(buffer_arquivo)
 
     #         except Exception as exp:

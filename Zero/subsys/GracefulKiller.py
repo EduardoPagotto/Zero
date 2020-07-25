@@ -4,8 +4,6 @@ Update on 20200304
 @author: Eduardo Pagotto
 '''
 
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
-
 import signal
 from Zero.subsys.Singleton import Singleton
 
@@ -13,7 +11,7 @@ class GracefulKiller(metaclass=Singleton):
     def __init__(self):
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
-        self.kill_now = False
+        self.kill_now : bool = False
 
     def force_hand(self):
         self.kill_now = True

@@ -1,10 +1,8 @@
 '''
 Created on 20190821
-Update on 20200517
+Update on 20200723
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 class ExceptionZero(Exception):
     '''Exception gerenciada'''

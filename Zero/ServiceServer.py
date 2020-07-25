@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200725
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import socket

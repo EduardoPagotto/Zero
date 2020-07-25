@@ -4,8 +4,6 @@ Update on 20200517
 @author: Eduardo Pagotto
 '''
 
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
-
 import logging
 import socket
 

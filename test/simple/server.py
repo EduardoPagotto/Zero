@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200517
+Update on 20200725
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import logging
@@ -80,8 +78,7 @@ def main():
 
     killer = GracefulKiller()
 
-    #server = transportServer(TransportKind.NETWORK, common.ip_target)
-    server = transportServer(TransportKind.UNIX_DOMAIN, common.uds_target)
+    server = transportServer(SocketFactory(TransportKind.UNIX_DOMAIN, common.uds_target)
 
     server.settimeout(10)
 
