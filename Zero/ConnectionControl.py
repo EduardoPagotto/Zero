@@ -12,7 +12,7 @@ from typing import List, Union, Any
 from datetime import datetime, timedelta
 
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
-from Zero.transport.Transport import SocketFactory
+from Zero.transport.SocketFactory import SocketFactory
 from Zero.transport.Protocol import Protocol
 
 class ConnectionData(object):
