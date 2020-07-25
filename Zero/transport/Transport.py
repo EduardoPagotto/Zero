@@ -14,15 +14,6 @@ from typing import Tuple, Union
 from enum import Enum
 from Zero.transport.SocketBase import SocketBase
 
-class TransportKind(Enum):
-    """[Kynd of low level protocol]
-    Args:
-        Enum ([int]): [0 - UDS
-                       1 - TCP/IP]
-    """
-    UNIX_DOMAIN = 0,
-    NETWORK = 1,
-
 class SocketFactory(object):
     """[Factory of new connections]
     Args:
@@ -38,7 +29,7 @@ class SocketFactory(object):
             Exception: [malformed UDS path]
         """
 
-        self.transportKind :TransportKind = TransportKind.UNIX_DOMAIN
+        self.kind : int = 0 # 0=UDS ; 1=TCPIP
         self.s_address : str = s_address
         self.uds:str
         self.tcp_ip: Tuple[str, int]
@@ -47,7 +38,7 @@ class SocketFactory(object):
             self.uds = s_address.partition('uds://')[2]
 
         elif 'tcp://' in s_address:
-            self.transportKind = TransportKind.NETWORK
+            self.kind = 1
             val = s_address.partition('tcp://')[2]
             final = val.split(':')
 
@@ -59,11 +50,8 @@ class SocketFactory(object):
         else:
             raise Exception('Invalid Address :{0}'.format(s_address))
 
-    def get_server(self) -> SocketBase: #transportServer(address_host : SocketFactory) -> SocketBase:
+    def get_server(self) -> SocketBase:
         """[Create a socket server]
-        Args:
-            transportKind (TransportKind): [UDS or TCP/IP]
-            server_address ([Union[Tuple[str, int], str]]): [description]
         Returns:
             SocketBase: [socket]
         """
@@ -71,7 +59,7 @@ class SocketFactory(object):
         porta = 80
         soc = None
 
-        if self.transportKind == TransportKind.UNIX_DOMAIN:
+        if self.kind == 0:
             try:
                 os.unlink(self.uds)
             except OSError:
@@ -99,26 +87,22 @@ class SocketFactory(object):
 
         return soc
 
-    def get_client(self)-> SocketBase: #transportClient(address_host : SocketFactory) -> SocketBase: #transportKind : TransportKind, server_address) -> SocketBase:
+    def get_client(self)-> SocketBase:
         """[summary]
-        Args:
-            transportKind (TransportKind): [description]
-            server_address ([type]): [description]
-
         Returns:
             SocketBase: [description]
         """
 
         soc = SocketBase()
 
-        if self.transportKind == TransportKind.UNIX_DOMAIN:
+        if self.kind == 0:
             soc.setSocket(socket.socket(socket.AF_UNIX, socket.SOCK_STREAM))
             soc.getSocket().connect(self.uds)
         else:
             soc.setSocket(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
             soc.getSocket().connect(self.tcp_ip)
 
-        #logging.getLogger('Zero').debug('Connected: %s', str(self.s_address))
+        logging.getLogger('Zero').debug('Connected: %s', str(self.s_address))
 
         return soc
 
