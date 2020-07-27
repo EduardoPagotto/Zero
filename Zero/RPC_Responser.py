@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200517
+Update on 20200725
 @author: Eduardo Pagotto
 '''
 
@@ -13,11 +13,22 @@ from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro
 from Zero.RPC_Call import RPC_Result
 
 class RPC_Responser(object):
-    def __init__(self, target):
+    """[Connection thread with server RPC ]
+    Args:
+        object ([type]): [description]
+    """
+
+    def __init__(self, target : object):
+        """[summary]
+        Args:
+            target (object): [Method Name to run in RPC Server]
+        """
         self.log = logging.getLogger('Zero.RPC')
-        self.target = target
+        self.target : object= target
 
     def __call__(self, *args, **kargs):
+        """[execute exchange of json's messages with server RPC]
+        """
 
         self.log.info('RPC Response start num: %d', args[0])
 

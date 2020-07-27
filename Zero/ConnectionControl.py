@@ -94,6 +94,10 @@ class ConnectionControl(object):
             return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.s_address, self.retry)
 
     def release_connection(self, line_comm : ConnectionData) -> None:
+        """[Release connectiom no more used ]
+        Args:
+            line_comm (ConnectionData): [Connection with server RPC]
+        """
         with self.mutex_free:
             line_comm.update()
             self.lines_free.append(line_comm)
@@ -126,7 +130,7 @@ class ConnectionControl(object):
                             comm = self.lines_free.pop(0)
                             self.log.debug('close id: %d', comm.id)
                             comm.connection.sendClose('bye')
-                            comm = None
+                            del comm #comm = None
 
             except Exception as exp:
                 self.log.error('cleanner_conn falha critica: %s', str(exp))
@@ -139,6 +143,6 @@ class ConnectionControl(object):
             comm = self.lines_free.pop()
             self.log.debug('Shutdown close id: %d', comm.id)
             comm.connection.sendClose('bye')
-            comm = None
+            del comm #comm = None
 
         self.log.debug('cleanner_conn down')

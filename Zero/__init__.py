@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20200723
+Update on 20200725
 @author: Eduardo Pagotto
 '''
 
@@ -14,6 +14,8 @@ from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.transport.SocketBase import SocketBase
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.transport.SocketFactory import SocketFactory
+
+from Zero.ConnectionControl import ConnectionControl
 
 # RPC Server Class Internal
 from Zero.ServiceServer import ServiceServer

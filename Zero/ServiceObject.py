@@ -14,7 +14,7 @@ from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
 class ServiceObject(object):
-    def __init__(self, s_address, target):
+    def __init__(self, s_address : str, target : object):
 
         self.done = False
         self.log = logging.getLogger('Zero.RPC')
