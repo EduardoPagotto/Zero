@@ -10,6 +10,7 @@ import threading
 import logging
 
 from Zero import SocketFactoryServer
+from Zero import GracefulKiller
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
@@ -44,16 +45,22 @@ class ServiceObject(object):
             return wrapper
         return decorator
 
-    def join(self):
+    def join(self) -> None:
+        """[Wait until all connections be closed]
+        """
         self.service.join()
         self.t_guardian.join()
         self.log.info('service object down')
 
-    def stop(self):
+    def stop(self) -> None:
+        """[Signal to stop]
+        """
         self.log.info('service object shutting down.....')
         self.done = True
 
-    def __guardian(self):
+    def __guardian(self) -> None:
+        """[Log connections total and wait signal to shutdown]
+        """
         cycle = 0
         anterior = 0
         while True:
@@ -70,7 +77,7 @@ class ServiceObject(object):
                 self.service.stop()
                 break
 
-    def loop_blocked(self, killer=None):
+    def loop_blocked(self, killer:GracefulKiller=None) -> None:
         try:
             while self.done is False:
                 time.sleep(5)
@@ -81,4 +88,4 @@ class ServiceObject(object):
             self.join()
 
         except Exception as exp:
-            self.log.Exception('Falha Critica: %s', str(exp))
+            self.log.error('Falha Critica: %s', str(exp))
