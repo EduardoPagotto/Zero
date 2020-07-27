@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200625
+Update on 20200627
 @author: Eduardo Pagotto
 '''
 
@@ -39,6 +39,12 @@ def main():
         dados = {'nome':'pagotto', 'idade':50, 'sexo':True, 'opt':{'val1':'teste1', 'lista':['um', 'dois']}}
         retorno = ponta.get_dict(dados)
         log.debug('RPC retorno:%s', str(retorno))
+
+        log.debug('esperar 80 segindos para proxima consulta')
+        time.sleep(80)
+        valor = ponta.getNome()
+        log.debug('Nome Atual: %s', valor)
+
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
         #log.debug('RPC retorno: %s', valor)

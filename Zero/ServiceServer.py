@@ -54,7 +54,7 @@ class ServiceServer(object):
     def garbageCon(self) -> None:
         """[Thread to remove connections deads]
         """
-        self.log.info("Garbage connections start")
+        self.log.info("garbage connections start")
 
         totais = 0
         while True:
@@ -62,7 +62,7 @@ class ServiceServer(object):
             lista_remover = []
             for thread in self.lista:
                 if thread.isAlive() is False:
-                    self.log.debug('thread %s removed, total: %d', thread.getName(), totais + 1)
+                    self.log.info('thread removed %s, total removed: %d', thread.getName(), totais + 1)
                     totais += 1
                     thread.join()
                     lista_remover.append(thread)
@@ -79,7 +79,7 @@ class ServiceServer(object):
 
             time.sleep(1)
 
-        self.log.info("Garbage connection stop after %d removed", totais)
+        self.log.info("garbage connection stop after %d removed", totais)
 
     def builderConnection(self, sock : socket.socket, serverConnection: RPC_Responser):
         """[Thread factory of new connectons to client]
@@ -87,7 +87,7 @@ class ServiceServer(object):
             sock (socket.socket): [low severl socket]
             serverConnection (RPC_Responser): [responser json 2.0]
         """
-        self.log.info("Factory connections start")
+        self.log.info("factory connections start")
         seq = 0
 
         while True:
@@ -98,9 +98,9 @@ class ServiceServer(object):
                               'addr' : address,
                               'done' : self.done}
 
-                self.log.info("Factory server new connection :%s", str(address))
+                self.log.info("new connection :%s", str(address))
 
-                t = threading.Thread(target=serverConnection, name='conection_{0}'.format(seq), args=(seq, comm_param))
+                t = threading.Thread(target=serverConnection, name='connection_{0}'.format(seq), args=(seq, comm_param))
                 t.start()
 
                 self.lista.append(t)
@@ -116,4 +116,4 @@ class ServiceServer(object):
                 else:
                     break
 
-        self.log.info("Factory connection stop")
+        self.log.info("factory connection stop")

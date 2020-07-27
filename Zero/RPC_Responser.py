@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
@@ -30,7 +30,7 @@ class RPC_Responser(object):
         """[execute exchange of json's messages with server RPC]
         """
 
-        self.log.info('RPC Response start num: %d', args[0])
+        self.log.info('rpc response start index: %d', args[0])
 
         dados_conexao = args[1]
 
@@ -43,7 +43,7 @@ class RPC_Responser(object):
             protocol.settimeout(30)
 
         except Exception as exp:
-            self.log.exception('falha na parametrizacao da conexao: %s', str(exp))
+            self.log.critical('fail to create protocol: %s', str(exp))
             return
 
         count_to = 0
@@ -60,16 +60,16 @@ class RPC_Responser(object):
                     protocol.sendString(ProtocolCode.RESULT, msg_out)
 
             except ExceptionZeroErro as exp_erro:
-                self.log.warning('recevice Erro: %s', str(exp_erro))
+                self.log.warning('recevice erro: %s', str(exp_erro))
                 protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
             except ExceptionZeroClose as exp_close:
-                self.log.debug('receive Close: %s', str(exp_close))
+                #self.log.info('receive close: %s', str(exp_close))
                 break
 
             except socket.timeout:
                 count_to += 1
-                self.log.debug('connection %d timeout %d ..', indice_conexao, count_to)
+                self.log.info('rpc response index: %d timeout: %d ..', indice_conexao, count_to)
 
             except Exception as exp:
                 self.log.error('error: %s', str(exp))
@@ -79,4 +79,4 @@ class RPC_Responser(object):
                 protocol.close()
                 break
 
-        self.log.info('RPC Response finished')
+        self.log.info('rpc response stop index: %d', indice_conexao)

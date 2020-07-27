@@ -67,7 +67,7 @@ class ServiceObject(object):
             atual = len(self.service.lista)
             if atual != anterior:
                 anterior = atual
-                self.log.debug('cycle:%d connections:%d', cycle, atual)
+                self.log.info('cycle:%d connections:%d', cycle, atual)
 
             cycle += 1
             time.sleep(5)
@@ -88,4 +88,4 @@ class ServiceObject(object):
             self.join()
 
         except Exception as exp:
-            self.log.error('Falha Critica: %s', str(exp))
+            self.log.critical('Fail: %s', str(exp))

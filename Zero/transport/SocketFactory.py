@@ -104,7 +104,7 @@ class SocketFactoryServer(SocketFactory):
                 soc.getSocket().bind(self.tcp_ip)
 
         soc.getSocket().listen(15)
-        self.log.debug('Bind in: %s', str(self.s_address))
+        self.log.debug('bind in: %s', str(self.s_address))
 
         return soc
 
@@ -142,16 +142,16 @@ class SocketFactoryClient(SocketFactory):
                     soc.setSocket(socket.socket(socket.AF_INET, socket.SOCK_STREAM))
                     soc.getSocket().connect(self.tcp_ip)
 
-                self.log.debug('Connected: %s', str(self.s_address))
+                self.log.info('connected: %s', str(self.s_address))
                 return soc
 
             except Exception as exp:
-                self.log.debug('Connection %s error (%d/%d)', str(self.s_address), counter + 1, self.re_try)
+                self.log.debug('connection %s error (%d/%d)', str(self.s_address), counter + 1, self.re_try)
 
             time.sleep(2)
             counter += 1
 
-        raise ExceptionZero('Connection {0} fail'.format(str(self.s_address)))
+        raise ExceptionZero('connection {0} fail'.format(str(self.s_address)))
 
     # # TODO: implementar a continuação do inetd, neste caso a conexao ja é a final, indo direto para o protocolo
     # def iNetdServer(self) -> SocketBase:

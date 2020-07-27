@@ -1,6 +1,6 @@
 '''
 Created on 20170119
-Update on 20200624
+Update on 20200627
 @author: Eduardo Pagotto
 '''
 
@@ -120,12 +120,12 @@ class Protocol(SocketBase):
         if idRecebido == ProtocolCode.OPEN:
             msg = binario.decode('UTF-8')
 
-            self.log.debug('handshake with client:%s', msg)
+            self.log.debug('handshake with host:%s', msg)
 
             self.sendString(ProtocolCode.RESULT, self.protocol_versao)
 
         elif idRecebido == ProtocolCode.CLOSE:
-            self.log.debug('Close recebido:%s', binario.decode('UTF-8'))
+            #self.log.debug('closure receved:%s', binario.decode('UTF-8'))
             self.close()
             raise ExceptionZeroClose('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
 
@@ -162,7 +162,7 @@ class Protocol(SocketBase):
         """
 
         if self.isConnected() is True:
-            self.log.info('Close enviado ao cliente: %s', _texto)
+            self.log.info('closure sent to host: %s', _texto)
             self.sendString(ProtocolCode.CLOSE, _texto)
             self.close()
 

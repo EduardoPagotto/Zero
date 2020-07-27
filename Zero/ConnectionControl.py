@@ -94,32 +94,30 @@ class ConnectionControl(object):
     def cleanner(self) ->None:
         """[Garbage collector of connections elapsed]
         """
-
-        self.log.debug('cleanner_conn start')
+        self.log.info('thread cleanner_conn start')
         while self.done is False:
-
             try:
                 now = datetime.now()
                 with self.mutex_free:
-                    if len(self.lines_free) > 0:
-                        elapse = self.lines_free[0].last_update + timedelta(minutes=1)
-                        while (now > elapse) and (len(self.lines_free) > 0):
-                            comm = self.lines_free.pop(0)
-                            self.log.debug('close id: %d', comm.id)
-                            comm.connection.sendClose('bye')
-                            del comm #comm = None
+                    for item in reversed(self.lines_free): # necessary interator fix!!!
+                        elapse = item.last_update + timedelta(minutes=1)
+                        if now > elapse:
+                            self.lines_free.remove(item)
+                            self.log.info('clear id: %d', item.id)
+                            item.connection.sendClose('bye')
+                            del item
 
             except Exception as exp:
-                self.log.error('cleanner_conn falha critica: %s', str(exp))
+                self.log.critical('cleanner_conn fail: %s', str(exp))
 
             time.sleep(5)
 
-        self.log.debug('cleanner_conn stopping...')
+        self.log.info('cleanner_conn stopping...')
 
         while len(self.lines_free) > 0:
             comm = self.lines_free.pop()
-            self.log.debug('Shutdown close id: %d', comm.id)
+            self.log.info('shutdown close id: %d', comm.id)
             comm.connection.sendClose('bye')
-            del comm #comm = None
+            del comm
 
-        self.log.debug('cleanner_conn down')
+        self.log.info('thread cleanner_conn stop')
