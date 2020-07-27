@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200625
+Update on 20200627
 @author: Eduardo Pagotto
 '''
 
@@ -9,17 +9,23 @@ import time
 import threading
 import logging
 
-from Zero import SocketFactory
+from Zero import SocketFactoryServer
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
 class ServiceObject(object):
+
     def __init__(self, s_address : str, target : object):
+        """[Start Server RPC]
+        Args:
+            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            target (object): [Self of derivade class]
+        """
 
         self.done = False
         self.log = logging.getLogger('Zero.RPC')
 
-        self.server =  SocketFactory(s_address).get_server() # TODO encapsular em ServiceServer ??
+        self.server =  SocketFactoryServer(s_address).create_socket() # TODO encapsular em ServiceServer ??
         self.server.settimeout(10)
 
         self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe

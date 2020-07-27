@@ -1,6 +1,6 @@
 '''
 Created on 20190914
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
@@ -11,48 +11,26 @@ import threading
 from typing import List, Union, Any
 from datetime import datetime, timedelta
 
-from Zero.subsys.ExceptionZero import ExceptionZeroRPC
-from Zero.transport.SocketFactory import SocketFactory
+from Zero.transport.SocketFactory import SocketFactoryClient
 from Zero.transport.Protocol import Protocol
 
 class ConnectionData(object):
-    """[Connection]
+    """[Connection with server RPC]
     Args:
         object ([type]): [description]
-    Raises:
-        ExceptionZeroRPC: [description]
     """
-
     serial : int = 0
 
-    def __init__(self, s_address : str, retry : int):
+    def __init__(self, factory : SocketFactoryClient):
         """[Constructor Connection]
         Args:
-            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
-            retry (int): [number of try's]
-        Raises:
-            ExceptionZeroRPC: [Fail to create new connection]
+            factory (SocketFactoryClient): [Connection data]
         """
-
         self.id : int = ConnectionData.serial
         self.connection : Union[Protocol, Any] = None
         self.last_update = datetime.now()
         self.log = logging.getLogger('Zero.RPC')
-
-        contador = 0
-        while contador < retry:
-            try:
-                self.connection = Protocol(SocketFactory(s_address).get_client().getSocket())
-                ConnectionData.serial += 1
-
-                self.log.debug('New connection id: %d peer: %s OK', self.id, str(s_address)) # TODO: trocar pelos dados de conexao tcp/ip ou UDS
-                return
-            except Exception:
-                self.log.debug('New connection peer %s fail (%d/%d)', str(s_address), contador+1, retry)
-                time.sleep(2)
-                contador += 1
-
-        raise ExceptionZeroRPC('New connection peer {0} erro'.format(str(s_address)))
+        self.connection = Protocol(factory.create_socket().getSocket())
 
     def update(self) -> None:
         """[update last used]
@@ -65,16 +43,15 @@ class ConnectionControl(object):
         object ([type]): [description]
     """
 
-    def __init__(self, s_address : str, retry : int, max_threads : int):
+    def __init__(self, factory : SocketFactoryClient, max_threads : int):
         """[summary]
         Args:
-            s_address (str): [description]
-            retry (int): [description]
-            max_threads (int): [description]
+            factory (SocketFactoryClient): [Conection data]
+            max_threads (int): [num max of cooncurrency]
         """
 
-        self.s_address : str = s_address
-        self.retry : int = retry
+        self.factory = factory
+
         self.done :bool = False
         self.lines_free : List[ConnectionData]= []
         self.log = logging.getLogger('Zero.RPC')
@@ -91,7 +68,7 @@ class ConnectionControl(object):
 
         self.semaphore.acquire()
         with self.mutex_free:
-            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.s_address, self.retry)
+            return self.lines_free.pop() if len(self.lines_free) > 0 else ConnectionData(self.factory)
 
     def release_connection(self, line_comm : ConnectionData) -> None:
         """[Release connectiom no more used ]

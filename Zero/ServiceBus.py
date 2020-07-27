@@ -1,25 +1,25 @@
 '''
 Created on 20190822
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
 from typing import Union, Any
 
+from Zero import SocketFactoryClient
 from Zero.ConnectionControl import ConnectionControl
 from Zero.ProxyObject import ProxyObject
 
 class ServiceBus(object):
     def __init__(self, s_address : str, retry : int=3, max_threads : int=5):
-        """[Pre-Conexao dados do host]
+        """[Container of Wrapper Client RPC]
         Args:
-            s_address (str): [exemplo validos:( uds://./conexao_peer | tcp://127.0.0.1:5151) ]
+            s_address (str): [valid's : ( uds://./conexao_peer | tcp://127.0.0.1:5151) ]
             retry (int, optional): [Tentativa de reconexa]. Defaults to 3.
             max_threads (int, optional): [Numero maximo de threads de conexao simultaneas]. Defaults to 5.
         """
 
-        self.s_address = s_address
-        self.retry = retry
+        self.factoty_client = SocketFactoryClient(s_address, retry)
         self.max_threads = max_threads
         self.conn_control : Union[ConnectionControl, None] =  None
 
@@ -30,7 +30,7 @@ class ServiceBus(object):
         """
 
         if self.conn_control is None:
-            self.conn_control = ConnectionControl(self.s_address, self.retry, self.max_threads)
+            self.conn_control = ConnectionControl(self.factoty_client, self.max_threads)
 
         return ProxyObject(self.conn_control)
 

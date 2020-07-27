@@ -1,6 +1,6 @@
 '''
 Created on 20190822
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
@@ -13,7 +13,7 @@ from Zero.subsys.GracefulKiller import GracefulKiller
 # Transport
 from Zero.transport.SocketBase import SocketBase
 from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.SocketFactory import SocketFactory
+from Zero.transport.SocketFactory import SocketFactoryClient, SocketFactoryServer
 
 from Zero.ConnectionControl import ConnectionControl
 
