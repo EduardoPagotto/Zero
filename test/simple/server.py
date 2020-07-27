@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
@@ -12,11 +12,10 @@ import socket
 import common
 
 from Zero import Protocol, ProtocolCode
-from Zero import transportServer, TransportKind
 from Zero import ServiceServer
-
+from Zero import SocketFactoryServer
 from Zero import ExceptionZeroClose, ExceptionZeroErro
-from Zero.subsys.GracefulKiller import GracefulKiller
+from Zero import GracefulKiller
 
 def connection(args, kwargs):
 
@@ -78,8 +77,7 @@ def main():
 
     killer = GracefulKiller()
 
-    server = transportServer(SocketFactory(TransportKind.UNIX_DOMAIN, common.uds_target)
-
+    server = SocketFactoryServer(common.ADDRESS).create_socket()
     server.settimeout(10)
 
     log.debug('server timeout: %s', str(server.gettimeout()))
