@@ -12,30 +12,7 @@ from typing import List, Union, Any
 from datetime import datetime, timedelta
 
 from Zero.transport.SocketFactory import SocketFactoryClient
-from Zero.transport.Protocol import Protocol
-
-class ConnectionData(object):
-    """[Connection with server RPC]
-    Args:
-        object ([type]): [description]
-    """
-    serial : int = 0
-
-    def __init__(self, factory : SocketFactoryClient):
-        """[Constructor Connection]
-        Args:
-            factory (SocketFactoryClient): [Connection data]
-        """
-        self.id : int = ConnectionData.serial
-        self.connection : Union[Protocol, Any] = None
-        self.last_update = datetime.now()
-        self.log = logging.getLogger('Zero.RPC')
-        self.connection = Protocol(factory.create_socket().getSocket())
-
-    def update(self) -> None:
-        """[update last used]
-        """
-        self.last_update = datetime.now()
+from Zero.ConnectionData import ConnectionData
 
 class ConnectionControl(object):
     """[Manager Connecton pool]
@@ -49,9 +26,7 @@ class ConnectionControl(object):
             factory (SocketFactoryClient): [Conection data]
             max_threads (int): [num max of cooncurrency]
         """
-
         self.factory = factory
-
         self.done :bool = False
         self.lines_free : List[ConnectionData]= []
         self.log = logging.getLogger('Zero.RPC')
