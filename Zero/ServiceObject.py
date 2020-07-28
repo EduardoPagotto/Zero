@@ -55,7 +55,7 @@ class ServiceObject(object):
     def stop(self) -> None:
         """[Signal to stop]
         """
-        self.log.info('service object shutting down.....')
+        self.log.info('service object signal shutting down.....')
         self.done = True
 
     def __guardian(self) -> None:
@@ -63,19 +63,40 @@ class ServiceObject(object):
         """
         cycle = 0
         anterior = 0
-        while True:
+        totais = 0
+
+        self.log.info("guardian garbage connections start")
+
+        while self.done is False:
+
+            # garbage collector old conectons in server bind
+            lista_remover = []
+            for th in self.service.lista:
+                if th.isAlive() is False:
+                    self.log.info('thread removed %s, total removed: %d', th.getName(), totais + 1)
+                    totais += 1
+                    th.join()
+                    lista_remover.append(th)
+
+            for th in lista_remover:
+                self.service.lista.remove(th)
+
+            if len(lista_remover) != 0:
+                lista_remover.clear()
+
             atual = len(self.service.lista)
             if atual != anterior:
                 anterior = atual
                 self.log.info('cycle:%d connections:%d', cycle, atual)
 
             cycle += 1
-            time.sleep(5)
+            time.sleep(1)
 
-            if self.done is True:
-                self.server.close()
-                self.service.stop()
-                break
+        self.server.close()
+        self.service.stop()
+
+        self.log.info("guardian garbage connection stop after %d removed", totais)
+
 
     def loop_blocked(self, killer:GracefulKiller=None) -> None:
         try:

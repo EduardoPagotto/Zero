@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200727
+Update on 20200728
 @author: Eduardo Pagotto
 '''
 
@@ -11,8 +11,8 @@ import json
 from Zero.__init__ import __json_rpc_version__ as json_rpc_version
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
-from Zero.RPC_Call import RPC_Call
 
+# TODO: Criar classe base de conexao peer e fazer RPC_Responser derivada desta
 # class ConnectionServerBase(object):
 #     def __init__(self, done):
 #         self.done = done

@@ -27,7 +27,7 @@ class ServiceServer(object):
         """
         self.lista : List[threading.Thread]= []
         self.done :bool = False
-        self.t_garbage : threading.Thread = threading.Thread(target=self.garbageCon, name='garbage_conn')
+        #self.t_garbage : threading.Thread = threading.Thread(target=self.garbageCon, name='garbage_conn')
         self.t_server : threading.Thread  = threading.Thread(target=self.builderConnection, name='factory_conn', args=(socket_server, serverConnection))
         self.log = logging.getLogger('Zero.RPC')
 
@@ -35,14 +35,14 @@ class ServiceServer(object):
         """[Start Server pooller connections]
         """
         self.log.info('service server start')
-        self.t_garbage.start()
+        #self.t_garbage.start()
         self.t_server.start()
 
     def join(self) -> None:
         """[Wait finisher all connections and clean all garbage]
         """
         self.t_server.join()
-        self.t_garbage.join()
+        #self.t_garbage.join()
         self.log.info('service server down')
 
     def stop(self) -> None:
@@ -51,35 +51,35 @@ class ServiceServer(object):
         self.log.info('service server shutting down.....')
         self.done = True
 
-    def garbageCon(self) -> None:
-        """[Thread to remove connections deads]
-        """
-        self.log.info("garbage connections start")
+    # def garbageCon(self) -> None:
+    #     """[Thread to remove connections deads]
+    #     """
+    #     self.log.info("garbage connections start")
 
-        totais = 0
-        while True:
+    #     totais = 0
+    #     while True:
 
-            lista_remover = []
-            for thread in self.lista:
-                if thread.isAlive() is False:
-                    self.log.info('thread removed %s, total removed: %d', thread.getName(), totais + 1)
-                    totais += 1
-                    thread.join()
-                    lista_remover.append(thread)
+    #         lista_remover = []
+    #         for thread in self.lista:
+    #             if thread.isAlive() is False:
+    #                 self.log.info('thread removed %s, total removed: %d', thread.getName(), totais + 1)
+    #                 totais += 1
+    #                 thread.join()
+    #                 lista_remover.append(thread)
 
-            for thread in lista_remover:
-                self.lista.remove(thread)
+    #         for thread in lista_remover:
+    #             self.lista.remove(thread)
 
-            if len(lista_remover) != 0:
-                lista_remover.clear()
+    #         if len(lista_remover) != 0:
+    #             lista_remover.clear()
 
-            if self.done is True:
-                if len(self.lista) == 0:
-                    break
+    #         if self.done is True:
+    #             if len(self.lista) == 0:
+    #                 break
 
-            time.sleep(1)
+    #         time.sleep(1)
 
-        self.log.info("garbage connection stop after %d removed", totais)
+    #     self.log.info("garbage connection stop after %d removed", totais)
 
     def builderConnection(self, sock : socket.socket, serverConnection: RPC_Responser):
         """[Thread factory of new connectons to client]
