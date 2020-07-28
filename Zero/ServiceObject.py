@@ -9,8 +9,8 @@ import time
 import threading
 import logging
 
-from Zero import SocketFactoryServer
-from Zero import GracefulKiller
+from Zero.transport.SocketFactory import SocketFactoryServer
+from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 

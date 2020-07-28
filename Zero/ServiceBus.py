@@ -6,7 +6,7 @@ Update on 20200727
 
 from typing import Union, Any
 
-from Zero import SocketFactoryClient
+from Zero.transport.SocketFactory import SocketFactoryClient
 from Zero.ConnectionControl import ConnectionControl
 from Zero.ProxyObject import ProxyObject
 

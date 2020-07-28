@@ -9,7 +9,8 @@ import time
 import logging
 
 import common as rpc
-from Zero import ServiceBus, ExceptionZeroRPC
+from Zero.ServiceBus import ServiceBus
+from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
 def main():
     try:
@@ -41,7 +42,7 @@ def main():
         log.debug('RPC retorno:%s', str(retorno))
 
         log.debug('esperar 80 segindos para proxima consulta')
-        time.sleep(80)
+        #time.sleep(80)
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)
 

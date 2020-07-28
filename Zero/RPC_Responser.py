@@ -6,11 +6,48 @@ Update on 20200727
 
 import logging
 import socket
+import json
 
+from Zero.__init__ import __json_rpc_version__ as json_rpc_version
 from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro
+from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
+from Zero.RPC_Call import RPC_Call
 
-from Zero.RPC_Call import RPC_Result
+def rpc_result(target : object, msg : str) -> str:
+    """[Translate json data in <->out]
+    Args:
+        target (object): [self of class Derived from ServiceObject]
+        msg (str): [json Protocol data received (in)]
+    Returns:
+        str: [json Protocol data out]
+    """
+
+    dados : dict = json.loads(msg)
+    serial : int = dados['id']
+    metodo : str = dados['method']
+
+    try:
+        val = getattr(target, metodo)(*dados['params'], **dados['keys'])
+        return json.dumps({'jsonrpc': json_rpc_version, 'result': val, 'id': serial})
+
+    except AttributeError as exp:
+        return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': -32601, 'message': 'Method not found: '+ str(exp)}, 'id': serial})
+
+    except TypeError as exp1:
+        return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': -32602, 'message': 'Invalid params: '+ str(exp1)}, 'id': serial})
+
+    except ExceptionZeroRPC as exp2:
+        tot = len(exp2.args)
+        if tot == 0:
+            return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': -32000, 'message': 'Server error: Generic Zero RPC Exception'}, 'id': serial})
+        elif tot == 1:
+            return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': -32001, 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
+        else:
+            return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': exp2.args[1], 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
+
+    except Exception as exp3:
+        return json.dumps({'jsonrpc': json_rpc_version, 'error': {'code': -32603, 'message': 'Internal error: ' + str(exp3)}, 'id': serial})
+
 
 class RPC_Responser(object):
     """[Connection thread with server RPC ]
@@ -56,7 +93,7 @@ class RPC_Responser(object):
 
                 if idRec is ProtocolCode.COMMAND:
 
-                    msg_out = RPC_Result(self.target, msg_in)
+                    msg_out = rpc_result(self.target, msg_in)
                     protocol.sendString(ProtocolCode.RESULT, msg_out)
 
             except ExceptionZeroErro as exp_erro:

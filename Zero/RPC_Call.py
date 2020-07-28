@@ -1,12 +1,13 @@
 '''
 Created on 20190823
-Update on 20200725
+Update on 20200727
 @author: Eduardo Pagotto
 '''
 
 import json
 import threading
 
+from Zero.__init__ import __json_rpc_version__ as json_rpc_version
 from Zero.ConnectionControl import ConnectionControl
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 
@@ -21,7 +22,6 @@ class RPC_Call(object):
         [type]: [description]
     """
 
-    json_rpc_version : str = '2.0'
     __serial_lock : threading.Lock = threading.Lock()
     __serial : int = 0
 
@@ -60,7 +60,7 @@ class RPC_Call(object):
             arguments = args[0]
             keys = args[1]
 
-        return json.dumps({'jsonrpc':RPC_Call.json_rpc_version, 'id':self.serial, 'method': self.method, 'params': arguments, 'keys': keys})
+        return json.dumps({'jsonrpc':json_rpc_version, 'id':self.serial, 'method': self.method, 'params': arguments, 'keys': keys})
 
     def decode(self, msg : str) -> dict:
         """[decode json Protocol]
@@ -96,39 +96,3 @@ class RPC_Call(object):
         self.control.release_connection(conn)
 
         return self.decode(msg_in)
-
-
-def RPC_Result(target : object, msg : str) -> str:
-    """[Translate json data in <->out]
-    Args:
-        target (object): [self of class Derived from ServiceObject]
-        msg (str): [json Protocol data received (in)]
-    Returns:
-        str: [json Protocol data out]
-    """
-
-    dados : dict = json.loads(msg)
-    serial : int = dados['id']
-    metodo : str = dados['method']
-
-    try:
-        val = getattr(target, metodo)(*dados['params'], **dados['keys'])
-        return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'result': val, 'id': serial})
-
-    except AttributeError as exp:
-        return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32601, 'message': 'Method not found: '+ str(exp)}, 'id': serial})
-
-    except TypeError as exp1:
-        return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32602, 'message': 'Invalid params: '+ str(exp1)}, 'id': serial})
-
-    except ExceptionZeroRPC as exp2:
-        tot = len(exp2.args)
-        if tot == 0:
-            return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32000, 'message': 'Server error: Generic Zero RPC Exception'}, 'id': serial})
-        elif tot == 1:
-            return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32001, 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
-        else:
-            return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': exp2.args[1], 'message': 'Server error: ' + exp2.args[0]}, 'id': serial})
-
-    except Exception as exp3:
-        return json.dumps({'jsonrpc': RPC_Call.json_rpc_version, 'error': {'code': -32603, 'message': 'Internal error: ' + str(exp3)}, 'id': serial})
