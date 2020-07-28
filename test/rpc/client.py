@@ -56,7 +56,7 @@ def main():
         log.error('ERRO: {0}'.format(str(exp)))
 
     except Exception as exp:
-        log.exception('Falha: {0}'.format(str(exp)))
+        log.error('Falha: {0}'.format(str(exp)))
 
     bus.close_all()
 

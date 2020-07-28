@@ -14,7 +14,7 @@ from typing import List
 
 from Zero.RPC_Responser import RPC_Responser
 
-class ServiceServer(object):
+class ServiceServer(object): # TODO: implementar chamada de thread em __call__
     """[Class facture new connections threads]
     Args:
         object ([type]): [description]
