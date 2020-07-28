@@ -1,6 +1,6 @@
 '''
 Created on 20190914
-Update on 20200727
+Update on 20200728
 @author: Eduardo Pagotto
 '''
 
@@ -20,13 +20,15 @@ class ConnectionControl(object):
         object ([type]): [description]
     """
 
-    def __init__(self, factory : SocketFactoryClient, max_threads : int):
+    def __init__(self, factory : SocketFactoryClient, time_delta : timedelta, max_threads : int):
         """[summary]
         Args:
             factory (SocketFactoryClient): [Conection data]
+            time_delta (timedelta): [delta time to ellapsed this connection if not used]
             max_threads (int): [num max of cooncurrency]
         """
-        self.factory = factory
+        self.factory : SocketFactoryClient = factory
+        self.time_delta : timedelta = time_delta
         self.done :bool = False
         self.lines_free : List[ConnectionData]= []
         self.log = logging.getLogger('Zero.RPC')
@@ -72,14 +74,11 @@ class ConnectionControl(object):
         self.log.info('thread cleanner_conn start')
         while self.done is False:
             try:
-                now = datetime.now()
                 with self.mutex_free:
                     for item in reversed(self.lines_free): # necessary interator fix!!!
-                        elapse = item.last_update + timedelta(minutes=1)
-                        if now > elapse:
+
+                        if item.is_elapsed_connection(self.time_delta) is True:
                             self.lines_free.remove(item)
-                            self.log.info('clear id: %d', item.id)
-                            item.connection.sendClose('bye')
                             del item
 
             except Exception as exp:
@@ -88,11 +87,9 @@ class ConnectionControl(object):
             time.sleep(5)
 
         self.log.info('cleanner_conn stopping...')
-
         while len(self.lines_free) > 0:
             comm = self.lines_free.pop()
-            self.log.info('shutdown close id: %d', comm.id)
-            comm.connection.sendClose('bye')
+            comm.disconnection()
             del comm
 
         self.log.info('thread cleanner_conn stop')

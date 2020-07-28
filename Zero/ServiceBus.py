@@ -1,10 +1,11 @@
 '''
 Created on 20190822
-Update on 20200727
+Update on 20200728
 @author: Eduardo Pagotto
 '''
 
 from typing import Union, Any
+from datetime import timedelta
 
 from Zero.transport.SocketFactory import SocketFactoryClient
 from Zero.ConnectionControl import ConnectionControl
@@ -18,7 +19,6 @@ class ServiceBus(object):
             retry (int, optional): [Tentativa de reconexa]. Defaults to 3.
             max_threads (int, optional): [Numero maximo de threads de conexao simultaneas]. Defaults to 5.
         """
-
         self.factoty_client = SocketFactoryClient(s_address, retry)
         self.max_threads = max_threads
         self.conn_control : Union[ConnectionControl, None] =  None
@@ -28,9 +28,8 @@ class ServiceBus(object):
         Returns:
             ProxyObject: [Proxy conectado com controle de conexao e reentrada]
         """
-
         if self.conn_control is None:
-            self.conn_control = ConnectionControl(self.factoty_client, self.max_threads)
+            self.conn_control = ConnectionControl(self.factoty_client, timedelta(minutes=1), self.max_threads)
 
         return ProxyObject(self.conn_control)
 

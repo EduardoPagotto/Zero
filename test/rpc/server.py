@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200727
+Update on 20200728
 @author: Eduardo Pagotto
 '''
 
@@ -19,7 +19,7 @@ class ServerRPC(ServiceObject):
         self.log = logging.getLogger('Server')
         super().__init__(rpc.ADDRESS, self)
 
-    def teste_targuet(self, entrada):
+    def teste_target(self, entrada):
         self.log.debug('ESTOU CHEGANDO JEANY!!!!')
 
         if entrada == 0:
