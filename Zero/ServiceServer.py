@@ -95,7 +95,7 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
                               'addr' : address,
                               'done' : self.done}
 
-                self.log.info("new connection :%s", str(address))
+                #self.log.info("new connection :%s", str(address))
 
                 t = threading.Thread(target=serverConnection, name='tConn_{0}'.format(seq), args=(seq, comm_param))
                 t.start()

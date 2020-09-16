@@ -46,14 +46,12 @@ class RPC_Responser(object):
     def __call__(self, *args, **kargs):
         """[execute exchange of json's messages with server RPC]
         """
-
-        self.log.info('responser %d open', args[0])
-
-        dados_conexao = args[1]
-
         indice_conexao = args[0]
-
+        dados_conexao = args[1]
         done = dados_conexao['done']
+
+        self.log.info('responser %d open %s', args[0], str(dados_conexao['addr']))
+
         protocol = None
         try:
             protocol = Protocol(dados_conexao['clientsocket'])
