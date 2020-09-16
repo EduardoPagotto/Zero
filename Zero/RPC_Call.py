@@ -1,13 +1,13 @@
 '''
 Created on 20190823
-Update on 20200727
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
 import json
 import threading
 
-from Zero.__init__ import __json_rpc_version__ as json_rpc_version
+from Zero.common import __json_rpc_version__ as json_rpc_version
 from Zero.ConnectionControl import ConnectionControl
 from Zero.subsys.ExceptionZero import ExceptionZeroRPC
 

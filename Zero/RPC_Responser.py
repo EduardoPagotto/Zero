@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200915
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
@@ -8,7 +8,7 @@ import logging
 import socket
 import json
 
-from Zero.__init__ import __json_rpc_version__ as json_rpc_version
+from Zero.common import __json_rpc_version__ as json_rpc_version
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
 
