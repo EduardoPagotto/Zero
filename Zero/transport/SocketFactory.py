@@ -104,7 +104,7 @@ class SocketFactoryServer(SocketFactory):
                 soc.getSocket().bind(self.tcp_ip)
 
         soc.getSocket().listen(15)
-        self.log.debug('bind in: %s', str(self.s_address))
+        self.log.info('bind in: %s', str(self.s_address))
 
         return soc
 

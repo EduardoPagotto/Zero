@@ -47,7 +47,7 @@ class RPC_Responser(object):
         """[execute exchange of json's messages with server RPC]
         """
 
-        self.log.info('responser start: %d', args[0])
+        self.log.info('responser %d open', args[0])
 
         dados_conexao = args[1]
 
@@ -60,7 +60,7 @@ class RPC_Responser(object):
             protocol.settimeout(30)
 
         except Exception as exp:
-            self.log.critical('responser fail: %d create protocol: %s', indice_conexao, str(exp))
+            self.log.critical('responser %d fail creating connection: %s', indice_conexao, str(exp))
             return
 
         count_to = 0
@@ -73,26 +73,26 @@ class RPC_Responser(object):
                     protocol.sendString(ProtocolCode.RESULT, self.rpc_exec_func(msg_in))
 
             except ExceptionZeroErro as exp_erro:
-                self.log.warning('responser recevice: %d erro: %s',indice_conexao, str(exp_erro))
+                self.log.error('responser %d recevice erro: %s',indice_conexao, str(exp_erro))
                 protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
             except ExceptionZeroClose as exp_close:
-                #self.log.info('receive close: %s', str(exp_close))
+                self.log.warning('responser %d receive: %s',indice_conexao, str(exp_close))
                 break
 
             except socket.timeout:
                 count_to += 1
-                self.log.info('responser timeout: %d count: %d', indice_conexao, count_to)
+                self.log.warning('responser %d TO count: %d', indice_conexao, count_to)
 
             except Exception as exp:
-                self.log.error('responser error: %d error: %s', indice_conexao, str(exp))
+                self.log.error('responser %d exception error: %s', indice_conexao, str(exp))
                 break
 
             if done is True:
                 protocol.close()
                 break
 
-        self.log.info('responser stop: %d', indice_conexao)
+        self.log.info('responser %d close', indice_conexao)
 
     def rpc_exec_func(self, msg : str) -> str:
         """[Execule methodo local with paramters in json data (msg)]

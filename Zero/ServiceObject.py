@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200915
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
@@ -60,18 +60,18 @@ class ServiceObject(object):
 
     def loop_blocked(self, killer:GracefulKiller) -> None:
         try:
-            self.log.info("guardian garbage connections start")
+            self.log.info("Service RPC start")
 
             while self.done is False:
 
                 if killer.kill_now is True:
                     self.stop()
 
-                self.service.garbageColletor()
+                self.service.garbage()
                 time.sleep(5)
 
             self.join()
-            self.log.info("Stop after %d removed", self.service.total)
+            self.log.info("Service RPC stop after %d connections", self.service.total)
 
         except Exception as exp:
             self.log.critical('Fail: %s', str(exp))

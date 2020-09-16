@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200628
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
@@ -9,8 +9,8 @@ import time
 import logging
 
 import common as rpc
-from Zero.ServiceBus import ServiceBus
-from Zero.subsys.ExceptionZero import ExceptionZeroRPC
+from Zero import ServiceBus
+from Zero import ExceptionZeroRPC
 
 def main():
     try:
