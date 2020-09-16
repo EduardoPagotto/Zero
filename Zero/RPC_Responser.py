@@ -47,14 +47,12 @@ class RPC_Responser(object):
         """[execute exchange of json's messages with server RPC]
         """
         indice_conexao = args[0]
-        dados_conexao = args[1]
-        done = dados_conexao['done']
-
-        self.log.info('responser %d open %s', args[0], str(dados_conexao['addr']))
+        done = args[3]
+        self.log.info('responser %d open %s', args[0], str(args[2]))
 
         protocol = None
         try:
-            protocol = Protocol(dados_conexao['clientsocket'])
+            protocol = Protocol(args[1])
             protocol.settimeout(30)
 
         except Exception as exp:
@@ -63,7 +61,7 @@ class RPC_Responser(object):
 
         count_to = 0
 
-        while True:
+        while done is False:
             try:
                 idRec, msg_in = protocol.receiveString()
                 count_to = 0
@@ -86,9 +84,7 @@ class RPC_Responser(object):
                 self.log.error('responser %d exception error: %s', indice_conexao, str(exp))
                 break
 
-            if done is True:
-                protocol.close()
-                break
+        protocol.close()
 
         self.log.info('responser %d close', indice_conexao)
 

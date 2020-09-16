@@ -16,11 +16,11 @@ class ServerRPC(ServiceObject):
     def __init__(self):
         self.vivo = True
         self.nome = 'NOVO'
-        self.log = logging.getLogger('Server')
+        self.logLocal = logging.getLogger('Server')
         super().__init__(rpc.ADDRESS, self)
 
     def teste_target(self, entrada):
-        self.log.debug('ESTOU CHEGANDO JEANY!!!!')
+        self.logLocal.debug('ESTOU CHEGANDO JEANY!!!!')
 
         if entrada == 0:
             raise Exception('teste 0 ...')
@@ -51,7 +51,7 @@ class ServerRPC(ServiceObject):
         return dicionario
 
     def testeA(self, *args, **kargs):
-        self.log.info('args: %s; kargs: %s', str(args), str(kargs))
+        self.logLocal.info('args: %s; kargs: %s', str(args), str(kargs))
 
 if __name__ == '__main__':
 

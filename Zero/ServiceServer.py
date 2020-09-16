@@ -91,13 +91,10 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
             try:
                 # accept connections from outside
                 clientsocket, address = sock.accept()
-                comm_param = {'clientsocket': clientsocket,
-                              'addr' : address,
-                              'done' : self.done}
-
-                #self.log.info("new connection :%s", str(address))
-
-                t = threading.Thread(target=serverConnection, name='tConn_{0}'.format(seq), args=(seq, comm_param))
+                t = threading.Thread(target=serverConnection, name='tConn_{0}'.format(seq), args=(seq,
+                                                                                                  clientsocket,
+                                                                                                  address,
+                                                                                                  self.done))
                 t.start()
 
                 self.lista.append(t)

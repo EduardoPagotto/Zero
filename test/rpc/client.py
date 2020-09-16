@@ -41,7 +41,7 @@ def main():
         retorno = ponta.get_dict(dados)
         log.debug('RPC retorno:%s', str(retorno))
 
-        log.debug('esperar 80 segindos para proxima consulta')
+        log.debug('esperar 80 segundos para proxima consulta')
         time.sleep(80)
         valor = ponta.getNome()
         log.debug('Nome Atual: %s', valor)
