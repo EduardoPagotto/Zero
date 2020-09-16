@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200627
+Update on 20200915
 @author: Eduardo Pagotto
 '''
 
 import time
-import threading
 import logging
 
 from Zero.transport.SocketFactory import SocketFactoryServer
@@ -32,8 +31,6 @@ class ServiceObject(object):
         self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe
         self.service.start()
 
-        self.t_guardian = threading.Thread(target=self.__guardian, name='guardian_conn')
-        self.t_guardian.start()
 
     def rpc_call(self, identicador, input=None, output=None):
         def decorator(func):
@@ -49,64 +46,32 @@ class ServiceObject(object):
         """[Wait until all connections be closed]
         """
         self.service.join()
-        self.t_guardian.join()
         self.log.info('service object down')
 
     def stop(self) -> None:
         """[Signal to stop]
         """
-        self.log.info('service object signal shutting down.....')
-        self.done = True
+        if self.done is False:
+            self.log.info('service object signal shutting down.....')
+            self.server.close()
+            self.service.stop()
 
-    def __guardian(self) -> None:
-        """[Log connections total and wait signal to shutdown]
-        """
-        cycle = 0
-        anterior = 0
-        totais = 0
+            self.done = True
 
-        self.log.info("guardian garbage connections start")
-
-        while self.done is False:
-
-            # garbage collector old conectons in server bind
-            lista_remover = []
-            for th in self.service.lista:
-                if th.isAlive() is False:
-                    self.log.info('thread removed %s, total removed: %d', th.getName(), totais + 1)
-                    totais += 1
-                    th.join()
-                    lista_remover.append(th)
-
-            for th in lista_remover:
-                self.service.lista.remove(th)
-
-            if len(lista_remover) != 0:
-                lista_remover.clear()
-
-            atual = len(self.service.lista)
-            if atual != anterior:
-                anterior = atual
-                self.log.info('cycle:%d connections:%d', cycle, atual)
-
-            cycle += 1
-            time.sleep(1)
-
-        self.server.close()
-        self.service.stop()
-
-        self.log.info("guardian garbage connection stop after %d removed", totais)
-
-
-    def loop_blocked(self, killer:GracefulKiller=None) -> None:
+    def loop_blocked(self, killer:GracefulKiller) -> None:
         try:
+            self.log.info("guardian garbage connections start")
+
             while self.done is False:
+
+                if killer.kill_now is True:
+                    self.stop()
+
+                self.service.garbageColletor()
                 time.sleep(5)
-                if killer is not None:
-                    if killer.kill_now is True:
-                        self.stop()
 
             self.join()
+            self.log.info("Stop after %d removed", self.service.total)
 
         except Exception as exp:
             self.log.critical('Fail: %s', str(exp))

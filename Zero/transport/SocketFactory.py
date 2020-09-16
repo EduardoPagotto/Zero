@@ -148,7 +148,7 @@ class SocketFactoryClient(SocketFactory):
             except Exception as exp:
                 self.log.debug('connection %s error (%d/%d)', str(self.s_address), counter + 1, self.re_try)
 
-            time.sleep(5)
+            time.sleep(5) # delay entre as tentativas
             counter += 1
 
         raise ExceptionZero('connection {0} fail'.format(str(self.s_address)))

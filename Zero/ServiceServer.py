@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200727
+Update on 20200915
 @author: Eduardo Pagotto
 '''
 
@@ -31,6 +31,10 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
         self.t_server : threading.Thread  = threading.Thread(target=self.builderConnection, name='factory_conn', args=(socket_server, serverConnection))
         self.log = logging.getLogger('Zero.RPC')
 
+        self.total = 0
+        self.cycle = 0
+        self.anterior = 0
+
     def start(self) -> None:
         """[Start Server pooller connections]
         """
@@ -51,35 +55,31 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
         self.log.info('service server shutting down.....')
         self.done = True
 
-    # def garbageCon(self) -> None:
-    #     """[Thread to remove connections deads]
-    #     """
-    #     self.log.info("garbage connections start")
+    def garbageColletor(self) -> None:
+        """[Thread to remove connections deads]
+        """
+        lista_remover = []
+        for th in self.lista:
+            if th.isAlive() is False:
+                th.join()
+                lista_remover.append(th)
 
-    #     totais = 0
-    #     while True:
+        for th in lista_remover:
+            self.log.info('Thread removed %s', th.getName())
+            self.lista.remove(th)
 
-    #         lista_remover = []
-    #         for thread in self.lista:
-    #             if thread.isAlive() is False:
-    #                 self.log.info('thread removed %s, total removed: %d', thread.getName(), totais + 1)
-    #                 totais += 1
-    #                 thread.join()
-    #                 lista_remover.append(thread)
+        removed = len(lista_remover)
+        if removed > 0:
+            self.total += removed
+            lista_remover.clear()
 
-    #         for thread in lista_remover:
-    #             self.lista.remove(thread)
+        atual = len(self.lista)
+        if (atual != self.anterior) or (removed > 0):
+            self.anterior = atual
+            self.log.info('cycle:%d connections:%d total removed: %d', self.cycle, atual, self.total)
 
-    #         if len(lista_remover) != 0:
-    #             lista_remover.clear()
+        self.cycle += 1
 
-    #         if self.done is True:
-    #             if len(self.lista) == 0:
-    #                 break
-
-    #         time.sleep(1)
-
-    #     self.log.info("garbage connection stop after %d removed", totais)
 
     def builderConnection(self, sock : socket.socket, serverConnection: RPC_Responser):
         """[Thread factory of new connectons to client]
@@ -90,7 +90,7 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
         self.log.info("factory connections start")
         seq = 0
 
-        while True:
+        while self.done is False:
             try:
                 # accept connections from outside
                 clientsocket, address = sock.accept()
@@ -113,7 +113,5 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
             except Exception as exp:
                 if self.done is False:
                     self.log.error('Fail:%s', str(exp))
-                else:
-                    break
 
         self.log.info("factory connection stop")
