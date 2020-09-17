@@ -35,7 +35,7 @@ class RPC_Responser(object):
 
         t_name = threading.currentThread().getName()
 
-        self.log.info('%s open %s', t_name, str(args[1]))
+        self.log.info('%s start %s', t_name, str(args[1]))
 
         protocol = None
         try:
@@ -60,7 +60,7 @@ class RPC_Responser(object):
                 protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
             except ExceptionZeroClose as exp_close:
-                self.log.warning('%s receive: %s',t_name, str(exp_close))
+                self.log.warning('%s %s',t_name, str(exp_close))
                 break
 
             except socket.timeout:
@@ -73,7 +73,7 @@ class RPC_Responser(object):
 
         protocol.close()
 
-        self.log.info('%s close', t_name)
+        self.log.info('%s finnished', t_name)
 
     def rpc_exec_func(self, msg : str) -> str:
         """[Execule methodo local with paramters in json data (msg)]

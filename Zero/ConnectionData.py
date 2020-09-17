@@ -1,11 +1,12 @@
 '''
 Created on 20200727
-Update on 20200728
+Update on 20200917
 @author: Eduardo Pagotto
 '''
 
 import logging
 import threading
+import random
 
 from typing import Union, Any
 from datetime import datetime, timedelta
@@ -18,7 +19,7 @@ class ConnectionData(object):
     Args:
         object ([type]): [description]
     """
-    serial : int = 0
+    serial : int = random.randint(0,10000)
     mutex_serial : threading.Lock = threading.Lock()
 
 
@@ -60,5 +61,4 @@ class ConnectionData(object):
     def disconnection(self) -> None:
         """[Close connection]
         """
-        self.log.info('shutdown connection id: %d', self.id)
-        self.connection.sendClose('bye connection id: {0}'.format(self.id))
+        self.connection.sendClose('bye-bye {0}'.format(self.id))

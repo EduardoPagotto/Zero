@@ -1,11 +1,12 @@
 '''
 Created on 20190823
-Update on 20200916
+Update on 20200917
 @author: Eduardo Pagotto
 '''
 
 import json
 import threading
+import random
 
 from Zero.common import __json_rpc_version__ as json_rpc_version
 from Zero.ConnectionControl import ConnectionControl
@@ -23,7 +24,7 @@ class RPC_Call(object):
     """
 
     __serial_lock : threading.Lock = threading.Lock()
-    __serial : int = 0
+    __serial : int = random.randint(0,10000)
 
     def __init__(self, nome_metodo : str, control : ConnectionControl):
         """[Constructor json message builder]

@@ -127,7 +127,7 @@ class Protocol(SocketBase):
         elif idRecebido == ProtocolCode.CLOSE:
             #self.log.debug('closure receved:%s', binario.decode('UTF-8'))
             self.close()
-            raise ExceptionZeroClose('Protocol Close received:{0}'.format(binario.decode('UTF-8')))
+            raise ExceptionZeroClose('close received:{0}'.format(binario.decode('UTF-8')))
 
         elif idRecebido == ProtocolCode.ERRO:
             raise ExceptionZeroErro('{0}'.format(binario.decode('UTF-8')))
@@ -162,7 +162,7 @@ class Protocol(SocketBase):
         """
 
         if self.isConnected() is True:
-            self.log.info('closure sent to host: %s', _texto)
+            self.log.info('closure sended:%s', _texto)
             self.sendString(ProtocolCode.CLOSE, _texto)
             self.close()
 
