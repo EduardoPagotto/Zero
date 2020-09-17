@@ -1,16 +1,17 @@
 '''
 Created on 20170119
-Update on 20190823
+Update on 20200718
 @author: Eduardo Pagotto
 '''
 
 import logging
 
-# usado no UnixDomainSocket
-uds_target = './uds_socket_teste'
+# Usado UnixDomainSocket
+#ADDRESS = 'uds://uds_test_rpc' 
 
-#usado no Network Socket
-ip_target = ('127.0.0.1', 4040)
+# Usado Network Socket
+ADDRESS = 'tcp://127.0.0.1:5151'
+
 
 # habilita o log
 def enable_log():

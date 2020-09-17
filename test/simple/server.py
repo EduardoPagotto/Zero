@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200517
+Update on 20200727
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import logging
@@ -13,12 +11,11 @@ import socket
 
 import common
 
-from Zero import Protocol, ProtocolCode
-from Zero import transportServer, TransportKind
-from Zero import ServiceServer
-
-from Zero import ExceptionZeroClose, ExceptionZeroErro
+from Zero.transport.Protocol import Protocol, ProtocolCode
+from Zero.transport.SocketFactory import SocketFactoryServer
+from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro
 from Zero.subsys.GracefulKiller import GracefulKiller
+from Zero.ServiceServer import ServiceServer
 
 def connection(args, kwargs):
 
@@ -80,9 +77,7 @@ def main():
 
     killer = GracefulKiller()
 
-    #server = transportServer(TransportKind.NETWORK, common.ip_target)
-    server = transportServer(TransportKind.UNIX_DOMAIN, common.uds_target)
-
+    server = SocketFactoryServer(common.ADDRESS).create_socket()
     server.settimeout(10)
 
     log.debug('server timeout: %s', str(server.gettimeout()))

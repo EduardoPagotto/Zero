@@ -1,36 +1,36 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
-
 import time
-import threading
 import logging
 
-from Zero.transport.Transport import transportServer, get_address_from_string
+from Zero.transport.SocketFactory import SocketFactoryServer
+from Zero.subsys.GracefulKiller import GracefulKiller
 from Zero.ServiceServer import ServiceServer
 from Zero.RPC_Responser import RPC_Responser
 
 class ServiceObject(object):
-    def __init__(self, s_address, target):
+
+    def __init__(self, s_address : str, target : object):
+        """[Start Server RPC]
+        Args:
+            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            target (object): [Self of derivade class]
+        """
 
         self.done = False
         self.log = logging.getLogger('Zero.RPC')
 
-        address, transportKind = get_address_from_string(s_address)
-
-        self.server = transportServer(transportKind, address)
+        self.server =  SocketFactoryServer(s_address).create_socket() # TODO encapsular em ServiceServer ??
         self.server.settimeout(10)
 
         self.service = ServiceServer(self.server.getSocket(), RPC_Responser(target)) # servicos diferentes do RPC trocar esta classe
         self.service.start()
 
-        self.t_guardian = threading.Thread(target=self.__guardian, name='guardian_conn')
-        self.t_guardian.start()
 
     def rpc_call(self, identicador, input=None, output=None):
         def decorator(func):
@@ -42,41 +42,36 @@ class ServiceObject(object):
             return wrapper
         return decorator
 
-    def join(self):
+    def join(self) -> None:
+        """[Wait until all connections be closed]
+        """
         self.service.join()
-        self.t_guardian.join()
         self.log.info('service object down')
 
-    def stop(self):
-        self.log.info('service object shutting down.....')
-        self.done = True
+    def stop(self) -> None:
+        """[Signal to stop]
+        """
+        if self.done is False:
+            self.log.info('service object signal shutting down.....')
+            self.server.close()
+            self.service.stop()
 
-    def __guardian(self):
-        cycle = 0
-        anterior = 0
-        while True:
-            atual = len(self.service.lista)
-            if atual != anterior:
-                anterior = atual
-                self.log.debug('cycle:%d connections:%d', cycle, atual)
+            self.done = True
 
-            cycle += 1
-            time.sleep(5)
-
-            if self.done is True:
-                self.server.close()
-                self.service.stop()
-                break
-
-    def loop_blocked(self, killer=None):
+    def loop_blocked(self, killer:GracefulKiller) -> None:
         try:
+            self.log.info("Service RPC start")
+
             while self.done is False:
+
+                if killer.kill_now is True:
+                    self.stop()
+
+                self.service.garbage()
                 time.sleep(5)
-                if killer is not None:
-                    if killer.kill_now is True:
-                        self.stop()
 
             self.join()
+            self.log.info("Service RPC stop after %d connections", self.service.total)
 
         except Exception as exp:
-            self.log.Exception('Falha Critica: %s', str(exp))
+            self.log.critical('Fail: %s', str(exp))

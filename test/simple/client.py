@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200517
+Update on 20200727
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import logging
 import common
 
-from Zero import transportClient, TransportKind
-from Zero import Protocol, ProtocolCode
+from Zero.transport.SocketFactory import SocketFactoryClient
+from Zero.transport.Protocol import Protocol, ProtocolCode
 
 def main():
 
@@ -20,20 +18,19 @@ def main():
     logging.getLogger('Zero').setLevel(logging.INFO)
 
     try:
-        #protocol = Protocol(transportClient(TransportKind.NETWORK, common.ip_target).getSocket())
-        protocol = Protocol(transportClient(TransportKind.UNIX_DOMAIN, common.uds_target).getSocket())
+        protocol = Protocol(SocketFactoryClient(common.ADDRESS).create_socket().getSocket())
 
         log.info(protocol.handShake())
 
         protocol.sendString(ProtocolCode.COMMAND, 'ola 123')
-        id, msg = protocol.receiveString()
-        log.info('Recebido id:%d msg:%s', id, msg)
+        idval, msg = protocol.receiveString()
+        log.info('Recebido id:%s msg:%s', str(idval), msg)
 
-        time.sleep(15)
+        time.sleep(5)
 
         protocol.sendString(ProtocolCode.ERRO, 'Erro Critico')
-        id, msg = protocol.receiveString()
-        log.info('Recebido id:%d msg:%s', id, msg)
+        idVal, msg = protocol.receiveString()
+        log.info('Recebido id:%s msg:%s', idVal, msg)
 
         protocol.sendClose('Bye-Bye')
 

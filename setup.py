@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 '''
 Created on 20190821
-Update on 20200517
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
+import Zero
 import setuptools
 
-# with open("README.md", "r") as fh:
-#     long_description = fh.read()
-
 PACKAGE = "Zero"
-VERSION = __import__(PACKAGE).__version__
+VERSION = Zero.common.__version__
 
 setuptools.setup(
     name="Zero",
@@ -30,6 +28,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    install_requires=['argparse',
-                      'pylint']
+    install_requires=['argparse']
 )

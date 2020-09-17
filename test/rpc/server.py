@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200916
 @author: Eduardo Pagotto
 '''
 
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
-
 import logging
-
 import common as rpc
 
-from Zero import ServiceObject, ExceptionZeroRPC, GracefulKiller
+from Zero import ServiceObject
+from Zero import ExceptionZeroRPC
+from Zero import GracefulKiller
 
 class ServerRPC(ServiceObject):
     def __init__(self):
         self.vivo = True
         self.nome = 'NOVO'
-        self.log = logging.getLogger('Server')
+        self.logLocal = logging.getLogger('Server')
         super().__init__(rpc.ADDRESS, self)
 
-    def teste_targuet(self, entrada):
-        self.log.debug('ESTOU CHEGANDO JEANY!!!!')
+    def teste_target(self, entrada):
+        self.logLocal.debug('ESTOU CHEGANDO JEANY!!!!')
 
         if entrada == 0:
             raise Exception('teste 0 ...')
@@ -52,7 +51,7 @@ class ServerRPC(ServiceObject):
         return dicionario
 
     def testeA(self, *args, **kargs):
-        self.log.info('args: %s; kargs: %s', str(args), str(kargs))
+        self.logLocal.info('args: %s; kargs: %s', str(args), str(kargs))
 
 if __name__ == '__main__':
 

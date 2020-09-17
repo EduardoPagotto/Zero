@@ -1,93 +1,90 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200517
+Update on 20200917
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703, C0103, C0115
 
 import time
 import socket
 import logging
 import threading
 
-class ServiceServer(object):
-    def __init__(self, socket_server, serverConnection):
-        self.lista = []
-        self.done = False
-        self.t_garbage = threading.Thread(target=self.garbageCon, name='garbage_conn')
-        self.t_server = threading.Thread(target=self.builderConnection, name='factory_conn', args=(socket_server, serverConnection))
+from datetime import datetime, timezone, timedelta
+from typing import List
+
+from Zero.RPC_Responser import RPC_Responser
+
+class ServiceServer(threading.Thread):
+    """[Class facture new connections threads]
+    Args:
+        object ([type]): [description]
+    """
+    def __init__(self, socket_server : socket.socket, responser : RPC_Responser):
+        """[Initialize with socket and rresponser]
+        Args:
+            socket_server (socket.socket): [description]
+            responser (RPC_Responser): [description]
+        """
+        threading.Thread.__init__(self, name='factory_conn')
+
+        self.socket_server = socket_server
+        self.responser = responser
+
+        self.lista : List[threading.Thread]= []
+        self.done : bool = False
         self.log = logging.getLogger('Zero.RPC')
 
-    def start(self):
-        self.log.info('service server start')
-        self.t_garbage.start()
-        self.t_server.start()
+        self.total = 0
+        self.anterior = 0
+        self.startApp = datetime.timestamp(datetime.now(tz=timezone.utc))
 
-    def join(self):
-        self.t_server.join()
-        self.t_garbage.join()
-        self.log.info('service server down')
 
-    def stop(self):
-        self.log.info('service server shutting down.....')
+    def stop(self) -> None:
+        """[Signal to stop server]
+        """
+        self.log.info('Factory connections signal to stop')
         self.done = True
 
-    def garbageCon(self):
-        '''Remove connections deads'''
+    def garbage(self) -> None:
+        """[Thread to remove connections deads]
+        """
+        lista_remover = []
+        for th in self.lista:
+            if th.isAlive() is False:
+                th.join()
+                lista_remover.append(th)
 
-        self.log.info("garbage connections start")
+        for th in lista_remover:
+            self.log.debug('Thread removed %s', th.getName())
+            self.lista.remove(th)
 
-        totais = 0
-        while True:
+        removed = len(lista_remover)
+        if removed > 0:
+            self.total += removed
+            lista_remover.clear()
 
-            lista_remover = []
-            for thread in self.lista:
-                if thread.isAlive() is False:
-                    self.log.debug('thread %s removed, total: %d', thread.getName(), totais + 1)
-                    totais += 1
-                    thread.join()
-                    lista_remover.append(thread)
+        atual = len(self.lista)
+        if (atual != self.anterior) or (removed > 0):
+            self.anterior = atual
 
-            for thread in lista_remover:
-                self.lista.remove(thread)
+            time_online = int(datetime.timestamp(datetime.now(tz=timezone.utc)) - self.startApp)
+            self.log.info('alive[%s] run[%d] sweeped[%d]', str(timedelta(seconds=time_online)), atual, self.total)
 
-            if len(lista_remover) != 0:
-                lista_remover.clear()
-
-            if self.done is True:
-                if len(self.lista) == 0:
-                    break
-
-            time.sleep(1)
-
-        self.log.info("garbage connection stop after %d removed", totais)
-
-    def builderConnection(self, sock, serverConnection):
-
-        self.log.info("factory connections start")
+    def run(self):
+        """[Thread factory of new connectons to client]
+        """
+        self.log.info("Factory connections start")
         seq = 0
-
-        while True:
+        while self.done is False:
             try:
                 # accept connections from outside
-                clientsocket, address = sock.accept()
-
-                #self.log.debug("factory server new connection")
-
-                comm_param = {}
-                comm_param['clientsocket'] = clientsocket
-                comm_param['addr'] = address
-                comm_param['done'] = self.done
-
-                self.log.info("connected with :%s", str(address))
-
-                t = threading.Thread(target=serverConnection, name='conection_{0}'.format(seq), args=(seq, comm_param))
+                clientsocket, address = self.socket_server.accept()
+                t = threading.Thread(target=self.responser, name='tResp_{0}'.format(seq), args=(clientsocket,
+                                                                                                address,
+                                                                                                self.done))
                 t.start()
-
                 self.lista.append(t)
-
                 seq += 1
 
             except socket.timeout:
@@ -96,7 +93,5 @@ class ServiceServer(object):
             except Exception as exp:
                 if self.done is False:
                     self.log.error('Fail:%s', str(exp))
-                else:
-                    break
 
-        self.log.info("factory connection stop")
+        self.log.info("Factory connection stop")

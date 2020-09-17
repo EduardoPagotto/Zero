@@ -5,14 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Arquivo Atual",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Protocolo Client",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/test/simple/client.py",
             "console": "integratedTerminal",
-            "env": {"PYTHONPATH": "${workspaceFolder}" },
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "args": []
-
         },
         {
             "name": "Protocolo Server",
@@ -20,7 +28,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/simple/server.py",
             "console": "integratedTerminal",
-            "env": {"PYTHONPATH": "${workspaceFolder}" },
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "args": []
         },
         {
@@ -29,7 +39,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/rpc/server.py",
             "console": "integratedTerminal",
-            "env": {"PYTHONPATH": "${workspaceFolder}" },
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "args": []
         },
         {
@@ -38,7 +50,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/test/rpc/client.py",
             "console": "integratedTerminal",
-            "env": {"PYTHONPATH": "${workspaceFolder}" },
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
             "args": []
         },
         {

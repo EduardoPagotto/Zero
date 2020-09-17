@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200602
+Update on 20200916
 @author: Eduardo Pagotto
 '''
-
-#pylint: disable=C0301, C0116, W0703
 
 import time
 import logging
 
 import common as rpc
-from Zero import ServiceBus, ExceptionZeroRPC
+from Zero import ServiceBus
+from Zero import ExceptionZeroRPC
 
 def main():
     try:
@@ -35,12 +34,20 @@ def main():
 
         log.debug('RPC retorno: %s', ponta.is_alive_bitch())
 
-        valor = ponta.teste_targuet(4)
+        valor = ponta.teste_target(4)
         log.debug('RPC retorno: %s', valor)
 
         dados = {'nome':'pagotto', 'idade':50, 'sexo':True, 'opt':{'val1':'teste1', 'lista':['um', 'dois']}}
         retorno = ponta.get_dict(dados)
         log.debug('RPC retorno:%s', str(retorno))
+
+        log.debug('esperar 80 segundos para proxima consulta')
+        time.sleep(80)
+        valor = ponta.getNome()
+        log.debug('Nome Atual: %s', valor)
+        time.sleep(40)
+        valor = ponta.getNome()
+        log.debug('Nome Atual: %s', valor)
 
         #valor = ponta.sendTesteComando('texto',10, False, nome='eduardo', idade=50, peso=70.5, sexo=True)
         #log.debug('RPC retorno: %s', valor)
@@ -49,7 +56,9 @@ def main():
         log.error('ERRO: {0}'.format(str(exp)))
 
     except Exception as exp:
-        log.exception('Falha: {0}'.format(str(exp)))
+        log.error('Falha: {0}'.format(str(exp)))
+
+    bus.close_all()
 
     log.info('App desconectado')
 
