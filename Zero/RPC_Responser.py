@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200916
+Update on 20200917
 @author: Eduardo Pagotto
 '''
 
@@ -8,26 +8,11 @@ import logging
 import socket
 import json
 
+import threading
+
 from Zero.common import __json_rpc_version__ as json_rpc_version
 from Zero.transport.Protocol import Protocol, ProtocolCode
 from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
-
-# TODO: Criar classe base de conexao peer e fazer RPC_Responser derivada desta
-# class ConnectionServerBase(object):
-#     def __init__(self, done):
-#         self.done = done
-#         self.log = logging.getLogger('Zero.RPC')
-
-#         self.protocol = None
-
-#     def load(self, *args, **kargs):
-#         dados_conexao = args[1]
-#         self.protocol = Protocol(dados_conexao['clientsocket'])
-#         self.protocol.settimeout(30)
-
-#         if 'to' in dados_conexao:
-#             self.protocol.settimeout(dados_conexao)
-
 
 class RPC_Responser(object):
     """[Connection thread with server RPC ]
@@ -46,17 +31,19 @@ class RPC_Responser(object):
     def __call__(self, *args, **kargs):
         """[execute exchange of json's messages with server RPC]
         """
-        indice_conexao = args[0]
-        done = args[3]
-        self.log.info('responser %d open %s', args[0], str(args[2]))
+        done = args[2]
+
+        t_name = threading.currentThread().getName()
+
+        self.log.info('%s open %s', t_name, str(args[1]))
 
         protocol = None
         try:
-            protocol = Protocol(args[1])
+            protocol = Protocol(args[0])
             protocol.settimeout(30)
 
         except Exception as exp:
-            self.log.critical('responser %d fail creating connection: %s', indice_conexao, str(exp))
+            self.log.critical('%s fail creating connection: %s', t_name, str(exp))
             return
 
         count_to = 0
@@ -69,24 +56,24 @@ class RPC_Responser(object):
                     protocol.sendString(ProtocolCode.RESULT, self.rpc_exec_func(msg_in))
 
             except ExceptionZeroErro as exp_erro:
-                self.log.error('responser %d recevice erro: %s',indice_conexao, str(exp_erro))
+                self.log.error('%s recevice erro: %s',t_name, str(exp_erro))
                 protocol.sendString(ProtocolCode.RESULT, 'recived error from server')
 
             except ExceptionZeroClose as exp_close:
-                self.log.warning('responser %d receive: %s',indice_conexao, str(exp_close))
+                self.log.warning('%s receive: %s',t_name, str(exp_close))
                 break
 
             except socket.timeout:
                 count_to += 1
-                self.log.warning('responser %d TO count: %d', indice_conexao, count_to)
+                self.log.warning('%s TO count: %d', t_name, count_to)
 
             except Exception as exp:
-                self.log.error('responser %d exception error: %s', indice_conexao, str(exp))
+                self.log.error('%s exception error: %s', t_name, str(exp))
                 break
 
         protocol.close()
 
-        self.log.info('responser %d close', indice_conexao)
+        self.log.info('%s close', t_name)
 
     def rpc_exec_func(self, msg : str) -> str:
         """[Execule methodo local with paramters in json data (msg)]

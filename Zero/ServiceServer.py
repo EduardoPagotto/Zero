@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200916
+Update on 20200917
 @author: Eduardo Pagotto
 '''
 
@@ -91,8 +91,7 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
             try:
                 # accept connections from outside
                 clientsocket, address = sock.accept()
-                t = threading.Thread(target=serverConnection, name='tConn_{0}'.format(seq), args=(seq,
-                                                                                                  clientsocket,
+                t = threading.Thread(target=serverConnection, name='tResp_{0}'.format(seq), args=(clientsocket,
                                                                                                   address,
                                                                                                   self.done))
                 t.start()
