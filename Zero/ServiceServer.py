@@ -15,42 +15,35 @@ from typing import List
 
 from Zero.RPC_Responser import RPC_Responser
 
-class ServiceServer(object): # TODO: implementar chamada de thread em __call__
+class ServiceServer(threading.Thread):
     """[Class facture new connections threads]
     Args:
         object ([type]): [description]
     """
-    def __init__(self, socket_server : socket.socket, serverConnection : RPC_Responser):
+    def __init__(self, socket_server : socket.socket, responser : RPC_Responser):
         """[Initialize with socket and rresponser]
         Args:
             socket_server (socket.socket): [description]
-            serverConnection (RPC_Responser): [description]
+            responser (RPC_Responser): [description]
         """
+        threading.Thread.__init__(self, name='factory_conn')
+
+        self.socket_server = socket_server
+        self.responser = responser
+
         self.lista : List[threading.Thread]= []
-        self.done :bool = False
-        self.t_server : threading.Thread  = threading.Thread(target=self.createConn, name='factory_conn', args=(socket_server, serverConnection))
+        self.done : bool = False
         self.log = logging.getLogger('Zero.RPC')
 
         self.total = 0
         self.anterior = 0
         self.startApp = datetime.timestamp(datetime.now(tz=timezone.utc))
 
-    def start(self) -> None:
-        """[Start Server pooller connections]
-        """
-        self.log.info('Service server start')
-        self.t_server.start()
-
-    def join(self) -> None:
-        """[Wait finisher all connections and clean all garbage]
-        """
-        self.t_server.join()
-        self.log.info('Service server down')
 
     def stop(self) -> None:
         """[Signal to stop server]
         """
-        self.log.info('Service server shutting down.....')
+        self.log.info('Factory connections signal to stop')
         self.done = True
 
     def garbage(self) -> None:
@@ -78,26 +71,20 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
             time_online = int(datetime.timestamp(datetime.now(tz=timezone.utc)) - self.startApp)
             self.log.info('alive[%s] run[%d] sweeped[%d]', str(timedelta(seconds=time_online)), atual, self.total)
 
-    def createConn(self, sock : socket.socket, serverConnection: RPC_Responser):
+    def run(self):
         """[Thread factory of new connectons to client]
-        Args:
-            sock (socket.socket): [low severl socket]
-            serverConnection (RPC_Responser): [responser json 2.0]
         """
-        self.log.info("Sevice Server factory connections start")
+        self.log.info("Factory connections start")
         seq = 0
-
         while self.done is False:
             try:
                 # accept connections from outside
-                clientsocket, address = sock.accept()
-                t = threading.Thread(target=serverConnection, name='tResp_{0}'.format(seq), args=(clientsocket,
-                                                                                                  address,
-                                                                                                  self.done))
+                clientsocket, address = self.socket_server.accept()
+                t = threading.Thread(target=self.responser, name='tResp_{0}'.format(seq), args=(clientsocket,
+                                                                                                address,
+                                                                                                self.done))
                 t.start()
-
                 self.lista.append(t)
-
                 seq += 1
 
             except socket.timeout:
@@ -107,4 +94,4 @@ class ServiceServer(object): # TODO: implementar chamada de thread em __call__
                 if self.done is False:
                     self.log.error('Fail:%s', str(exp))
 
-        self.log.info("Sevice Server factory connection stop")
+        self.log.info("Factory connection stop")
