@@ -1,8 +1,180 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.linting.pylintEnabled": false,
+        "editor.minimap.enabled": false,
+        "python.linting.enabled": true,
+        "python.pythonPath": "/usr/bin/python3",
+        "python.linting.mypyEnabled": true,
+        "python.autoComplete.extraPaths": [
+            "./test/rpc"
+        ],
+        "python.analysis.extraPaths": [
+            "./test/rpc"
+        ],
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: Arquivo Atual",
+                "type": "python",
+                "request": "launch",
+                "program": "${file}",
+                "console": "integratedTerminal"
+            },
+            {
+                "name": "Protocolo Client",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/test/simple/client.py",
+                "console": "integratedTerminal",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}"
+                },
+                "args": []
+            },
+            {
+                "name": "Protocolo Server",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/test/simple/server.py",
+                "console": "integratedTerminal",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}"
+                },
+                "args": []
+            },
+            {
+                "name": "RPC Server",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/test/rpc/server.py",
+                "console": "integratedTerminal",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}"
+                },
+                "args": []
+            },
+            {
+                "name": "RPC Client",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/test/rpc/client.py",
+                "console": "integratedTerminal",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}"
+                },
+                "args": []
+            },
+            {
+                "name": "Decorador",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/decoradores.py",
+                "console": "integratedTerminal",
+                "args": []
+            }
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Empacotar",
+                "command": "python3",
+                "args": [
+                    "setup.py",
+                    "sdist",
+                    "bdist_wheel"
+                ],
+                "type": "shell",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "Deploy",
+                "command": "twine",
+                "args": [
+                    "upload",
+                    "--verbose",
+                    "-r",
+                    "local",
+                    "dist/*.gz"
+                ],
+                "type": "shell",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "Clean",
+                "command": "rm",
+                "args": [
+                    "-rf",
+                    "build",
+                    "dist",
+                    "*.egg-info"
+                ],
+                "type": "shell",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "Run File",
+                "command": "python ${file}",
+                "type": "shell",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                }
+            },
+            {
+                "label": "nosetest",
+                "command": "nosetests -v",
+                "type": "shell",
+                "group": {
+                    "kind": "test",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                }
+            }
+        ]
+    }
 }
