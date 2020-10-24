@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!./venv/bin/python3
 '''
 Created on 20190821
-Update on 20200916
+Update on 20201024
 @author: Eduardo Pagotto
 '''
 
@@ -28,5 +28,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    install_requires=['argparse']
+    install_requires=['argparse','mypy']
 )

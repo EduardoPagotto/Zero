@@ -9,6 +9,26 @@ RPC json 2.0 API
 - [server rpc](./test/rpc/server.py): ./test/rpc/server.py
 - [client rpc](./test/rpc/client.py): ./test/rpc/client.py
 
+## Setup the venv
+```bash
+python3 -m venv venv
+source ./venv/bin/activate
+pip3 install -r requirements.txt
+pip3 list
+deactivate
+```
+
+## Install global
+```bash
+python3 -m setup.py install
+```
+
+## Install venv
+```bash
+source ./venv/bin/activate
+./setup.py install
+```
+
 ## Protocols Transport
 Segmented binary chunk
 

@@ -11,10 +11,12 @@
         "python.pythonPath": "/usr/bin/python3",
         "python.linting.mypyEnabled": true,
         "python.autoComplete.extraPaths": [
-            "./test/rpc"
+            "./test/rpc",
+            "./Zero"
         ],
         "python.analysis.extraPaths": [
-            "./test/rpc"
+            "./test/rpc",
+            "./Zero"
         ],
     },
     "launch": {
