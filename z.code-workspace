@@ -164,6 +164,24 @@
                 }
             },
             {
+                "label": "Make Clean Project",
+                "type": "shell",
+                "command": "cd ${workspaceFolder}",
+                "args": ["make","clean"],
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared",
+                    "showReuseMessage": true,
+                    "clear": false
+                }
+            },
+            {
                 "label": "nosetest",
                 "command": "nosetests -v",
                 "type": "shell",
