@@ -17,7 +17,7 @@
         "python.analysis.extraPaths": [
             "./test/rpc",
             "./Zero"
-        ],
+        ]
     },
     "launch": {
         "version": "0.2.0",
@@ -129,6 +129,24 @@
                 "problemMatcher": []
             },
             {
+                "label": "Clean PyCache",
+                "command": "py3clean",
+                "args": [
+                    "."
+                ],
+                "type": "shell",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "presentation": {
+                    "reveal": "always",
+                    "panel": "new",
+                    "focus": true
+                },
+                "problemMatcher": []
+            },
+            {
                 "label": "Clean",
                 "command": "rm",
                 "args": [
@@ -167,7 +185,10 @@
                 "label": "Make Clean Project",
                 "type": "shell",
                 "command": "cd ${workspaceFolder}",
-                "args": ["make","clean"],
+                "args": [
+                    "make",
+                    "clean"
+                ],
                 "group": {
                     "kind": "build",
                     "isDefault": true
