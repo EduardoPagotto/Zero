@@ -1,10 +1,10 @@
 '''
 Created on 20170119
-Update on 20200627
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
-import os
+#import os
 import struct
 import zlib
 import logging
@@ -13,8 +13,8 @@ import socket
 from typing import Tuple
 
 from enum import Enum
-from Zero.transport.SocketBase import SocketBase
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
+from .SocketBase import SocketBase
+from ..subsys import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro
 
 class ProtocolCode(Enum):
     """[Protocl commands id's]

@@ -1,13 +1,13 @@
 '''
 Created on 20190822
-Update on 20200727
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
 from typing import Any
 
-from Zero.RPC_Call import RPC_Call
-from Zero.ConnectionControl import ConnectionControl
+from .RPC_Call import RPC_Call
+from .ConnectionControl import ConnectionControl
 
 class ProxyObject(object):
     """[Client Proxy Wrapper]

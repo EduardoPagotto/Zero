@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200917
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -13,7 +13,7 @@ import threading
 from datetime import datetime, timezone, timedelta
 from typing import List
 
-from Zero.RPC_Responser import RPC_Responser
+from .RPC_Responser import RPC_Responser
 
 class ServiceServer(threading.Thread):
     """[Class facture new connections threads]

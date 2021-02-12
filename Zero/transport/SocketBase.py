@@ -1,13 +1,13 @@
 '''
 Created on 20170119
-Update on 20200624
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
 import socket
 
-from typing import Optional, Union, List
-from Zero.subsys.ExceptionZero import ExceptionZero
+from typing import Any, Optional, Union, List
+from ..subsys import ExceptionZero
 
 BLOCK_SIZE = 2048
 

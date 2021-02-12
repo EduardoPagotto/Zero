@@ -1,11 +1,11 @@
 '''
 Created on 20180208
-Update on 20200727
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
 import signal
-from Zero.subsys.Singleton import Singleton
+from .Singleton import Singleton
 
 class GracefulKiller(metaclass=Singleton):
     def __init__(self):

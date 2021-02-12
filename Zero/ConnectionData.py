@@ -1,6 +1,6 @@
 '''
 Created on 20200727
-Update on 20200917
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -11,8 +11,8 @@ import random
 from typing import Union, Any
 from datetime import datetime, timedelta
 
-from Zero.transport.Protocol import Protocol
-from Zero.transport.SocketFactory import SocketFactoryClient
+from .transport import Protocol
+from .transport import SocketFactoryClient
 
 class ConnectionData(object):
     """[Connection with server RPC]
