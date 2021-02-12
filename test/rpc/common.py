@@ -4,7 +4,7 @@ Update on 20200724
 @author: Eduardo Pagotto
 '''
 
-#ADDRESS = 'uds://uds_test_rpc' 
+#ADDRESS = 'unix:./uds_test_rpc' 
 ADDRESS = 'tcp://127.0.0.1:5151'
 TESTE_BUS_NAME = 'com.teste'
 IS_ALIVE_INTERFACE = TESTE_BUS_NAME + '.is_alive_bitch'

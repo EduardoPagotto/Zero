@@ -18,7 +18,7 @@ class ServiceObject(object):
     def __init__(self, s_address : str, target : object):
         """[Start Server RPC]
         Args:
-            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            s_address (str): [valids: unix:./conexao_peer amd tcp:s//127.0.0.1:5151]
             target (object): [Self of derivade class]
         """
 

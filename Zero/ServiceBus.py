@@ -15,7 +15,7 @@ class ServiceBus(object):
     def __init__(self, s_address : str, retry : int=3, max_threads : int=5):
         """[Container of Wrapper Client RPC]
         Args:
-            s_address (str): [valid's : ( uds://./conexao_peer | tcp://127.0.0.1:5151) ]
+            s_address (str): [valid's : ( unix:./conexao_peer | tcp://127.0.0.1:5151) ]
             retry (int, optional): [Tentativa de reconexa]. Defaults to 3.
             max_threads (int, optional): [Numero maximo de threads de conexao simultaneas]. Defaults to 5.
         """

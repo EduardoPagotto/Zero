@@ -31,3 +31,6 @@ from Zero.ServiceObject import ServiceObject
 # RPC Client class
 from Zero.ServiceBus import ServiceBus
 
+# Services
+from Zero.Services.Queue import Queue
+
