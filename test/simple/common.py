@@ -7,7 +7,7 @@ Update on 20200718
 import logging
 
 # Usado UnixDomainSocket
-#ADDRESS = 'uds://uds_test_rpc' 
+#ADDRESS = 'unix:./uds_test_rpc' 
 
 # Usado Network Socket
 ADDRESS = 'tcp://127.0.0.1:5151'

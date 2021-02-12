@@ -26,7 +26,7 @@ class SocketFactory(ABC):
     def __init__(self, s_address : str):
         """[Host connection]
         Args:
-            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            s_address (str): [valids: unix:./conexao_peer amd tcp:s//127.0.0.1:5151]
         Raises:
             Exception: [malformed TCP/IP]
             Exception: [malformed UDS path]
@@ -38,8 +38,8 @@ class SocketFactory(ABC):
         self.uds:str
         self.tcp_ip: Tuple[str, int]
 
-        if 'uds://' in s_address:
-            self.uds = s_address.partition('uds://')[2]
+        if 'unix:' in s_address:
+            self.uds = s_address.partition('unix:')[2]
 
         elif 'tcp://' in s_address:
             self.kind = 1
@@ -67,7 +67,7 @@ class SocketFactoryServer(SocketFactory):
     def __init__(self, s_address):
         """[summary]
         Args:
-            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            s_address (str): [valids: unix:./conexao_peer amd tcp:s//127.0.0.1:5151]
         """
         super().__init__(s_address)
 
@@ -117,7 +117,7 @@ class SocketFactoryClient(SocketFactory):
     def __init__(self, s_address : str, re_try: int=3):
         """[summary]
         Args:
-            s_address (str): [valids: uds://./conexao_peer amd tcp:s//127.0.0.1:5151]
+            s_address (str): [valids: unix:./conexao_peer amd tcp:s//127.0.0.1:5151]
             re_try (int, optional): [re-try befor exception]. Defaults to 3.
         """
         super().__init__(s_address)

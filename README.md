@@ -33,10 +33,10 @@ source ./venv/bin/activate
 Segmented binary chunk
 
 ## Address
-|Prot   | connection string    |
-|-------|----------------------|
-|UDS    |  uds://uds_test_rpc  |
-|TCP/IP | tcp://127.0.0.1:5151 |
+| Prot          | connection string    |
+|---------------|----------------------|
+| Domain Socket | unix:./uds_test_rpc  |
+| TCP/IP        | tcp://127.0.0.1:5151 |
 
 ### API Server
     - ServiceObject.py
