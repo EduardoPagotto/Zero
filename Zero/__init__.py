@@ -1,36 +1,36 @@
 '''
 Created on 20190822
-Update on 20200916
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
 # Generic class
-from Zero.subsys.ExceptionZero import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
-from Zero.subsys.Singleton import Singleton
-from Zero.subsys.GracefulKiller import GracefulKiller
+from .subsys import ExceptionZero, ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
+from .subsys import Singleton
+from .subsys import GracefulKiller
 
 # Transport
-from Zero.transport.SocketBase import SocketBase
-from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.SocketFactory import SocketFactoryClient, SocketFactoryServer
+from .transport import SocketBase
+from .transport import Protocol, ProtocolCode
+from .transport import SocketFactoryClient, SocketFactoryServer
 
-from Zero.ConnectionControl import ConnectionControl
-from Zero.ConnectionData import ConnectionData
+from .ConnectionControl import ConnectionControl
+from .ConnectionData import ConnectionData
 
 # RPC Server Class Internal
-from Zero.ServiceServer import ServiceServer
-from Zero.RPC_Responser import RPC_Responser
+from .ServiceServer import ServiceServer
+from .RPC_Responser import RPC_Responser
 
 # RPC Client Class Internal
-from Zero.RPC_Call import RPC_Call
-from Zero.ProxyObject import ProxyObject
+from .RPC_Call import RPC_Call
+from .ProxyObject import ProxyObject
 
 # RPC Server Class
-from Zero.ServiceObject import ServiceObject
+from .ServiceObject import ServiceObject
 
 # RPC Client class
-from Zero.ServiceBus import ServiceBus
+from .ServiceBus import ServiceBus
 
 # Services
-from Zero.Services.Queue import Queue
+from .Services import QueueRpc
 

@@ -1,15 +1,15 @@
 '''
 Created on 20190822
-Update on 20200728
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
-from typing import Union, Any
+from typing import Union
 from datetime import timedelta
 
-from Zero.transport.SocketFactory import SocketFactoryClient
-from Zero.ConnectionControl import ConnectionControl
-from Zero.ProxyObject import ProxyObject
+from .transport import SocketFactoryClient
+from .ConnectionControl import ConnectionControl
+from .ProxyObject import ProxyObject
 
 class ServiceBus(object):
     def __init__(self, s_address : str, retry : int=3, max_threads : int=5):

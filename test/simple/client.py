@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200727
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -9,8 +9,8 @@ import time
 import logging
 import common
 
-from Zero.transport.SocketFactory import SocketFactoryClient
-from Zero.transport.Protocol import Protocol, ProtocolCode
+from Zero import SocketFactoryClient
+from Zero import Protocol, ProtocolCode
 
 def main():
 

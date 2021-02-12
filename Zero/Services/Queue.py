@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20201214
-Update on 20201214
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -9,10 +9,10 @@ import logging
 import queue
 from typing import Any, Dict, Optional
 
-from Zero import ServiceObject
-from Zero import GracefulKiller
+from ..ServiceObject import ServiceObject
+from ..subsys import GracefulKiller
 
-class Queue(ServiceObject):
+class QueueRpc(ServiceObject):
     def __init__(self, s_address : str):
         self.map_queues : Dict[str, queue.Queue] = {}
         super().__init__(s_address, self)
@@ -76,5 +76,5 @@ if __name__ == '__main__':
         datefmt='%H:%M:%S',
     )
 
-    server = Queue('')
+    server = QueueRpc('')
     server.loop_blocked(GracefulKiller())

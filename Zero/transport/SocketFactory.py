@@ -1,21 +1,20 @@
 '''
 Created on 20190822
-Update on 20200727
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
-import sys
+#import sys
 import os
 import socket
 import logging
 import time
 
-from typing import Tuple, Union
+from typing import Tuple
 from abc import ABC, abstractmethod
 
-from enum import Enum
-from Zero.transport.SocketBase import SocketBase
-from Zero.subsys.ExceptionZero import ExceptionZero
+from .SocketBase import SocketBase
+from ..subsys import ExceptionZero
 
 class SocketFactory(ABC):
     """[Factory of new connections]

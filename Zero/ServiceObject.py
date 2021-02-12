@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200916
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
 import time
 import logging
 
-from Zero.transport.SocketFactory import SocketFactoryServer
-from Zero.subsys.GracefulKiller import GracefulKiller
-from Zero.ServiceServer import ServiceServer
-from Zero.RPC_Responser import RPC_Responser
+from .transport import SocketFactoryServer
+from .subsys import GracefulKiller
+from .ServiceServer import ServiceServer
+from .RPC_Responser import RPC_Responser
 
 class ServiceObject(object):
 

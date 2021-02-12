@@ -1,6 +1,6 @@
 '''
 Created on 20190914
-Update on 20200728
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -8,11 +8,11 @@ import time
 import logging
 import threading
 
-from typing import List, Union, Any
-from datetime import datetime, timedelta
+from datetime import timedelta
+from typing import List
 
-from Zero.transport.SocketFactory import SocketFactoryClient
-from Zero.ConnectionData import ConnectionData
+from .transport import SocketFactoryClient
+from .ConnectionData import ConnectionData
 
 class ConnectionControl(object):
     """[Manager Connecton pool]

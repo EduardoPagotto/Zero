@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20170119
-Update on 20200727
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -11,11 +11,8 @@ import socket
 
 import common
 
-from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.transport.SocketFactory import SocketFactoryServer
-from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro
-from Zero.subsys.GracefulKiller import GracefulKiller
-from Zero.ServiceServer import ServiceServer
+from Zero import Protocol, ProtocolCode, SocketFactoryServer
+from Zero import ServiceServer, ExceptionZeroClose, ExceptionZeroErro, GracefulKiller
 
 def connection(args, kwargs):
 

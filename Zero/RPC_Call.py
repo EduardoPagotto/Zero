@@ -1,6 +1,6 @@
 '''
 Created on 20190823
-Update on 20200917
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -8,9 +8,9 @@ import json
 import threading
 import random
 
-from Zero.common import __json_rpc_version__ as json_rpc_version
-from Zero.ConnectionControl import ConnectionControl
-from Zero.subsys.ExceptionZero import ExceptionZeroRPC
+from .common import __json_rpc_version__ as json_rpc_version
+from .ConnectionControl import ConnectionControl
+from .subsys import ExceptionZeroRPC
 
 class RPC_Call(object):
     """[Midlleware json Protocol]

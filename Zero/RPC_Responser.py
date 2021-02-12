@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20200917
+Update on 20210212
 @author: Eduardo Pagotto
 '''
 
@@ -10,9 +10,9 @@ import json
 
 import threading
 
-from Zero.common import __json_rpc_version__ as json_rpc_version
-from Zero.transport.Protocol import Protocol, ProtocolCode
-from Zero.subsys.ExceptionZero import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
+from .common import __json_rpc_version__ as json_rpc_version
+from .transport import Protocol, ProtocolCode
+from .subsys import ExceptionZeroClose, ExceptionZeroErro, ExceptionZeroRPC
 
 class RPC_Responser(object):
     """[Connection thread with server RPC ]
