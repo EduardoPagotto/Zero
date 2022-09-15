@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20210212
+Update on 20220915
 @author: Eduardo Pagotto
 '''
 
@@ -51,7 +51,7 @@ class ServiceServer(threading.Thread):
         """
         lista_remover = []
         for th in self.lista:
-            if th.isAlive() is False:
+            if th.is_alive() is False:
                 th.join()
                 lista_remover.append(th)
 
