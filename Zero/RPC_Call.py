@@ -7,10 +7,10 @@ Update on 20210212
 import json
 import threading
 import random
-
 from .common import __json_rpc_version__ as json_rpc_version
+from .transport import ProtocolCode
 from .ConnectionControl import ConnectionControl
-from .subsys import ExceptionZeroRPC
+from .subsys import ExceptionZero, ExceptionZeroRPC
 
 class RPC_Call(object):
     """[Midlleware json Protocol]
@@ -26,7 +26,7 @@ class RPC_Call(object):
     __serial_lock : threading.Lock = threading.Lock()
     __serial : int = random.randint(0,10000)
 
-    def __init__(self, nome_metodo : str, control : ConnectionControl):
+    def __init__(self, nome_metodo : str, control : ConnectionControl, hook):
         """[Constructor json message builder]
         Args:
             nome_metodo (str): [method name do send to Server of RPC]
@@ -36,6 +36,7 @@ class RPC_Call(object):
         self.serial : int = RPC_Call.__createId()
         self.method : str = nome_metodo
         self.control : ConnectionControl = control
+        self.hook = hook
 
     @staticmethod
     def __createId() -> int:
@@ -91,8 +92,21 @@ class RPC_Call(object):
         """
 
         conn = self.control.get_connection()
+        msg_in : str = ''
 
-        msg_in = conn.connection.exchange(self.encode(args, kargs))
+        # json-protocol methodo and parameters sended to server
+        conn.connection.sendString(ProtocolCode.COMMAND, self.encode(args, kargs))
+
+        # hook to extra communication used between json protocol in-out call
+        if self.hook:
+            self.hook(self.method, conn.connection)
+
+        # json-protocol recived whit data
+        idRec, buffer = conn.connection.receiveProtocol()
+        if idRec == ProtocolCode.RESULT:
+            msg_in = buffer.decode('UTF-8')
+        elif idRec == ProtocolCode.ERRO:
+            raise ExceptionZero('Critical Invalid receved: ({0} : {1})'.format(idRec, buffer.decode('UTF-8')))
 
         self.control.release_connection(conn)
 

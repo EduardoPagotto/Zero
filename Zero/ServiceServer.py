@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20220915
+Update on 20220917
 @author: Eduardo Pagotto
 '''
 
@@ -21,7 +21,7 @@ class ServiceServer(threading.Thread):
         object ([type]): [description]
     """
     def __init__(self, socket_server : socket.socket, responser : RPC_Responser):
-        """[Initialize with socket and rresponser]
+        """[Initialize with socket and responser]
         Args:
             socket_server (socket.socket): [description]
             responser (RPC_Responser): [description]

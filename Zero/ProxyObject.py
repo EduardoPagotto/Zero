@@ -14,8 +14,9 @@ class ProxyObject(object):
     Args:
         object ([type]): [description]
     """
-    def __init__(self, conn_control : ConnectionControl):
+    def __init__(self, conn_control : ConnectionControl, hook):
         self.conn_control = conn_control
+        self.hook = hook
 
     def __getattr__(self, name : str) -> RPC_Call:
         """[summary]
@@ -24,7 +25,7 @@ class ProxyObject(object):
         Returns:
             RPC_Call: [object wrapper]
         """
-        return RPC_Call(name, self.conn_control)
+        return RPC_Call(name, self.conn_control, self.hook)
 
     def __setattr__(self, name : str, value : Any) -> None:
         """[New Sttribute]

@@ -23,7 +23,7 @@ class ServiceBus(object):
         self.max_threads = max_threads
         self.conn_control : Union[ConnectionControl, None] =  None
 
-    def getObject(self) -> ProxyObject:
+    def getObject(self, hook) -> ProxyObject:
         """[Get connectd exchange with server RPC]
         Returns:
             ProxyObject: [Proxy conectado com controle de conexao e reentrada]
@@ -31,7 +31,7 @@ class ServiceBus(object):
         if self.conn_control is None:
             self.conn_control = ConnectionControl(self.factoty_client, timedelta(minutes=1), self.max_threads)
 
-        return ProxyObject(self.conn_control)
+        return ProxyObject(self.conn_control, hook)
 
     def close_all(self) -> None:
         """[Stop connections to finisher tho client]

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200916
+Update on 20200917
 @author: Eduardo Pagotto
 '''
 
@@ -11,13 +11,50 @@ import logging
 import common as rpc
 from Zero import ServiceBus
 from Zero import ExceptionZeroRPC
+from Zero.subsys.ExceptionZero import ExceptionZeroErro
+from Zero.transport.Protocol import Protocol
+
+# class RPC_Client(ServiceBus):
+#     def __init__(self, s_address: str, retry: int = 3, max_threads: int = 5):
+#         super().__init__(s_address, retry, max_threads)
+
+#     def command(self):
+#         return self.getObject()
+
+# Hook to extra comnication with raw data between json protocol
+def call_backTeste(name : str, conn : Protocol):
+
+    if name == 'save_Xfer':
+        try:
+            #conn.sendFile('./teste.tar.gz')
+            conn.sendErro('Operacao Ilegal')  
+
+        except ExceptionZeroErro as exp:
+            print(' Erro: ' + str(exp))
+
+    elif name == 'load_Xfer':
+        try:
+            conn.receiveFile('./testeReceive.tar.gz')
+            #conn.sendErro('Operacao Ilegal') 
+
+        except ExceptionZeroErro as exp:
+            print(' Erro: ' + str(exp))
+
+    else:
+        pass
+
 
 def main():
     try:
         log = logging.getLogger('Client')
         bus = ServiceBus(rpc.ADDRESS)
 
-        ponta = bus.getObject()
+        ponta = bus.getObject(None)
+
+        ## used to extra communication whit raw data
+        # ponta = bus.getObject(call_backTeste)
+        #ponta.save_Xfer({'id':1, 'file':''})
+        #ponta.load_Xfer('./testeReceive.tar.gz')
 
         ponta.testeA('primeiro', 'segundo', val1='val1', val2='teste2', val3='DDD')
 

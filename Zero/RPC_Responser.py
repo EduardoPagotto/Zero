@@ -1,6 +1,6 @@
 '''
 Created on 20190824
-Update on 20210212
+Update on 20220917
 @author: Eduardo Pagotto
 '''
 
@@ -50,10 +50,10 @@ class RPC_Responser(object):
 
         while done is False:
             try:
-                idRec, msg_in = protocol.receiveString()
                 count_to = 0
+                idRec, buffer = protocol.receiveProtocol()
                 if idRec is ProtocolCode.COMMAND:
-                    protocol.sendString(ProtocolCode.RESULT, self.rpc_exec_func(msg_in))
+                    protocol.sendString(ProtocolCode.RESULT, self.rpc_exec_func(buffer.decode('UTF-8'), protocol))
 
             except ExceptionZeroErro as exp_erro:
                 self.log.error('%s recevice erro: %s',t_name, str(exp_erro))
@@ -75,7 +75,7 @@ class RPC_Responser(object):
 
         self.log.info('%s finnished', t_name)
 
-    def rpc_exec_func(self, msg : str) -> str:
+    def rpc_exec_func(self, msg : str, protocol : Protocol) -> str:
         """[Execule methodo local with paramters in json data (msg)]
         Args:
             msg (str): [json Protocol data received (id, method, parameters)]
@@ -86,6 +86,10 @@ class RPC_Responser(object):
         dados : dict = json.loads(msg)
         serial : int = dados['id']
         metodo : str = dados['method']
+
+        # suffix used to add protocol used to extra communication with peer
+        if '_Xfer' in metodo:
+            dados['params'].append(protocol)
 
         try:
             val = getattr(self.target, metodo)(*dados['params'], **dados['keys'])
