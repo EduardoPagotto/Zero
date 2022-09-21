@@ -6,13 +6,13 @@ Update on 20220921
 
 from .src.common import __version__ as __version_zero__
 # Generic class
-from .src import ExceptionZero, ExceptionZeroErro
+from .src import ExceptionZero, ExceptionZeroErro, ExceptionZeroRPC
 from .src import Singleton
 from .src import GracefulKiller
 
 # Transport
 #from .src.transport import SocketBase
-#from .src.transport import Protocol, ProtocolCode
+from .src.transport import Protocol, ProtocolCode
 #from .src.transport import SocketFactoryClient, SocketFactoryServer
 
 #from .src.ConnectionControl import ConnectionControl
