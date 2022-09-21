@@ -11,12 +11,8 @@
         "python.pythonPath": "/usr/bin/python3",
         "python.linting.mypyEnabled": true,
         "python.autoComplete.extraPaths": [
-            "./test/rpc",
-            "./Zero"
         ],
         "python.analysis.extraPaths": [
-            "./test/rpc",
-            "./Zero"
         ]
     },
     "launch": {
@@ -33,7 +29,7 @@
                 "name": "Protocolo Client",
                 "type": "python",
                 "request": "launch",
-                "program": "${workspaceFolder}/test/simple/client.py",
+                "program": "${workspaceFolder}/examples/simple/client.py",
                 "console": "integratedTerminal",
                 "env": {
                     "PYTHONPATH": "${workspaceFolder}"
@@ -44,7 +40,7 @@
                 "name": "Protocolo Server",
                 "type": "python",
                 "request": "launch",
-                "program": "${workspaceFolder}/test/simple/server.py",
+                "program": "${workspaceFolder}/examples/simple/server.py",
                 "console": "integratedTerminal",
                 "env": {
                     "PYTHONPATH": "${workspaceFolder}"
@@ -55,7 +51,7 @@
                 "name": "RPC Server",
                 "type": "python",
                 "request": "launch",
-                "program": "${workspaceFolder}/test/rpc/server.py",
+                "program": "${workspaceFolder}/examples/rpc/server.py",
                 "console": "integratedTerminal",
                 "env": {
                     "PYTHONPATH": "${workspaceFolder}"
@@ -66,7 +62,7 @@
                 "name": "RPC Client",
                 "type": "python",
                 "request": "launch",
-                "program": "${workspaceFolder}/test/rpc/client.py",
+                "program": "${workspaceFolder}/examples/rpc/client.py",
                 "console": "integratedTerminal",
                 "env": {
                     "PYTHONPATH": "${workspaceFolder}"

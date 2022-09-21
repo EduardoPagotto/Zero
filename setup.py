@@ -7,7 +7,7 @@ Update on 20220919
 
 from setuptools import setup, find_packages
 
-from Zero.common import __version__ as VERSION
+from src.common import __version__ as VERSION
 
 PACKAGE = "Zero"
 

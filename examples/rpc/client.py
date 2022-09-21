@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200917
+Update on 20220921
 @author: Eduardo Pagotto
 '''
 
@@ -9,10 +9,10 @@ import time
 import logging
 
 import common as rpc
-from Zero import ServiceBus
-from Zero import ExceptionZeroRPC
-from Zero.subsys.ExceptionZero import ExceptionZeroErro
-from Zero.transport.Protocol import Protocol
+from src import ServiceBus
+from src import ExceptionZeroRPC
+from src import ExceptionZeroErro
+from src import Protocol
 
 # class RPC_Client(ServiceBus):
 #     def __init__(self, s_address: str, retry: int = 3, max_threads: int = 5):

@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200917
+Update on 20220921
 @author: Eduardo Pagotto
 '''
 
 import logging
 import common as rpc
 
-from Zero import ServiceObject
-from Zero import ExceptionZeroRPC
-from Zero import GracefulKiller
-from Zero.transport.Protocol import Protocol
-from Zero.subsys.ExceptionZero import ExceptionZeroErro
+from src import ServiceObject
+from src import ExceptionZeroRPC
+from src import GracefulKiller
+from src import Protocol
+from src import ExceptionZeroErro
 
 class ServerRPC(ServiceObject):
     def __init__(self):
