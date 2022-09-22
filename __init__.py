@@ -4,33 +4,33 @@ Update on 20220921
 @author: Eduardo Pagotto
 '''
 
-from .src.common import __version__ as __version_zero__
+from .Zero.common import __version__ as __version_zero__
 # Generic class
-from .src import ExceptionZero, ExceptionZeroErro, ExceptionZeroRPC
-from .src import Singleton
-from .src import GracefulKiller
+from .Zero import ExceptionZero, ExceptionZeroErro, ExceptionZeroRPC
+from .Zero import Singleton
+from .Zero import GracefulKiller
 
 # Transport
-#from .src.transport import SocketBase
-from .src.transport import Protocol, ProtocolCode
-#from .src.transport import SocketFactoryClient, SocketFactoryServer
+#from .Zero.transport import SocketBase
+from .Zero.transport import Protocol, ProtocolCode
+#from .Zero.transport import SocketFactoryClient, SocketFactoryServer
 
-#from .src.ConnectionControl import ConnectionControl
-#from .src.ConnectionData import ConnectionData
+#from .Zero.ConnectionControl import ConnectionControl
+#from .Zero.ConnectionData import ConnectionData
 
 # RPC Server Class Internal
-from .src.ServiceServer import ServiceServer
-from .src.RPC_Responser import RPC_Responser
+from .Zero.ServiceServer import ServiceServer
+from .Zero.RPC_Responser import RPC_Responser
 
 # RPC Client Class Internal
-#from .src.RPC_Call import RPC_Call
-#from .src.ProxyObject import ProxyObject
+#from .Zero.RPC_Call import RPC_Call
+#from .Zero.ProxyObject import ProxyObject
 
 # RPC Server Class
-from .src.ServiceObject import ServiceObject
+from .Zero.ServiceObject import ServiceObject
 
 # RPC Client class
-from .src.ServiceBus import ServiceBus
+from .Zero.ServiceBus import ServiceBus
 
 # Services
-#from .src.Services import QueueRpc
+#from .Zero.Services import QueueRpc

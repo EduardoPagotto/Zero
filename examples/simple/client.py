@@ -9,8 +9,8 @@ import time
 import logging
 import common
 
-from src import SocketFactoryClient
-from src import Protocol, ProtocolCode
+from Zero import SocketFactoryClient
+from Zero import Protocol, ProtocolCode
 
 def main():
 
