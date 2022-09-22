@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20190822
-Update on 20200916
+Update on 20220921
 @author: Eduardo Pagotto
 '''
 
@@ -11,6 +11,8 @@ import common as rpc
 from Zero import ServiceObject
 from Zero import ExceptionZeroRPC
 from Zero import GracefulKiller
+from Zero import Protocol
+from Zero import ExceptionZeroErro
 
 class ServerRPC(ServiceObject):
     def __init__(self):
@@ -52,6 +54,33 @@ class ServerRPC(ServiceObject):
 
     def testeA(self, *args, **kargs):
         self.logLocal.info('args: %s; kargs: %s', str(args), str(kargs))
+
+    # extra data received from client in raw mode between in-out json protocol
+    # attention tho suffix '_Xfer' that add protocolo parameter inside of RPC_Responser
+    def save_Xfer(self, data : dict, protocolo : Protocol):
+        try:
+            self.logLocal.info(f'Data: {str(data)}')
+            protocolo.receiveFile('./teste22.tar.gz')
+            #protocolo.sendErro('Arquivo nao existe')
+            
+        except ExceptionZeroErro as exp:
+            return False, str(exp.args[0])
+            
+        return True, "0010333030403400" 
+        
+    # extra data sended to cliente in raw mode between in-out json protocol
+    # attention tho suffix '_Xfer' that add protocolo parameter inside of RPC_Responser
+    def load_Xfer(self, msg : str, protocolo : Protocol):
+        try:
+            self.logLocal.info(f'Msg: {msg}')
+            protocolo.sendFile('./teste22.tar.gz')
+            #protocolo.sendErro('Arquivo nao existe')
+
+        except ExceptionZeroErro as exp:
+            return False, str(exp.args[0])
+            
+        return True, "0010333030403400" 
+
 
 if __name__ == '__main__':
 

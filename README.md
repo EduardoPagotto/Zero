@@ -2,31 +2,24 @@
 RPC json 2.0 API
 
 ## Test Protocol only:
-- [server simple](./test/simple/server.py): ./test/simple/server.py
-- [client simple](./test/simple/client.py): ./test/simple/client.py
+- [server simple](./examples/simple/server.py): ./examples/simple/server.py
+- [client simple](./examples/simple/client.py): ./examples/simple/client.py
 
 ## Test RPC json 2.0:
-- [server rpc](./test/rpc/server.py): ./test/rpc/server.py
-- [client rpc](./test/rpc/client.py): ./test/rpc/client.py
+- [server rpc](./examples/rpc/server.py): ./examples/rpc/server.py
+- [client rpc](./examples/rpc/client.py): ./examples/rpc/client.py
 
-## Setup the venv
+## Setup the venv to develop
 ```bash
-python3 -m venv venv
-source ./venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -r requirements.txt
-pip3 list
-deactivate
+. ./enable_develop_path.sh
 ```
 
-## Install global
+## Install
 ```bash
-python3 -m setup.py install
-```
-
-## Install venv
-```bash
-source ./venv/bin/activate
-./setup.py install
+make install
 ```
 
 ## Protocols Transport

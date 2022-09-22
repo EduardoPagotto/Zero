@@ -58,6 +58,9 @@ class ServiceObject(object):
 
             self.done = True
 
+    def service_call(self):
+        pass
+
     def loop_blocked(self, killer:GracefulKiller) -> None:
         try:
             self.log.info("Service RPC start")
@@ -68,6 +71,7 @@ class ServiceObject(object):
                     self.stop()
 
                 self.service.garbage()
+                self.service_call()
                 time.sleep(5)
 
             self.join()

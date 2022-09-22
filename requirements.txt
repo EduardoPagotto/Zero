@@ -1,4 +1,4 @@
-mypy
-mypy-extensions
 typed-ast
 typing-extensions
+tinydb
+wheel

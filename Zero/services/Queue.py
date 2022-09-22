@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 '''
 Created on 20201214
-Update on 20210212
+Update on 20220922
 @author: Eduardo Pagotto
 '''
 
@@ -9,8 +9,7 @@ import logging
 import queue
 from typing import Any, Dict, Optional
 
-from ..ServiceObject import ServiceObject
-from ..subsys import GracefulKiller
+from Zero import ServiceObject, GracefulKiller
 
 class QueueRpc(ServiceObject):
     def __init__(self, s_address : str):

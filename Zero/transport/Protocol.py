@@ -1,10 +1,10 @@
 '''
 Created on 20170119
-Update on 20210212
+Update on 20220916
 @author: Eduardo Pagotto
 '''
 
-#import os
+import os
 import struct
 import zlib
 import logging
@@ -31,6 +31,7 @@ class ProtocolCode(Enum):
     COMMAND = 3
     RESULT = 4
     FILE = 5
+    OK = 6 # Return of FILE opp
     ERRO = 255
 
 class Protocol(SocketBase):
@@ -193,88 +194,117 @@ class Protocol(SocketBase):
         id, msg = self.receiveString()
         if id == ProtocolCode.RESULT:
             return msg
-
+            
         raise ExceptionZero('Resposta invalida: ({0} : {1})'.format(id, msg))
 
-    # def sendErro(self, msg : str) -> int:
-    #     """[Send a erro Message to the host connected]
-    #     Args:
-    #         msg (str): [message to send]
-    #     Returns:
-    #         int: [size of message sended]
-    #     """
+    def sendErro(self, msg : str) -> int:
+        """[Send a erro Message to the host connected]
+        Args:
+            msg (str): [message to send]
+        Returns:
+            int: [size of message sended]
+        """
+        return self.sendString(ProtocolCode.ERRO, msg)
 
-    #     return self.sendString(ProtocolCode.ERRO, msg)
+    def sendBin(self, buffer : bytes):
+        """[Send a Binary data to host connected]
+        Args:
+            buffer (bytes): [buffer of data]
+        Raises:
+            ExceptionZero: [Fail to read a file from disk]
+            ExceptionZero: [Fail to acess a file from disk]
+            ExceptionZero: [host connected return a erro mensage]
+        Returns:
+            int: [size of file sended]
+        """
+        self.sendProtocol(ProtocolCode.FILE, buffer)
+        idRecebido, msg = self.receiveString()
+        if idRecebido is not ProtocolCode.OK or msg != 'OK':
+            raise ExceptionZero(f'ACK send file erro {msg}')
 
-    # def sendFile(self, path_file_name : str) -> int:
-    #     """[Send a file to host connected]
-    #     Args:
-    #         path_file_name (str): [path of file]
-    #     Raises:
-    #         ExceptionZero: [Fail to read a file from disk]
-    #         ExceptionZero: [Fail to acess a file from disk]
-    #         ExceptionZero: [host connected return a erro mensage]
-    #     Returns:
-    #         int: [size of file sended]
-    #     """
-    #     fileContent = None
-    #     tamanho_arquivo = 0
-    #     try:
-    #         with open(path_file_name, mode='rb') as file:
-    #             fileContent = file.read()
-    #             tamanho_arquivo = len(fileContent)
-    #     except IOError as e:
-    #         self.sendErro('Falha IO na leitura do arquivo:{0}'.format(str(e)))
-    #         raise ExceptionZero('Protocolo Send File:{0}'.format(str(e)))
-    #     except:
-    #         msg_erro = 'Falha critica no arquivo:{0}'.format(str(path_file_name))
-    #         self.sendErro(msg_erro)
-    #         raise ExceptionZero('Protocolo Send File: {0} '.format(msg_erro))
+    def sendFile(self, path_file_name : str) -> int:
+        """[Send a file to host connected]
+        Args:
+            path_file_name (str): [path of file]
+        Raises:
+            ExceptionZero: [Fail to read a file from disk]
+            ExceptionZero: [Fail to acess a file from disk]
+            ExceptionZero: [host connected return a erro mensage]
+        Returns:
+            int: [size of file sended]
+        """
+        fileContent = None
+        tamanho_arquivo = 0
+        try:
+            with open(path_file_name, mode='rb') as file:
+                fileContent = file.read()
+                tamanho_arquivo = len(fileContent)
 
-    #     self.sendProtocol(ProtocolCode.FILE, fileContent)
-    #     idRecebido, msg = self.receiveString()
+        except IOError as e:
+            msg_erro = f'Error IO file{path_file_name} :{str(e)}'
+            self.sendErro(msg_erro)
+            raise ExceptionZero(msg_erro)
 
-    #     if idRecebido is not ProtocolCode.RESULT or msg != 'OK':
-    #         raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
+        except Exception as exp:
+            msg_erro = f'Critical error IO file{path_file_name} :{str(exp)}'
+            self.sendErro(msg_erro)
+            raise ExceptionZero(msg_erro)
 
-    #     return tamanho_arquivo
+        self.sendProtocol(ProtocolCode.FILE, fileContent)
+        idRecebido, msg = self.receiveString()
 
-    # def receiveFile(self, path_file_name : str) -> int:
-    #     """[Receive a file from host connected]
-    #     Args:
-    #         path_file_name (str): [path to save a file]
-    #     Raises:
-    #         ExceptionZero: [Fail to create a dir]
-    #         Exception: [Fail to save a file]
-    #         Exception: [Receive a unspected command]
-    #     Returns:
-    #         int: [description]
-    #     """
-    #     id, buffer_arquivo = self.receiveProtocol()
+        if idRecebido is not ProtocolCode.OK or msg != 'OK':
+            raise ExceptionZero('Protocolo Send Falha no ACK do arquivo:{0} Erro:{1}'.format(path_file_name, msg))
 
-    #     path, file_name = os.path.split(path_file_name)
-    #     try:
-    #         if not os.path.exists(path):
-    #             os.makedirs(path)
-    #     except OSError as e:
-    #         # if e.errno != errno.EEXIST:
-    #         msg_erro = 'Erro ao criar o diretorio:{0} Erro:{1}'.format(path_file_name, str(e))
-    #         self.sendErro(msg_erro)
-    #         raise ExceptionZero(msg_erro)
+        return tamanho_arquivo
 
-    #     if id == ProtocolCode.FILE:
-    #         try:
-    #             with open(path_file_name, mode='wb') as file:
-    #                 file.write(bytes(int(x, 0) for x in buffer_arquivo))
-    #                 self.sendString(ProtocolCode.RESULT, 'OK')
-    #                 return len(buffer_arquivo)
+    def receiveBin(self) -> bytes:
+        id, buffer = self.receiveProtocol()
+        if id == ProtocolCode.FILE:
+            self.sendString(ProtocolCode.OK, 'OK')
+        elif id == ProtocolCode.ERRO:
+            msg_erro = f'Error Recive bin: {buffer.decode("UTF-8")}'
+            self.sendErro(msg_erro)
+            raise ExceptionZero(msg_erro)       
 
-    #         except Exception as exp:
-    #             msg_erro = 'Erro ao gravar arquivo:{0} Erro:{1}'.format(path_file_name, str(exp))
-    #             self.sendErro(msg_erro)
-    #             raise Exception(msg_erro)
+        return buffer
 
-    #     else:
-    #         msg_erro = 'Nao recebi o arquivo:{0} Erro ID:{1}'.format(path_file_name, str(id))
-    #         self.sendErro(msg_erro)
-    #         raise Exception(msg_erro)
+    def receiveFile(self, path_file_name : str) -> int:
+        """[Receive a file from host connected]
+        Args:
+            path_file_name (str): [path to save a file]
+        Raises:
+            ExceptionZero: [Fail to create a dir]
+            Exception: [Fail to save a file]
+            Exception: [Receive a unspected command]
+        Returns:
+            int: [description]
+        """
+        id, buffer_arquivo = self.receiveProtocol()
+
+        path, file_name = os.path.split(path_file_name)
+        try:
+            if not os.path.exists(path):
+                os.makedirs(path)
+        except OSError as e:
+            msg_erro = f'Error mkdir:{path_file_name} Erro:{str(e)}'
+            self.sendErro(msg_erro)
+            raise ExceptionZero(msg_erro)
+
+        if id == ProtocolCode.FILE:
+            try:
+                with open(path_file_name, mode='wb') as file:
+                    #file.write(bytes(int(x, 0) for x in buffer_arquivo))
+                    file.write(buffer_arquivo)
+                    self.sendString(ProtocolCode.OK, 'OK')
+                    return len(buffer_arquivo)
+
+            except Exception as exp:
+                msg_erro = 'Erro ao gravar arquivo:{0} Erro:{1}'.format(path_file_name, str(exp))
+                self.sendErro(msg_erro)
+                raise Exception(msg_erro)
+
+        else:
+            msg_erro = 'Nao recebi o arquivo:{0} Erro ID:{1}'.format(path_file_name, str(id))
+            self.sendErro(msg_erro)
+            raise Exception(msg_erro)
