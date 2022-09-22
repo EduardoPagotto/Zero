@@ -1,7 +1,7 @@
 #!./venv/bin/python3
 '''
 Created on 20190821
-Update on 20220919
+Update on 20220922
 @author: Eduardo Pagotto
 '''
 
@@ -10,6 +10,9 @@ from setuptools import setup, find_packages
 from Zero.common import __version__ as VERSION
 
 PACKAGE = "Zero"
+
+# listar os packages
+#python -c "from setuptools import setup, find_packages; print(find_packages())"
 
 setup(
     name="Zero",
@@ -27,5 +30,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    install_requires=['typed-ast','typing-extensions', 'wheel'],
+    install_requires=['typed-ast','typing-extensions', 'wheel', 'tinydb'],
 )

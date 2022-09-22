@@ -4,5 +4,5 @@ Update on 20220915
 @author: Eduardo Pagotto
 '''
 
-__version__ : str = "1.2.0"
+__version__ : str = "1.2.2"
 __json_rpc_version__ : str = '2.0'
