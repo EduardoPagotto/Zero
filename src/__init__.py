@@ -30,7 +30,3 @@ from .ServiceObject import ServiceObject
 
 # RPC Client class
 from .ServiceBus import ServiceBus
-
-# Services
-from .Services import QueueRpc
-
